@@ -38,12 +38,12 @@ This repository contains the backend API for Appsol CMS — built to provide sec
 | Language | **TypeScript** |
 | Runtime | **Node.js** |
 | Framework | **Express.js** |
-| Database | **MongoDB ** |
-| ORM / ODM | ** Mongoose** |
+| Database | **MongoDB** |
+| ORM / ODM | **Mongoose** |
 | Authentication | **JWT / OAuth2** |
 | Notifications | **Firebase Cloud Messaging (FCM)** |
-| Task Scheduling | ** Node Cron** |
-| API Documentation | ** Postman** |
+| Task Scheduling | **Node Cron** |
+| API Documentation | **Postman** |
 
 ---
 
