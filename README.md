@@ -44,6 +44,7 @@ This repository contains the backend API for Appsol CMS — built to provide sec
 | Notifications | **Firebase Cloud Messaging (FCM)** |
 | Task Scheduling | **Node Cron** |
 | API Documentation | **Postman** |
+| Dependency Injection | **Inversify** |
 
 ---
 
