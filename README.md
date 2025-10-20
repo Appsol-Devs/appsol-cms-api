@@ -9,6 +9,7 @@ This repository contains the backend API for Appsol CMS — built to provide sec
 ## 🚀 Features (MVP)
 
 ### 📊 Dashboard & Insights
+
 - Dashboard summaries of key metrics
 - Monthly retrievals and balances
 - Yearly revenue tracking (completed payments)
@@ -16,6 +17,7 @@ This repository contains the backend API for Appsol CMS — built to provide sec
 - Recent transactions (payments, enquiries, complaints, etc.)
 
 ### 👥 Core Functionalities
+
 1. **User Login & Authentication**
 2. **Customer Complaints Logging**
 3. **Customer Outreach Logging** (Periodic calls, follow-ups)
@@ -33,20 +35,20 @@ This repository contains the backend API for Appsol CMS — built to provide sec
 ---
 
 ## 🏗️ Tech Stack (Proposed)
-| Layer | Technology |
-|-------|-------------|
-| Language | **TypeScript** |
-| Runtime | **Node.js** |
-| Framework | **Express.js** |
-| Database | **MongoDB** |
-| ORM / ODM | **Mongoose** |
-| Authentication | **JWT / OAuth2** |
-| Notifications | **Firebase Cloud Messaging (FCM)** |
-| Task Scheduling | **Node Cron** |
-| API Documentation | **Postman** |
-| Dependency Injection | **Inversify** |
+
+| Layer                | Technology                                                                                                                                                                                                                             |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Language             | **TypeScript**                                                                                                                                                                                                                         |
+| Runtime              | **Node.js**                                                                                                                                                                                                                            |
+| Framework            | **Express.js**                                                                                                                                                                                                                         |
+| Database             | **MongoDB**                                                                                                                                                                                                                            |
+| ORM / ODM            | **Mongoose**                                                                                                                                                                                                                           |
+| Authentication       | **JWT / OAuth2**                                                                                                                                                                                                                       |
+| Notifications        | **Firebase Cloud Messaging (FCM)**                                                                                                                                                                                                     |
+| Task Scheduling      | **Node Cron**                                                                                                                                                                                                                          |
+| API Documentation    | [**Postman**](https://interstellar-rocket-860831.postman.co/workspace/New-Team-Workspace~7d60c845-06e2-40af-be78-d7f7de323b65/collection/17143791-18b5374a-62ce-4ee7-9f69-e407885d0472?action=share&source=copy-link&creator=17143791) |
+| Dependency Injection | **Inversify**                                                                                                                                                                                                                          |
 
 ---
 
 ## 📁 Project Structure (Suggested)
-
