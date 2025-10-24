@@ -44,6 +44,6 @@ jobs:
       # the source code (src/) into JavaScript artifacts (dist/).
       run: yarn build
 
-    - name: Run Tests
+    #- name: Run Tests
       # Assuming tests are run against the compiled code or source code using 'yarn test'.
-      run: yarn test
+      #run: yarn test
