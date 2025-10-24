@@ -18,7 +18,7 @@ jobs:
     strategy:
       # Test against multiple Node.js versions for compatibility.
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [20.x]
 
     steps:
     - name: Checkout Repository
