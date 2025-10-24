@@ -1,0 +1,49 @@
+name: Node.js CI
+
+# This workflow defines when the build process should run.
+on:
+  # Run the workflow when code is pushed to the 'master' branch.
+  push:
+    branches: [ master ]
+  
+  # Run the workflow when a pull request is opened against any branch (*).
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  build:
+    # Use the latest version of Ubuntu to run the job.
+    runs-on: ubuntu-latest
+
+    strategy:
+      # Test against multiple Node.js versions for compatibility.
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout Repository
+      # Checks out your repository code under $GITHUB_WORKSPACE
+      uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      # Sets up the specified Node.js environment
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        # Cache yarn dependencies for faster builds
+        cache: 'yarn'
+
+    - name: Install Dependencies
+      # Use 'yarn install --frozen-lockfile' for continuous integration 
+      # to ensure the yarn.lock file is respected and prevent accidental updates.
+      # This step installs all dependencies, including TypeScript (tsc) and rimraf.
+      run: yarn install --frozen-lockfile
+
+    - name: Compile TypeScript Application
+      # Runs 'yarn build' (which executes 'rimraf dist && tsc') to compile 
+      # the source code (src/) into JavaScript artifacts (dist/).
+      run: yarn build
+
+    - name: Run Tests
+      # Assuming tests are run against the compiled code or source code using 'yarn test'.
+      run: yarn test
