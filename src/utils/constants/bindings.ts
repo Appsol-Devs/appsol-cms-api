@@ -19,4 +19,7 @@ export const INTERFACE_TYPE = {
   PermissionRepositoryImpl: Symbol.for("PermissionRepositoryImpl"),
   PermissionInteractorImpl: Symbol.for("PermissionInteractorImpl"),
   PermissionController: Symbol.for("PermissionController"),
+  ComplaintTypeRepository: Symbol.for("ComplaintTypeRepository"),
+  ComplaintTypeInteractor: Symbol.for("ComplaintTypeInteractor"),
+  ComplaintTypeController: Symbol.for("ComplaintTypeController"),
 };
