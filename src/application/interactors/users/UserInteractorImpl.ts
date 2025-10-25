@@ -9,7 +9,10 @@ import {
   UnprocessableEntityError,
 } from "../../../error_handler/index.js";
 import { PaginatedResponse } from "../../../entities/UserResponse.js";
-import type { IUserRepository } from "../../../framework/mongodb/index.js";
+import type {
+  IRoleRepository,
+  IUserRepository,
+} from "../../../framework/mongodb/index.js";
 import type { IAuthService } from "../../../framework/services/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 
@@ -17,6 +20,7 @@ import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 export class UserInteractorImpl implements IUserInteractor {
   private userRepository: IUserRepository;
   private authService: IAuthService;
+
   constructor(
     @inject(INTERFACE_TYPE.UserRepositoryImpl) userRepository: IUserRepository,
     @inject(INTERFACE_TYPE.AuthServiceImpl) authService: IAuthService
@@ -40,7 +44,7 @@ export class UserInteractorImpl implements IUserInteractor {
 
   async addUser(data: IUser): Promise<IUser> {
     if (!data) throw new UnprocessableEntityError("User data is required");
-    //TODO validate data
+
     const existingUser = await this.userRepository.findUserByEmail(data.email!);
     if (existingUser) throw new BadRequestError("The email already exists");
     let userData = { ...data };
@@ -48,6 +52,7 @@ export class UserInteractorImpl implements IUserInteractor {
     const hashedPassword = await this.authService.encriptPassword(
       data.password!
     );
+
     userData = {
       ...data,
       password: hashedPassword,

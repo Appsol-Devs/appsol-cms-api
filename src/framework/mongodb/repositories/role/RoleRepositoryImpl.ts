@@ -7,6 +7,19 @@ import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
 
 @injectable()
 export class RoleRepositoryImpl implements IRoleRepository {
+  async findByName(name: string): Promise<IRole | null | undefined> {
+    try {
+      if (!name) throw new BadRequestError("Role name is required");
+      const role = await Role.findOne({
+        name: { $regex: new RegExp(`^${name}$`, "i") },
+        isDeleted: { $ne: true },
+      });
+      if (!role) return null;
+      return RoleMapper.toEntity(role);
+    } catch (error) {
+      throw error;
+    }
+  }
   async getARole(id: string): Promise<IRole | null | undefined> {
     try {
       const role = await Role.findById(id);
@@ -62,20 +75,14 @@ export class RoleRepositoryImpl implements IRoleRepository {
   async getAllRoles(query: RequestQuery): Promise<IRole[]> {
     try {
       const searchQuery = query.search || "";
-      let searchCriteria = {};
+      let searchCriteria: any = { isDeleted: { $ne: true } };
 
-      if (searchQuery)
-        searchCriteria = {
-          searchQuery: searchQuery,
-        };
-
-      searchCriteria = {
-        ...searchCriteria,
-        $or: [
+      if (searchQuery) {
+        searchCriteria.$or = [
           { name: { $regex: new RegExp(`^${searchQuery}.*`, "i") } },
           { description: { $regex: new RegExp(`^${searchQuery}.*`, "i") } },
-        ],
-      };
+        ];
+      }
 
       const roles = await Role.find(searchCriteria);
       if (roles) {

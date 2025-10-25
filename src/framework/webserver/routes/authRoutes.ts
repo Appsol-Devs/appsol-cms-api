@@ -24,11 +24,19 @@ import {
   AuthRepositoryImpl,
   type IUserRepository,
   UserRepositoryImpl,
+  type IRoleRepository,
+  RoleRepositoryImpl,
 } from "../../mongodb/index.js";
 import { AuthMiddleware } from "../middleware/AuthMiddleware.js";
 import { validate } from "../middleware/ValidationMiddleware.js";
 
 const container = new Container();
+
+//bind role
+container
+  .bind<IRoleRepository>(INTERFACE_TYPE.RoleRepositoryImpl)
+  .to(RoleRepositoryImpl);
+
 container
   .bind<IAuthRepository>(INTERFACE_TYPE.AuthRepositoryImpl)
   .to(AuthRepositoryImpl);
@@ -56,6 +64,7 @@ container
 
 // Create a new instance of the controller and bind it to the router.
 const controller = container.get<AuthController>(INTERFACE_TYPE.AuthController);
+
 const authMiddleware = container.get<AuthMiddleware>(
   INTERFACE_TYPE.AuthMiddleware
 );
