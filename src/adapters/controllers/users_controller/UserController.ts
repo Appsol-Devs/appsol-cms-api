@@ -8,7 +8,7 @@ import type { NextFunction, Request, Response } from "express";
 import type { RequestQuery } from "../../../entities/User.js";
 import type { IControllerUserRequest } from "../auth_controller/IController.js";
 import { BadRequestError } from "../../../error_handler/index.js";
-import type { TGenericPromise } from "../../../utils/constants/types.js";
+import type { TGenericPromise } from "../../../utils/constants/genTypes.js";
 
 @injectable()
 export class UserController {

@@ -2,6 +2,7 @@ import { injectable, inject } from "inversify";
 import {
   HttpStatusCode,
   INTERFACE_TYPE,
+  type TGenericPromise,
 } from "../../../utils/constants/index.js";
 import type { IPermissionInteractor } from "../../../application/interactors/index.js";
 import { PermissionInteractorImpl } from "../../../application/interactors/permission/PermissionInteractorImpl.js";
@@ -23,7 +24,7 @@ export class PermissionController {
     _req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response<any, Record<string, any>> | undefined> {
+  ): TGenericPromise {
     try {
       const response = await this.permissionInteractor.getAllPermissions();
       return res.status(HttpStatusCode.OK).json(response);
@@ -37,7 +38,7 @@ export class PermissionController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response<any, Record<string, any>> | undefined> {
+  ): TGenericPromise {
     try {
       const key = req.query["key"];
       if (!key) throw new UnauthorizedError("key is required");

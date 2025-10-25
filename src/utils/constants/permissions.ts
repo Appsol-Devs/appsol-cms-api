@@ -14,6 +14,13 @@ const Permissions = Object.freeze({
   UPDATE_USER: "update:user",
   DELETE_USER: "delete:user",
   VIEW_USERS: "view:users",
+  VIEW_SETTINGS: "view:settings",
+  UPDATE_SETTINGS: "update:settings",
+  VIEW_COMPLAINT_TYPES: "view:complaint_types",
+  VIEW_COMPLAINT_TYPE: "view:complaint_type",
+  CREATE_COMPLAINT_TYPE: "create:complaint_type",
+  UPDATE_COMPLAINT_TYPE: "update:complaint_type",
+  DELETE_COMPLAINT_TYPE: "delete:complaint_type",
 } as const);
 
 export default Permissions;
