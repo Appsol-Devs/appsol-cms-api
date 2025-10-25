@@ -54,13 +54,15 @@ export class UserRepositoryImpl implements IUserRepository {
         };
 
       searchCriteria = {
-        ...searchCriteria,
+        //...searchCriteria,
         $or: [
           { firstName: { $regex: new RegExp(`^${searchQuery}.*`, "i") } },
           { lastName: { $regex: new RegExp(`^${searchQuery}.*`, "i") } },
           { email: { $regex: new RegExp(`^${searchQuery}.*`, "i") } },
         ],
       };
+
+      console.log("searchCriteria:", searchCriteria);
 
       const users = await User.find(searchCriteria)
         .select("-password")

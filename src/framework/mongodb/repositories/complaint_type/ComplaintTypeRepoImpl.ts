@@ -32,7 +32,7 @@ export class ComplaintTypeRepositoryImpl implements IComplaintTypeRepository {
         };
 
       searchCriteria = {
-        ...searchCriteria,
+        // ...searchCriteria,
         $or: [
           { name: { $regex: new RegExp(`^${searchQuery}.*`, "i") } },
           { description: { $regex: new RegExp(`^${searchQuery}.*`, "i") } },

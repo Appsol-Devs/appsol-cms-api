@@ -11,12 +11,19 @@ import { PermissionController } from "../../../adapters/controllers/permission_c
 import { type ILogger, LoggerImpl } from "../../logging/index.js";
 import {
   type IPermissionRepository,
+  type IRoleRepository,
   PermissionRepositoryImpl,
+  RoleRepositoryImpl,
 } from "../../mongodb/index.js";
 
 const container = new Container();
 
 container.bind<ILogger>(INTERFACE_TYPE.Logger).to(LoggerImpl);
+
+//bind role
+container
+  .bind<IRoleRepository>(INTERFACE_TYPE.RoleRepositoryImpl)
+  .to(RoleRepositoryImpl);
 
 container
   .bind<IAuthService>(INTERFACE_TYPE.AuthServiceImpl)

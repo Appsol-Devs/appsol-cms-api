@@ -1,9 +1,7 @@
 import { IUser, UserPasswordChangeRequest } from "../../../entities/User.js";
 import type { IAuthInteractor } from "./IAuthInteractor.js";
 
-
 import { inject, injectable } from "inversify";
-
 
 import {
   UserOTPResponse,
@@ -16,8 +14,15 @@ import {
 } from "../../../error_handler/index.js";
 import { UnauthorizedError } from "../../../error_handler/UnauthorizedError.js";
 import { UnprocessableEntityError } from "../../../error_handler/UnprocessableEntityError.js";
-import type { IAuthRepository, IUserRepository } from "../../../framework/mongodb/index.js";
-import type { IAuthService, IMailer } from "../../../framework/services/index.js";
+import type {
+  IAuthRepository,
+  IRoleRepository,
+  IUserRepository,
+} from "../../../framework/mongodb/index.js";
+import type {
+  IAuthService,
+  IMailer,
+} from "../../../framework/services/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 
 @injectable()
@@ -26,17 +31,20 @@ export class AuthInteractorImpl implements IAuthInteractor {
   private authService: IAuthService;
   private mailer: IMailer;
   private userRepository: IUserRepository;
+  private roleRepository: IRoleRepository;
 
   constructor(
     @inject(INTERFACE_TYPE.AuthRepositoryImpl) repository: IAuthRepository,
     @inject(INTERFACE_TYPE.AuthServiceImpl) authService: IAuthService,
     @inject(INTERFACE_TYPE.Mailer) mailer: IMailer,
-    @inject(INTERFACE_TYPE.UserRepositoryImpl) userRepository: IUserRepository
+    @inject(INTERFACE_TYPE.UserRepositoryImpl) userRepository: IUserRepository,
+    @inject(INTERFACE_TYPE.RoleRepositoryImpl) roleRepository: IRoleRepository
   ) {
     this.repository = repository;
     this.authService = authService;
     this.mailer = mailer;
     this.userRepository = userRepository;
+    this.roleRepository = roleRepository;
   }
   logout(): void {
     throw new Error("Method not implemented.");
@@ -249,20 +257,28 @@ export class AuthInteractorImpl implements IAuthInteractor {
 
   async registerUser(data: IUser): Promise<UserRegistrationResponse> {
     if (!data) throw new UnprocessableEntityError("User data is required");
+
     const hashedPassword = await this.authService.encriptPassword(
       data.password!
     ); // hash password before saving it
 
+    // find adminstrator role to assign to new user
+    const adminRole = await this.roleRepository.findByName("Administrator");
+    if (!adminRole)
+      throw new NotFoundError(
+        "Administrator role not found, please upload permissions first."
+      );
+
     const userData: IUser = {
       ...data,
       password: hashedPassword,
-      //TODO implement role//role: "admin",
+      role: adminRole._id,
     };
     const result = await this.repository.registerUser(userData);
 
-    if  (!result) throw new BadRequestError("Error while adding user");
+    if (!result) throw new BadRequestError("Error while adding user");
 
-    const {email, _id} = result;
+    const { email, _id } = result;
     if (!email || !_id) throw new Error("Invalid user data");
 
     await this.sendEmailOTP(

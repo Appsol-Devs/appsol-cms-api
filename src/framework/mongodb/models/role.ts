@@ -6,13 +6,14 @@ const roleSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      unique: true,
     },
     description: {
       type: String,
     },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      required: false,
       unique: false,
     },
     permissions: {
@@ -35,7 +36,7 @@ export const RoleMapper = {
       model._id?.toString(),
       model.name,
       model.description,
-      model.companyId.toString(), // Convert ObjectId to string
+      model.companyId?.toString(), // Convert ObjectId to string
       model.permissions
     );
   },

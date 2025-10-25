@@ -12,7 +12,9 @@ import { AuthMiddleware } from "../middleware/AuthMiddleware.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import Permissions from "../../../utils/constants/permissions.js";
 import {
+  type IRoleRepository,
   type IUserRepository,
+  RoleRepositoryImpl,
   UserRepositoryImpl,
 } from "../../mongodb/index.js";
 
