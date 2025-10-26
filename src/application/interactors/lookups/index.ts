@@ -1,1 +1,3 @@
 export * from "./complaint_type/index.js";
+export * from "./base/index.js";
+export * from "./SoftwareInteractorImpl.js";

@@ -1,9 +1,9 @@
 import { IBaseLookup } from "./BaseLookup.js";
 
-export class IComplaintType extends IBaseLookup {
+export class ISoftware extends IBaseLookup {
   constructor(
-    public readonly complaintTypeCode: string,
     public readonly _id: string,
+    public readonly softwareCode: string,
     public readonly name: string,
     public readonly description?: string,
     public readonly isActive?: boolean
