@@ -22,4 +22,10 @@ export const INTERFACE_TYPE = {
   ComplaintTypeRepository: Symbol.for("ComplaintTypeRepository"),
   ComplaintTypeInteractor: Symbol.for("ComplaintTypeInteractor"),
   ComplaintTypeController: Symbol.for("ComplaintTypeController"),
+  BaseLookupRepository: Symbol.for("BaseLookupRepository"),
+  BaseLookupInteractor: Symbol.for("BaseLookupInteractor"),
+  BaseLookupController: Symbol.for("BaseLookupController"),
+  SoftwareRepositoryImpl: Symbol.for("SoftwareRepositoryImpl"),
+  SoftwareInteractorImpl: Symbol.for("SoftwareInteractorImpl"),
+  SoftwareController: Symbol.for("SoftwareController"),
 };

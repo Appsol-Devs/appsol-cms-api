@@ -11,11 +11,15 @@ import {
   CloudinaryImpl,
 } from "../services/index.js";
 import { ErrorMiddleware } from "./middleware/ErrorMiddleware.js";
+import { AuthMiddleware } from "./middleware/AuthMiddleware.js";
 
 const container = new Container();
 
 container.bind<ILogger>(INTERFACE_TYPE.Logger).to(LoggerImpl);
 container.bind<IErrorHandler>(INTERFACE_TYPE.ErrorHandler).to(ErrorHandlerImpl);
+container
+  .bind<AuthMiddleware>(INTERFACE_TYPE.AuthMiddleware)
+  .to(AuthMiddleware);
 container
   .bind<IAuthService>(INTERFACE_TYPE.AuthServiceImpl)
   .to(AuthServiceImpl);

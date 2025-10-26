@@ -8,7 +8,7 @@ import {
 import { type IAuthService, AuthServiceImpl } from "../../../services/index.js";
 import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
 import { ComplaintTypeInteractorImpl } from "../../../../application/interactors/lookups/index.js";
-import { ComplaintTypeController } from "../../../../adapters/controllers/lookups/ComplaintsController.js";
+import { ComplaintTypeController } from "../../../../adapters/controllers/lookups/ComplaintTypeController.js";
 import express from "express";
 import { Permissions } from "../../../../utils/constants/permissions.js";
 import { validate } from "../../middleware/ValidationMiddleware.js";
