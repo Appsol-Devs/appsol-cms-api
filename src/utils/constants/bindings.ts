@@ -41,4 +41,7 @@ export const INTERFACE_TYPE = {
   SetupStatusRepositoryImpl: Symbol.for("SetupStatusRepositoryImpl"),
   SetupStatusInteractorImpl: Symbol.for("SetupStatusInteractorImpl"),
   SetupStatusController: Symbol.for("SetupStatusController"),
+  SubscriptionTypeRepositoryImpl: Symbol.for("SubscriptionTypeRepositoryImpl"),
+  SubscriptionTypeInteractorImpl: Symbol.for("SubscriptionTypeInteractorImpl"),
+  SubscriptionTypeController: Symbol.for("SubscriptionTypeController"),
 };
