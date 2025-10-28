@@ -4,6 +4,7 @@ import { inject, injectable } from "inversify";
 import {
   HttpStatusCode,
   INTERFACE_TYPE,
+  type TGenericPromise,
 } from "../../../utils/constants/index.js";
 import type { IControllerUserRequest } from "./IController.js";
 import { UnprocessableEntityError } from "../../../error_handler/index.js";
@@ -105,9 +106,28 @@ export class AuthController {
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       const { userId, otp } = req.body;
-      //TODO add validation
       const response = await this.interactor.verifyOTP(userId, otp);
       return res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      next(error);
+      return;
+    }
+  }
+
+  async sendEmailOTP(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): TGenericPromise {
+    try {
+      const response = await this.interactor.sendOtp(
+        req.body.userId,
+        req.body.email
+      );
+      if (response) {
+        return res.status(HttpStatusCode.OK).json(response);
+      }
+      throw new Error();
     } catch (error) {
       next(error);
       return;

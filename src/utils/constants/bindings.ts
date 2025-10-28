@@ -28,4 +28,11 @@ export const INTERFACE_TYPE = {
   SoftwareRepositoryImpl: Symbol.for("SoftwareRepositoryImpl"),
   SoftwareInteractorImpl: Symbol.for("SoftwareInteractorImpl"),
   SoftwareController: Symbol.for("SoftwareController"),
+  ComplaintCategoryRepositoryImpl: Symbol.for(
+    "ComplaintCategoryRepositoryImpl"
+  ),
+  ComplaintCategoryInteractorImpl: Symbol.for(
+    "ComplaintCategoryInteractorImpl"
+  ),
+  ComplaintCategoryController: Symbol.for("ComplaintCategoryController"),
 };

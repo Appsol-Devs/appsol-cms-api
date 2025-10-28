@@ -5,6 +5,7 @@ import roleRoutes from "./roleRoutes.js";
 import permissionRoutes from "./permissionRoutes.js";
 import complaintTypeRoutes from "./lookups/complaintType.js";
 import softwareRoutes from "./lookups/software.js";
+import complaintCategoryRoutes from "./lookups/complaintCategory.js";
 
 const router = express.Router();
 
@@ -14,5 +15,6 @@ router.use(roleRoutes);
 router.use(permissionRoutes);
 router.use(complaintTypeRoutes);
 router.use(softwareRoutes);
+router.use(complaintCategoryRoutes);
 
 export default router;
