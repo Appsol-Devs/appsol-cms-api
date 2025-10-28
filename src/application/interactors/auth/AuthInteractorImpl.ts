@@ -46,6 +46,28 @@ export class AuthInteractorImpl implements IAuthInteractor {
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
   }
+  async sendOtp(userId: string, email: string): Promise<UserOTPResponse> {
+    if (!email) throw new UnprocessableEntityError("Email is required");
+    const user = await this.userRepository.findUserById(userId);
+    if (!user) throw new NotFoundError("User not found");
+
+    //send user otp via email notification
+    await this.sendEmailOTP(
+      email,
+      "Password Reset",
+      "Please enter this code to reset your password"
+    );
+
+    const response: UserOTPResponse = {
+      status: "Pending",
+      message: "OTP Verification email sent",
+      data: {
+        email: user.email,
+        userId: user._id,
+      },
+    };
+    return response;
+  }
   logout(): void {
     throw new Error("Method not implemented.");
   }

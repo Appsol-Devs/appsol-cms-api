@@ -88,21 +88,31 @@ router.put(
   authMiddleware.authenticateToken.bind(authMiddleware),
   controller.changePassword.bind(controller)
 );
+
 router.post(
   "/api/auth/login",
   validate(loginUserSchema),
   controller.login.bind(controller)
 );
+
 router.post(
   "/api/auth/verifyOtp",
   validate(verifySignupOtpSchema),
   controller.verifyOtp.bind(controller)
 );
+
 router.post(
   "/api/auth/register",
   validate(registerUserSchema),
   controller.registerUser.bind(controller)
 );
+
+router.post(
+  "/api/auth/sendOtp",
+  // validate(verifySignupOtpSchema),
+  controller.sendEmailOTP.bind(controller)
+);
+
 router.get("/api/test", controller.test.bind(controller));
 
 export default router;

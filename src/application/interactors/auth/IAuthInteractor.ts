@@ -17,4 +17,6 @@ export interface IAuthInteractor {
     otp: string,
     newPassword: string
   ): Promise<UserOTPResponse>;
+
+  sendOtp(userId: string, email: string): Promise<UserOTPResponse>;
 }

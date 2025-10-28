@@ -26,6 +26,11 @@ const Permissions = Object.freeze({
   CREATE_SOFTWARE: "create:software",
   UPDATE_SOFTWARE: "update:software",
   DELETE_SOFTWARE: "delete:software",
+  VIEW_COMPLAINT_CATEGORIES: "view:complaint_categories",
+  VIEW_COMPLAINT_CATEGORY: "view:complaint_category",
+  CREATE_COMPLAINT_CATEGORY: "create:complaint_category",
+  UPDATE_COMPLAINT_CATEGORY: "update:complaint_category",
+  DELETE_COMPLAINT_CATEGORY: "delete:complaint_category",
 } as const);
 
 export default Permissions;
