@@ -35,4 +35,7 @@ export const INTERFACE_TYPE = {
     "ComplaintCategoryInteractorImpl"
   ),
   ComplaintCategoryController: Symbol.for("ComplaintCategoryController"),
+  CallStatusRepositoryImpl: Symbol.for("CallStatusRepositoryImpl"),
+  CallStatusInteractorImpl: Symbol.for("CallStatusInteractorImpl"),
+  CallStatusController: Symbol.for("CallStatusController"),
 };

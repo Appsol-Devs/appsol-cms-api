@@ -6,6 +6,7 @@ import permissionRoutes from "./permissionRoutes.js";
 import complaintTypeRoutes from "./lookups/complaintType.js";
 import softwareRoutes from "./lookups/software.js";
 import complaintCategoryRoutes from "./lookups/complaintCategory.js";
+import callStatusRoutes from "./lookups/callStatus.js";
 
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.use(permissionRoutes);
 router.use(complaintTypeRoutes);
 router.use(softwareRoutes);
 router.use(complaintCategoryRoutes);
+router.use(callStatusRoutes);
 
 export default router;

@@ -31,6 +31,11 @@ const Permissions = Object.freeze({
   CREATE_COMPLAINT_CATEGORY: "create:complaint_category",
   UPDATE_COMPLAINT_CATEGORY: "update:complaint_category",
   DELETE_COMPLAINT_CATEGORY: "delete:complaint_category",
+  VIEW_ALL_CALL_STATUSS: "view:call_statuss",
+  VIEW_CALL_STATUS: "view:call_status",
+  CREATE_CALL_STATUS: "create:call_status",
+  UPDATE_CALL_STATUS: "update:call_status",
+  DELETE_CALL_STATUS: "delete:call_status",
 } as const);
 
 export default Permissions;
