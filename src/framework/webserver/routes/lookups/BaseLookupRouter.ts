@@ -12,7 +12,8 @@ export class BaseLookupRouter<TController extends BaseLookupController<any>> {
     private readonly permissionMap: Record<
       "create" | "read" | "readOne" | "update" | "delete",
       string
-    >
+    >,
+    private readonly validationSchema = lookupSchema
   ) {}
 
   register(): Router {
@@ -42,7 +43,7 @@ export class BaseLookupRouter<TController extends BaseLookupController<any>> {
       this.authMiddleware
         .checkPermission(this.permissionMap.create)
         .bind(this.authMiddleware),
-      validate(lookupSchema),
+      validate(this.validationSchema),
       this.controller.create.bind(this.controller)
     );
 

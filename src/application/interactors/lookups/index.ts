@@ -4,3 +4,4 @@ export * from "./SoftwareInteractorImpl.js";
 export * from "./ComplaintCategoryInteractorImpl.js";
 export * from "./CallStatusInteractorImpl.js";
 export * from "./SetupStatusInteractorImpl.js";
+export * from "./SubscriptionTypeInteractorImpl.js";

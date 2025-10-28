@@ -5,3 +5,7 @@ export const lookupSchema = z.object({
   description: z.string().optional(),
   isActive: z.boolean().optional(),
 });
+
+export const subscriptionTypeSchema = lookupSchema.extend({
+  durationInMonths: z.number().min(1),
+});
