@@ -1,4 +1,9 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, {
+  Schema,
+  Document,
+  Model,
+  type SchemaDefinition,
+} from "mongoose";
 import { withBaseSchema } from "./baseModel.js";
 
 export interface BaseLookupDocument extends Document {
@@ -10,6 +15,7 @@ export interface BaseLookupDocument extends Document {
 interface LookupModelOptions {
   prefix: string;
   idFieldName: string;
+  extraFields?: SchemaDefinition;
 }
 
 /**
@@ -17,6 +23,7 @@ interface LookupModelOptions {
  *
  * @param {string} modelName - name of the mongoose model
  * @param {LookupModelOptions} options - options for creating the LookupModel
+ *
  * @returns {{Model: Model<TDocument>, Mapper: {toDtoCreation: (payload: TDomain) => any, toEntity: (doc: any) => TDomain}}}
  */
 export const createLookupModel = <
@@ -32,15 +39,15 @@ export const createLookupModel = <
     toEntity: (doc: any) => TDomain;
   };
 } => {
-  const schema = new Schema<TDocument>(
-    {
-      [options.idFieldName]: { type: String, unique: true },
-      name: { type: String, required: true },
-      description: { type: String },
-      isActive: { type: Boolean, default: true },
-    },
-    { timestamps: true }
-  );
+  const schemaDefinition: SchemaDefinition = {
+    [options.idFieldName]: { type: String, unique: true },
+    name: { type: String, required: true },
+    description: { type: String },
+    isActive: { type: Boolean, default: true },
+    ...(options.extraFields ?? {}),
+  };
+
+  const schema = new Schema<TDocument>(schemaDefinition, { timestamps: true });
 
   withBaseSchema(schema, {
     prefix: options.prefix,
@@ -50,20 +57,21 @@ export const createLookupModel = <
   const Model = mongoose.model<TDocument>(modelName, schema);
 
   const Mapper = {
-    toDtoCreation: (payload: any) => ({
-      [options.idFieldName]: payload[options.idFieldName],
-      name: payload.name,
-      description: payload.description,
-      isActive: payload.isActive,
-    }),
-    toEntity: (doc: any) =>
-      ({
-        _id: doc._id.toString(),
-        [options.idFieldName]: doc[options.idFieldName],
-        name: doc.name,
-        description: doc.description,
-        isActive: doc.isActive,
-      } as TDomain),
+    toDtoCreation: (payload: any) => {
+      const dto: Record<string, any> = {};
+      Object.keys(schemaDefinition).forEach((key) => {
+        dto[key] = payload[key];
+      });
+      return dto;
+    },
+    toEntity: (doc: any) => {
+      const entity: Record<string, any> = {};
+      Object.keys(schemaDefinition).forEach((key) => {
+        entity[key] = doc[key];
+      });
+      entity._id = doc._id?.toString();
+      return entity as TDomain;
+    },
   };
 
   return { Model, Mapper };
