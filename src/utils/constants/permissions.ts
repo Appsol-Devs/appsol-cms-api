@@ -36,6 +36,11 @@ const Permissions = Object.freeze({
   CREATE_CALL_STATUS: "create:call_status",
   UPDATE_CALL_STATUS: "update:call_status",
   DELETE_CALL_STATUS: "delete:call_status",
+  CREATE_SETUP_STAUTS: "create:setup_status",
+  VIEW_ALL_SETUP_STAUTS: "view:setup_statuss",
+  VIEW_SETUP_STAUTS: "view:setup_status",
+  UPDATE_SETUP_STAUTS: "update:setup_status",
+  DELETE_SETUP_STAUTS: "delete:setup_status",
 } as const);
 
 export default Permissions;
