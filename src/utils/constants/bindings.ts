@@ -38,4 +38,7 @@ export const INTERFACE_TYPE = {
   CallStatusRepositoryImpl: Symbol.for("CallStatusRepositoryImpl"),
   CallStatusInteractorImpl: Symbol.for("CallStatusInteractorImpl"),
   CallStatusController: Symbol.for("CallStatusController"),
+  SetupStatusRepositoryImpl: Symbol.for("SetupStatusRepositoryImpl"),
+  SetupStatusInteractorImpl: Symbol.for("SetupStatusInteractorImpl"),
+  SetupStatusController: Symbol.for("SetupStatusController"),
 };
