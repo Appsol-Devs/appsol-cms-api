@@ -5,3 +5,5 @@ export * from "./ComplaintCategoryInteractorImpl.js";
 export * from "./CallStatusInteractorImpl.js";
 export * from "./SetupStatusInteractorImpl.js";
 export * from "./SubscriptionTypeInteractorImpl.js";
+export * from "./LeadStatusInteractorImpl.js";
+export * from "./LeadNextStepInteractorImpl.js";

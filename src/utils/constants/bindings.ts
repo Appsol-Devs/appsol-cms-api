@@ -44,4 +44,10 @@ export const INTERFACE_TYPE = {
   SubscriptionTypeRepositoryImpl: Symbol.for("SubscriptionTypeRepositoryImpl"),
   SubscriptionTypeInteractorImpl: Symbol.for("SubscriptionTypeInteractorImpl"),
   SubscriptionTypeController: Symbol.for("SubscriptionTypeController"),
+  LeadStatusRepositoryImpl: Symbol.for("LeadStatusRepositoryImpl"),
+  LeadStatusInteractorImpl: Symbol.for("LeadStatusInteractorImpl"),
+  LeadStatusController: Symbol.for("LeadStatusController"),
+  LeadNextStepRepositoryImpl: Symbol.for("LeadNextStepRepositoryImpl"),
+  LeadNextStepInteractorImpl: Symbol.for("LeadNextStepInteractorImpl"),
+  LeadNextStepController: Symbol.for("LeadNextStepController"),
 };
