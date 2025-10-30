@@ -4,3 +4,5 @@ export * from "./ComplaintCategory.js";
 export * from "./CallStatus.js";
 export * from "./SetupStatus.js";
 export * from "./SubscriptionType.js";
+export * from "./LeadStatus.js";
+export * from "./LeadNextStep.js";

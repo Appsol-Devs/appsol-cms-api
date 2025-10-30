@@ -46,6 +46,11 @@ const Permissions = Object.freeze({
   VIEW_SUBSCRIPTION_TYPE: "view:subscription_type",
   UPDATE_SUBSCRIPTION_TYPE: "update:subscription_type",
   DELETE_SUBSCRIPTION_TYPE: "delete:subscription_type",
+  CREATE_LEAD_STATUS: "create:lead_status",
+  VIEW_ALL_LEAD_STATUS: "view:lead_statuss",
+  VIEW_LEAD_STATUS: "view:lead_status",
+  UPDATE_LEAD_STATUS: "update:lead_status",
+  DELETE_LEAD_STATUS: "delete:lead_status",
 } as const);
 
 export default Permissions;

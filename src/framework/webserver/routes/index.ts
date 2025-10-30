@@ -9,6 +9,8 @@ import complaintCategoryRoutes from "./lookups/complaintCategory.js";
 import callStatusRoutes from "./lookups/callStatus.js";
 import setupStatusRoutes from "./lookups/setupStatus.js";
 import subscriptionRoutes from "./lookups/subscriptionType.js";
+import leadStatusroutes from "./lookups/leadStatus.js";
+import leadNextStepRoutes from "./lookups/leadNextStep.js";
 
 const router = express.Router();
 
@@ -22,5 +24,7 @@ router.use(complaintCategoryRoutes);
 router.use(callStatusRoutes);
 router.use(setupStatusRoutes);
 router.use(subscriptionRoutes);
+router.use(leadStatusroutes);
+router.use(leadNextStepRoutes);
 
 export default router;
