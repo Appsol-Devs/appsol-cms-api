@@ -50,4 +50,7 @@ export const INTERFACE_TYPE = {
   LeadNextStepRepositoryImpl: Symbol.for("LeadNextStepRepositoryImpl"),
   LeadNextStepInteractorImpl: Symbol.for("LeadNextStepInteractorImpl"),
   LeadNextStepController: Symbol.for("LeadNextStepController"),
+  LeadRepositoryImpl: Symbol.for("LeadRepositoryImpl"),
+  LeadInteractorImpl: Symbol.for("LeadInteractorImpl"),
+  LeadController: Symbol.for("LeadController"),
 };
