@@ -51,6 +51,11 @@ const Permissions = Object.freeze({
   VIEW_LEAD_STATUS: "view:lead_status",
   UPDATE_LEAD_STATUS: "update:lead_status",
   DELETE_LEAD_STATUS: "delete:lead_status",
+  CREATE_LEAD: "create:lead",
+  VIEW_LEADS: "view:leads",
+  VIEW_LEAD: "view:lead",
+  UPDATE_LEAD: "update:lead",
+  DELETE_LEAD: "delete:lead",
 } as const);
 
 export default Permissions;

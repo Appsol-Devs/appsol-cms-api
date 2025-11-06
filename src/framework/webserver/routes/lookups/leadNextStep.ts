@@ -49,7 +49,7 @@ const permissionMap = {
 const router = new BaseLookupRouter(
   controller,
   authMiddleware,
-  "/api/leadNextStepes",
+  "/api/leadNextSteps",
   permissionMap
 ).register();
 
