@@ -4,3 +4,4 @@ export * from "./UserResponse.js";
 export * from "./Permission.js";
 export * from "./lookups/index.js";
 export * from "./Lead.js";
+export * from "./Customer.js";

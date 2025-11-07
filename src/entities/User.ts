@@ -48,4 +48,6 @@ export interface RequestQuery {
   startDate?: Date | undefined;
   endDate?: Date | undefined;
   status?: string | undefined;
+  loggedBy?: string | undefined;
+  createdBy?: string | undefined;
 }

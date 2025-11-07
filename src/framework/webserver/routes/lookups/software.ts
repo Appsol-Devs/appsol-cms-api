@@ -1,31 +1,9 @@
-import type { Container } from "inversify";
 import { INTERFACE_TYPE } from "../../../../utils/constants/bindings.js";
 import { BaseLookupRouter } from "./BaseLookupRouter.js";
 import Permissions from "../../../../utils/constants/permissions.js";
 import { SoftwareController } from "../../../../adapters/controllers/lookups/SoftwareController.js";
 import type { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
-import { container } from "../../container.js";
-import {
-  type IBaseLookupInteractor,
-  SoftwareInteractorImpl,
-} from "../../../../application/interactors/index.js";
-import type { ISoftware } from "../../../../entities/lookups/index.js";
-import {
-  SoftwareRepositoryImpl,
-  type IBaseLookupRepository,
-} from "../../../mongodb/index.js";
-
-container
-  .bind<IBaseLookupRepository<ISoftware>>(INTERFACE_TYPE.SoftwareRepositoryImpl)
-  .to(SoftwareRepositoryImpl);
-
-container
-  .bind<IBaseLookupInteractor<ISoftware>>(INTERFACE_TYPE.SoftwareInteractorImpl)
-  .to(SoftwareInteractorImpl);
-
-container
-  .bind<SoftwareController>(INTERFACE_TYPE.SoftwareController)
-  .to(SoftwareController);
+import { container } from "../../../../inversify/container.js";
 
 const controller = container.get<SoftwareController>(
   INTERFACE_TYPE.SoftwareController

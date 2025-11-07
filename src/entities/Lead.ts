@@ -12,7 +12,7 @@ export class ILead {
     public readonly companyName?: string,
     public readonly leadSource?: string,
     public readonly initialEnquiryDate?: string,
-    public readonly leadStatus?: LeadStatus,
+    public readonly leadStatus?: `${LeadStatus}`,
     public readonly loggedBy?: IUser | string,
     public readonly createdAt?: string,
     public readonly updatedAt?: string,
@@ -54,5 +54,7 @@ enum LeadStatus {
   BUILDING_PROPOSAL = "buildingProposal",
   QUALIFIED = "qualified",
   WON = "won",
+  CLOSED = "closed",
+  REJECTED = "rejected",
   NEGOTIATION = "negotiation",
 }

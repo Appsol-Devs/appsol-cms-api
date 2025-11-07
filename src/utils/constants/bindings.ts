@@ -53,4 +53,7 @@ export const INTERFACE_TYPE = {
   LeadRepositoryImpl: Symbol.for("LeadRepositoryImpl"),
   LeadInteractorImpl: Symbol.for("LeadInteractorImpl"),
   LeadController: Symbol.for("LeadController"),
+  CustomerRepositoryImpl: Symbol.for("CustomerRepositoryImpl"),
+  CustomerInteractorImpl: Symbol.for("CustomerInteractorImpl"),
+  CustomerController: Symbol.for("CustomerController"),
 };

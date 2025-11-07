@@ -82,6 +82,7 @@ export abstract class BaseController<TDomain> {
       const response = await this.interactor.create({
         ...req.body,
         createdBy,
+        loggedBy: createdBy,
       });
 
       return res.status(HttpStatusCode.CREATED).json(response);

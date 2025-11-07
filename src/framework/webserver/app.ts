@@ -3,7 +3,7 @@ import cors from "cors";
 
 import expressConfig from "./express.js";
 import routes from "./routes/index.js";
-import { container } from "./container.js";
+import { container } from "../../inversify/container.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 import type { ErrorMiddleware } from "./middleware/ErrorMiddleware.js";
 

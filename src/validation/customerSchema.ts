@@ -1,25 +1,14 @@
 import z from "zod";
 import { baseQuerySchema } from "./baseSchema.js";
 
-export const leadQuerySchema = baseQuerySchema.extend({
+export const customerQuerySchema = baseQuerySchema.extend({
   name: z.string(),
   phone: z.string().max(13).min(10),
   email: z.email(),
   companyName: z.string(),
-  leadSource: z.string(),
-  initialEnquiryDate: z.string(),
+  dateConverted: z.string(),
   location: z.string().optional(),
-  leadStatus: z.enum([
-    "evaluating",
-    "buildingProposal",
-    "qualified",
-    "won",
-    "negotiation",
-  ]),
-  priority: z.enum(["low", "medium", "high"]),
-  leadStage: z.string().optional(),
-  nextStep: z.string().optional(),
-  loggedBy: z.string().optional(),
+  status: z.enum(["active", "inactive"]),
   geolocation: z
     .object({
       address: z.string().optional(),

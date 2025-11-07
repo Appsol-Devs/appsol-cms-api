@@ -25,8 +25,8 @@ const leadSchema: SchemaDefinition = {
     required: true,
     ref: "LeadNextStep",
   },
-  location: { type: String, required: true },
-  notes: { type: String, required: true },
+  location: { type: String, required: false },
+  notes: { type: String, required: false },
   geolocation: {
     address: { type: String, required: false },
     long: Number,

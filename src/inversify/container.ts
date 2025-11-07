@@ -1,17 +1,18 @@
 import { Container } from "inversify";
 
-import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
-import { type ILogger, LoggerImpl } from "../logging/index.js";
-import { ErrorHandlerImpl } from "../../error_handler/errorHandlerImpl.js";
-import type { IErrorHandler } from "../../error_handler/IErrorHandler.js";
+import { INTERFACE_TYPE } from "../utils/constants/bindings.js";
+import { type ILogger, LoggerImpl } from "../framework/logging/index.js";
+import { ErrorHandlerImpl } from "../error_handler/errorHandlerImpl.js";
+import type { IErrorHandler } from "../error_handler/IErrorHandler.js";
 import {
   type IAuthService,
   AuthServiceImpl,
   type IStorageBucket,
   CloudinaryImpl,
-} from "../services/index.js";
-import { ErrorMiddleware } from "./middleware/ErrorMiddleware.js";
-import { AuthMiddleware } from "./middleware/AuthMiddleware.js";
+} from "../framework/services/index.js";
+import { ErrorMiddleware } from "../framework/webserver/middleware/ErrorMiddleware.js";
+import { AuthMiddleware } from "../framework/webserver/middleware/AuthMiddleware.js";
+import { registerAllBindings } from "./bindings/index.js";
 
 const container = new Container();
 
@@ -29,5 +30,8 @@ container
 container
   .bind<IStorageBucket>(INTERFACE_TYPE.StorageBucketImpl)
   .to(CloudinaryImpl);
+
+// Register everything once
+registerAllBindings(container);
 
 export { container };
