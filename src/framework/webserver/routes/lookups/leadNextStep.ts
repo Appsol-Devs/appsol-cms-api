@@ -1,35 +1,9 @@
-import type { Container } from "inversify";
 import { INTERFACE_TYPE } from "../../../../utils/constants/bindings.js";
 import { BaseLookupRouter } from "./BaseLookupRouter.js";
 import Permissions from "../../../../utils/constants/permissions.js";
 import { LeadNextStepController } from "../../../../adapters/controllers/lookups/LeadNextStepController.js";
 import type { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
-import { container } from "../../container.js";
-import {
-  type IBaseLookupInteractor,
-  LeadNextStepInteractorImpl,
-} from "../../../../application/interactors/index.js";
-import type { ILeadNextStep } from "../../../../entities/lookups/index.js";
-import {
-  LeadNextStepRepositoryImpl,
-  type IBaseLookupRepository,
-} from "../../../mongodb/index.js";
-
-container
-  .bind<IBaseLookupRepository<ILeadNextStep>>(
-    INTERFACE_TYPE.LeadNextStepRepositoryImpl
-  )
-  .to(LeadNextStepRepositoryImpl);
-
-container
-  .bind<IBaseLookupInteractor<ILeadNextStep>>(
-    INTERFACE_TYPE.LeadNextStepInteractorImpl
-  )
-  .to(LeadNextStepInteractorImpl);
-
-container
-  .bind<LeadNextStepController>(INTERFACE_TYPE.LeadNextStepController)
-  .to(LeadNextStepController);
+import { container } from "../../../../inversify/container.js";
 
 const controller = container.get<LeadNextStepController>(
   INTERFACE_TYPE.LeadNextStepController

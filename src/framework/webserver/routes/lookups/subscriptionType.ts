@@ -1,37 +1,11 @@
-import type { Container } from "inversify";
 import { INTERFACE_TYPE } from "../../../../utils/constants/bindings.js";
 import { BaseLookupRouter } from "./BaseLookupRouter.js";
 import Permissions from "../../../../utils/constants/permissions.js";
 
 import type { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
-import { container } from "../../container.js";
-import {
-  type IBaseLookupInteractor,
-  SubscriptionTypeInteractorImpl,
-} from "../../../../application/interactors/index.js";
-import type { ISubscriptionType } from "../../../../entities/lookups/index.js";
-import {
-  SubscriptionTypeRepositoryImpl,
-  type IBaseLookupRepository,
-} from "../../../mongodb/index.js";
+import { container } from "../../../../inversify/container.js";
 import { SubscriptionTypeController } from "../../../../adapters/controllers/lookups/SubscriptionTypeController.js";
 import { subscriptionTypeSchema } from "../../../../validation/lookupShema.js";
-
-container
-  .bind<IBaseLookupRepository<ISubscriptionType>>(
-    INTERFACE_TYPE.SubscriptionTypeRepositoryImpl
-  )
-  .to(SubscriptionTypeRepositoryImpl);
-
-container
-  .bind<IBaseLookupInteractor<ISubscriptionType>>(
-    INTERFACE_TYPE.SubscriptionTypeInteractorImpl
-  )
-  .to(SubscriptionTypeInteractorImpl);
-
-container
-  .bind<SubscriptionTypeController>(INTERFACE_TYPE.SubscriptionTypeController)
-  .to(SubscriptionTypeController);
 
 const controller = container.get<SubscriptionTypeController>(
   INTERFACE_TYPE.SubscriptionTypeController

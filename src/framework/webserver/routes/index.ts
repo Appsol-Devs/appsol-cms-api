@@ -12,6 +12,7 @@ import subscriptionRoutes from "./lookups/subscriptionType.js";
 import leadStatusroutes from "./lookups/leadStatus.js";
 import leadNextStepRoutes from "./lookups/leadNextStep.js";
 import leadRoutes from "./leadRoutes.js";
+import customerRoutes from "./customerRoutes.js";
 
 const router = express.Router();
 
@@ -28,5 +29,6 @@ router.use(subscriptionRoutes);
 router.use(leadStatusroutes);
 router.use(leadNextStepRoutes);
 router.use(leadRoutes);
+router.use(customerRoutes);
 
 export default router;

@@ -25,7 +25,7 @@ export abstract class BaseRepoistoryImpl<TDomain>
     const pageIndex = query.pageIndex || 1;
     const skip = (pageIndex - 1) * limit;
 
-    const filter = search
+    const filter: Record<string, any> = search
       ? {
           $or: [
             { name: { $regex: new RegExp(`^${search}.*`, "i") } },
@@ -34,8 +34,25 @@ export abstract class BaseRepoistoryImpl<TDomain>
         }
       : {};
 
+    if (query.status) filter.status = query.status;
+
+    if (query.startDate && query.endDate) {
+      filter.createdAt = {
+        $gte: query.startDate,
+        $lte: query.endDate,
+      };
+    }
+
+    if (query.createdBy) filter.createdBy = query.createdBy;
+    if (query.loggedBy) filter.loggedBy = query.loggedBy;
+
     const [items, total] = await Promise.all([
-      this.model.find(filter).skip(skip).limit(limit),
+      this.model
+        .find(filter)
+        .skip(skip)
+        .limit(limit)
+        // .populate("createdBy", "firstName lastName email")
+        .populate("loggedBy", "firstName lastName email"),
       this.model.countDocuments(filter),
     ]);
 

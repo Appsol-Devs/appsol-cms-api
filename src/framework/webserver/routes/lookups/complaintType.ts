@@ -1,39 +1,11 @@
-import { Container } from "inversify";
-import type { IComplaintTypeInteractor } from "../../../../application/interactors/lookups/complaint_type/IComplaintTypeInteractor.js";
 import { INTERFACE_TYPE } from "../../../../utils/constants/bindings.js";
-import {
-  type IComplaintTypeRepository,
-  ComplaintTypeRepositoryImpl,
-} from "../../../mongodb/index.js";
-import { type IAuthService, AuthServiceImpl } from "../../../services/index.js";
 import { AuthMiddleware } from "../../middleware/AuthMiddleware.js";
-import { ComplaintTypeInteractorImpl } from "../../../../application/interactors/lookups/index.js";
 import { ComplaintTypeController } from "../../../../adapters/controllers/lookups/ComplaintTypeController.js";
 import express from "express";
 import { Permissions } from "../../../../utils/constants/permissions.js";
 import { validate } from "../../middleware/ValidationMiddleware.js";
 import { lookupSchema } from "../../../../validation/lookupShema.js";
-
-const container = new Container();
-
-container
-  .bind<IComplaintTypeRepository>(INTERFACE_TYPE.ComplaintTypeRepository)
-  .to(ComplaintTypeRepositoryImpl);
-
-container
-  .bind<IComplaintTypeInteractor>(INTERFACE_TYPE.ComplaintTypeInteractor)
-  .to(ComplaintTypeInteractorImpl);
-
-container
-  .bind<IAuthService>(INTERFACE_TYPE.AuthServiceImpl)
-  .to(AuthServiceImpl);
-container
-  .bind<ComplaintTypeController>(INTERFACE_TYPE.ComplaintTypeController)
-  .to(ComplaintTypeController);
-
-container
-  .bind<AuthMiddleware>(INTERFACE_TYPE.AuthMiddleware)
-  .to(AuthMiddleware);
+import { container } from "../../../../inversify/container.js";
 
 const controller = container.get<ComplaintTypeController>(
   INTERFACE_TYPE.ComplaintTypeController

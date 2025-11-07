@@ -6,7 +6,6 @@ import mongoose, {
 } from "mongoose";
 import { withBaseSchema } from "./baseModel.js";
 import type { BaseLookupDocument } from "./lookupFactory.js";
-import { de } from "zod/locales";
 
 export const createModel = <
   TDomain extends object, // domain entity type (e.g. ISoftware)
