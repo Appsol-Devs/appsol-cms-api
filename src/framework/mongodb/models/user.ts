@@ -41,6 +41,19 @@ const userSchema = new mongoose.Schema(
     lastLogin: {
       type: Date,
     },
+
+    lastLoginLocation: {
+      longitude: Number,
+      latitude: Number,
+      timestamp: Date,
+    },
+    loginLocations: [
+      {
+        longitude: Number,
+        latitude: Number,
+        timestamp: Date,
+      },
+    ],
   },
   {
     timestamps: true,
@@ -93,6 +106,8 @@ export const UserMapper = {
       createdBy: payload.createdBy,
       loginCount: payload.loginCount, // Optional field
       lastLogin: payload.lastLogin,
+      lastLoginLocation: payload.lastLoginLocation,
+      loginLocations: payload.loginLocations,
       // Optional field
     };
   },

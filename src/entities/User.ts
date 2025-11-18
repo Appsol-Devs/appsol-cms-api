@@ -1,3 +1,5 @@
+import type { IGeolocation } from "./Lead.js";
+
 export class IUser {
   constructor(
     public readonly _id?: string,
@@ -17,10 +19,17 @@ export class IUser {
     public readonly deviceToken?: string,
     public readonly createdBy?: string,
     public readonly loginCount?: number,
-    public readonly lastLogin?: string
+    public readonly lastLogin?: string,
+    public readonly lastLoginLocation?: Geolocation,
+    public readonly loginLocations?: Geolocation[]
   ) {}
 }
 
+export interface Geolocation {
+  longitude: number;
+  latitude: number;
+  timestamp: Date;
+}
 export class IRole {
   constructor(
     public readonly _id?: string,

@@ -32,6 +32,13 @@ export type RegisterUserPayload = z.infer<typeof registerUserSchema>;
 export const loginUserSchema = z.object({
   email: z.email(),
   password: z.string().min(8, "Password should be at least 8 characters long"),
+  deviceToken: z.string().optional(),
+  lastLoginLocation: z
+    .object({
+      longitude: z.number(),
+      latitude: z.number(),
+    })
+    .optional(),
 });
 
 export const verifySignupOtpSchema = z.object({
