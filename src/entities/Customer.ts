@@ -15,7 +15,8 @@ export class ICustomer {
     public readonly status?: CustomerStatus,
     public readonly loggedBy?: IUser | string,
     public readonly createdAt?: string,
-    public readonly updatedAt?: string
+    public readonly updatedAt?: string,
+    public readonly image?: string
   ) {}
 }
 

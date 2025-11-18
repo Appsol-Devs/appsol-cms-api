@@ -5,3 +5,4 @@ export * from "./SetupStatusRepositoryImpl.js";
 export * from "./SubscriptionTypeRepoImpl.js";
 export * from "./LeadStatusRepositoryImpl.js";
 export * from "./LeadNextStepRepoImpl.js";
+export * from "./OutreachTypeRepositoryImpl.js";

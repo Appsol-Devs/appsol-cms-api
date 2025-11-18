@@ -66,6 +66,16 @@ const Permissions = Object.freeze({
   VIEW_CUSTOMER_COMPLAINT: "view:customer_complaint",
   UPDATE_CUSTOMER_COMPLAINT: "update:customer_complaint",
   DELETE_CUSTOMER_COMPLAINT: "delete:customer_complaint",
+  CREATE_CUSTOMER_OUTREACH: "create:customer_outreach",
+  VIEW_CUSTOMER_OUTREACHS: "view:customer_outreachs",
+  VIEW_CUSTOMER_OUTREACH: "view:customer_outreach",
+  UPDATE_CUSTOMER_OUTREACH: "update:customer_outreach",
+  DELETE_CUSTOMER_OUTREACH: "delete:customer_outreach",
+  CREATE_OUTREACH_TYPE: "create:outreach_type",
+  VIEW_OUTREACH_TYPES: "view:outreach_types",
+  VIEW_OUTREACH_TYPE: "view:outreach_type",
+  UPDATE_OUTREACH_TYPE: "update:outreach_type",
+  DELETE_OUTREACH_TYPE: "delete:outreach_type",
 } as const);
 
 export default Permissions;

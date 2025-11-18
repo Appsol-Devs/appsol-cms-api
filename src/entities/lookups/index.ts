@@ -6,3 +6,4 @@ export * from "./SetupStatus.js";
 export * from "./SubscriptionType.js";
 export * from "./LeadStatus.js";
 export * from "./LeadNextStep.js";
+export * from "./OutreachType.js";

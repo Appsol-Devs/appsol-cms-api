@@ -7,3 +7,4 @@ export * from "./SetupStatusController.js";
 export * from "./SubscriptionTypeController.js";
 export * from "./LeadStatusController.js";
 export * from "./LeadNextStepController.js";
+export * from "./OutreachTypeController.js";

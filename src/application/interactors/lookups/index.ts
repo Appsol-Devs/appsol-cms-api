@@ -7,3 +7,4 @@ export * from "./SetupStatusInteractorImpl.js";
 export * from "./SubscriptionTypeInteractorImpl.js";
 export * from "./LeadStatusInteractorImpl.js";
 export * from "./LeadNextStepInteractorImpl.js";
+export * from "./OutreachTypeInteractorImpl.js";

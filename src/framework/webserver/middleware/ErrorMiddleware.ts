@@ -40,25 +40,61 @@ export class ErrorMiddleware {
       if (err instanceof BaseError) {
         const { statusCode, message, stack } = err;
         this.logger.error("BaseError", { stack, message, statusCode });
+
         res.status(err.statusCode).json({
           stack,
-          message,
-          messages: (() => {
-            try {
-              // Attempt to parse the message
-              const parsed = JSON.parse(err.message);
+          message: (() => {
+            // 1. Attempt to parse the message
+            // Use the original err.message directly, not the parsed version
+            const originalMessage: string = err.message;
 
-              // Check if the parsed result is an array
-              if (Array.isArray(parsed)) {
-                return parsed;
+            // Check for common JWT errors
+            if (originalMessage.includes("jwt expired")) {
+              return "Your session has expired. Please log in again.";
+            }
+            if (originalMessage.includes("JsonWebTokenError")) {
+              return "Authentication failed. The token is invalid or malformed.";
+            }
+
+            // --- handle complex JSON errors (like validation arrays) ---
+            try {
+              const parsedMessage = JSON.parse(originalMessage);
+
+              // Check for array of validation errors
+              if (Array.isArray(parsedMessage)) {
+                return "One or more validation errors occurred. Please check your input.";
               }
 
-              // If it's not an array, wrap it in one
-              return [parsed];
+              // If it was a valid JSON object but not an array, just return the original message
+              return originalMessage;
             } catch (e) {
-              // If JSON.parse fails, it's not a JSON object.
-              // So, we treat the original message as a simple string
-              // and wrap it in an array for consistent output.
+              // If JSON.parse fails, it was a simple string error (which we already checked for above),
+              // or a completely unexpected error. Just return the original message.
+              return originalMessage;
+            }
+          })(),
+          messages: (() => {
+            try {
+              // 1. Attempt to parse the message
+              const parsed = JSON.parse(err.message);
+
+              // 2. Check if the parsed result is an array (e.g., from Zod)
+              if (Array.isArray(parsed)) {
+                // 3. MAP the array of objects to an array of simple strings
+                return parsed.map((errorObject) => {
+                  // Extract the field path and the specific error message
+                  const path = errorObject.path.join(".");
+                  const message = errorObject.message;
+
+                  // Construct a single, readable string
+                  return `${path}: ${message}`;
+                });
+              }
+
+              // If it's not a parsable array, wrap the whole message in a string array
+              return [String(parsed)];
+            } catch (e) {
+              // If JSON.parse fails, treat the original message as a simple string
               return [err.message];
             }
           })(), // Immediately invoke the function to get the value

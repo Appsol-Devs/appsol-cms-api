@@ -24,6 +24,7 @@ const customerSchema: SchemaDefinition = {
     long: Number,
     lat: Number,
   },
+  image: { type: String, required: false },
 };
 
 export const { Model: CustomerModel, Mapper: CustomerModelMapper } =

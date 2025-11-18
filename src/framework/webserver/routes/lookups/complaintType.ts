@@ -17,7 +17,7 @@ const authMiddleware = container.get<AuthMiddleware>(
 const router = express.Router();
 
 router.get(
-  "/api/complaints_types",
+  "/api/complaint_types",
   authMiddleware.authenticateToken.bind(authMiddleware),
   authMiddleware
     .checkPermission(Permissions.VIEW_COMPLAINT_TYPES)
@@ -26,7 +26,7 @@ router.get(
   controller.getAllComplaints.bind(controller)
 );
 router
-  .route("/api/complaintsTypes/:id")
+  .route("/api/complaint_types/:id")
   .get(
     authMiddleware.authenticateToken.bind(authMiddleware),
     authMiddleware
@@ -49,7 +49,7 @@ router
     controller.deleteComplaint.bind(controller)
   );
 router.post(
-  "/api/complaintsTypes",
+  "/api/complaint_types",
   authMiddleware.authenticateToken.bind(authMiddleware),
   authMiddleware
     .checkPermission(Permissions.CREATE_COMPLAINT_TYPE)

@@ -18,6 +18,8 @@ import {
   RoleInteractorImpl,
   UserInteractorImpl,
   CustomerComplaintInteractorImpl,
+  CustomerOutreachInteractorImpl,
+  OutreachTypeInteractorImpl,
 } from "../../application/interactors/index.js";
 import type { ICustomer } from "../../entities/Customer.js";
 import type { ILead } from "../../entities/Lead.js";
@@ -31,10 +33,18 @@ import type {
   IComplaintCategory,
   ICallStatus,
   ICustomerComplaint,
+  ICustomerOutreach,
+  IOutreachType,
 } from "../../entities/index.js";
 import { PermissionInteractorImpl } from "../../application/interactors/permission/PermissionInteractorImpl.js";
 
 export const bindAllInteractors = (container: Container) => {
+  container
+    .bind<IBaseLookupInteractor<ICustomerOutreach>>(
+      INTERFACE_TYPE.CustomerOutreachInteractorImpl
+    )
+    .to(CustomerOutreachInteractorImpl);
+
   container
     .bind<IBaseLookupInteractor<ICustomerComplaint>>(
       INTERFACE_TYPE.CustomerComplaintInteractorImpl
@@ -52,6 +62,12 @@ export const bindAllInteractors = (container: Container) => {
   container
     .bind<IUserInteractor>(INTERFACE_TYPE.UserInteractor)
     .to(UserInteractorImpl);
+
+  container
+    .bind<IBaseLookupInteractor<IOutreachType>>(
+      INTERFACE_TYPE.OutreachTypeInteractorImpl
+    )
+    .to(OutreachTypeInteractorImpl);
 
   container
     .bind<IBaseLookupInteractor<ILead>>(INTERFACE_TYPE.LeadInteractorImpl)

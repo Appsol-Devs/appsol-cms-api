@@ -10,6 +10,7 @@ export interface BaseLookupDocument extends Document {
   name: string;
   description?: string;
   isActive?: boolean;
+  colorCode?: string;
 }
 
 interface LookupModelOptions {
@@ -44,6 +45,7 @@ export const createLookupModel = <
     name: { type: String, required: true },
     description: { type: String },
     isActive: { type: Boolean, default: true },
+    colorCode: { type: String },
     ...(options.extraFields ?? {}),
   };
 
