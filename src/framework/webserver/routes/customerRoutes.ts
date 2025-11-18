@@ -1,17 +1,8 @@
 import { CustomersController } from "../../../adapters/controllers/customers_controller/CustomersController.js";
-import {
-  type IBaseLookupInteractor,
-  CustomerInteractorImpl,
-} from "../../../application/interactors/index.js";
-import type { ICustomer } from "../../../entities/Customer.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import Permissions from "../../../utils/constants/permissions.js";
 import { customerQuerySchema } from "../../../validation/customerSchema.js";
 
-import {
-  type IBaseLookupRepository,
-  CustomerRepositoryImpl,
-} from "../../mongodb/index.js";
 import { container } from "../../../inversify/container.js";
 import type { AuthMiddleware } from "../middleware/AuthMiddleware.js";
 import { BaseRouter } from "./BaseRoutes.js";

@@ -56,4 +56,11 @@ export const INTERFACE_TYPE = {
   CustomerRepositoryImpl: Symbol.for("CustomerRepositoryImpl"),
   CustomerInteractorImpl: Symbol.for("CustomerInteractorImpl"),
   CustomerController: Symbol.for("CustomerController"),
+  CustomerComplaintRepositoryImpl: Symbol.for(
+    "CustomerComplaintRepositoryImpl"
+  ),
+  CustomerComplaintInteractorImpl: Symbol.for(
+    "CustomerComplaintInteractorImpl"
+  ),
+  CustomerComplaintController: Symbol.for("CustomerComplaintController"),
 };

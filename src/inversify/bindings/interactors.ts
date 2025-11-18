@@ -12,6 +12,12 @@ import {
   SetupStatusInteractorImpl,
   SoftwareInteractorImpl,
   SubscriptionTypeInteractorImpl,
+  type IPermissionInteractor,
+  type IRoleInteractor,
+  type IUserInteractor,
+  RoleInteractorImpl,
+  UserInteractorImpl,
+  CustomerComplaintInteractorImpl,
 } from "../../application/interactors/index.js";
 import type { ICustomer } from "../../entities/Customer.js";
 import type { ILead } from "../../entities/Lead.js";
@@ -24,9 +30,29 @@ import type {
   ILeadNextStep,
   IComplaintCategory,
   ICallStatus,
+  ICustomerComplaint,
 } from "../../entities/index.js";
+import { PermissionInteractorImpl } from "../../application/interactors/permission/PermissionInteractorImpl.js";
 
 export const bindAllInteractors = (container: Container) => {
+  container
+    .bind<IBaseLookupInteractor<ICustomerComplaint>>(
+      INTERFACE_TYPE.CustomerComplaintInteractorImpl
+    )
+    .to(CustomerComplaintInteractorImpl);
+
+  container
+    .bind<IPermissionInteractor>(INTERFACE_TYPE.PermissionInteractorImpl)
+    .to(PermissionInteractorImpl);
+
+  container
+    .bind<IRoleInteractor>(INTERFACE_TYPE.RoleInteractorImpl)
+    .to(RoleInteractorImpl);
+
+  container
+    .bind<IUserInteractor>(INTERFACE_TYPE.UserInteractor)
+    .to(UserInteractorImpl);
+
   container
     .bind<IBaseLookupInteractor<ILead>>(INTERFACE_TYPE.LeadInteractorImpl)
     .to(LeadInteractorImpl);

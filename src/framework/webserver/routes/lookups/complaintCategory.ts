@@ -23,7 +23,7 @@ const permissionMap = {
 const router = new BaseLookupRouter(
   controller,
   authMiddleware,
-  "/api/complaintCategories",
+  "/api/complaint_categories",
   permissionMap
 ).register();
 

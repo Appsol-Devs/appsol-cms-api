@@ -14,7 +14,12 @@ export const createApp = () => {
   // Routes
   expressConfig(app);
   app.use(routes);
-  app.use(cors());
+  app.use(
+    cors({
+      origin: "*",
+      exposedHeaders: ["Content-Length", "x-pagination"],
+    })
+  );
 
   // Error middleware
   const errorMiddleware = container.get<ErrorMiddleware>(

@@ -1,43 +1,9 @@
-import { Container } from "inversify";
-
 import { UserController } from "../../../adapters/controllers/users_controller/UserController.js";
 import express from "express";
-import { type IAuthService } from "../../services/auth/IAuthService.js";
-import {
-  type IUserInteractor,
-  UserInteractorImpl,
-} from "../../../application/interactors/index.js";
-import { AuthServiceImpl } from "../../services/index.js";
 import { AuthMiddleware } from "../middleware/AuthMiddleware.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import Permissions from "../../../utils/constants/permissions.js";
-import {
-  type IRoleRepository,
-  type IUserRepository,
-  RoleRepositoryImpl,
-  UserRepositoryImpl,
-} from "../../mongodb/index.js";
-
-const container = new Container();
-
-container
-  .bind<IUserRepository>(INTERFACE_TYPE.UserRepositoryImpl)
-  .to(UserRepositoryImpl);
-
-container
-  .bind<IUserInteractor>(INTERFACE_TYPE.UserInteractor)
-  .to(UserInteractorImpl);
-
-container
-  .bind<IAuthService>(INTERFACE_TYPE.AuthServiceImpl)
-  .to(AuthServiceImpl);
-container
-  .bind<UserController>(INTERFACE_TYPE.UserController)
-  .to(UserController);
-
-container
-  .bind<AuthMiddleware>(INTERFACE_TYPE.AuthMiddleware)
-  .to(AuthMiddleware);
+import { container } from "../../../inversify/container.js";
 
 const controller = container.get<UserController>(INTERFACE_TYPE.UserController);
 const authMiddleware = container.get<AuthMiddleware>(

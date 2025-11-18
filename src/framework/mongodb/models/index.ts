@@ -5,3 +5,4 @@ export * from "./permission.js";
 export * from "./lookups/index.js";
 export * from "./lead.js";
 export * from "./customer.js";
+export * from "./customerComplaint.js";

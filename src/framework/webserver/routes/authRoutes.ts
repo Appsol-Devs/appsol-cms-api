@@ -29,38 +29,16 @@ import {
 } from "../../mongodb/index.js";
 import { AuthMiddleware } from "../middleware/AuthMiddleware.js";
 import { validate } from "../middleware/ValidationMiddleware.js";
-
-const container = new Container();
+import { container } from "../../../inversify/container.js";
 
 //bind role
-container
-  .bind<IRoleRepository>(INTERFACE_TYPE.RoleRepositoryImpl)
-  .to(RoleRepositoryImpl);
 
-container
-  .bind<IAuthRepository>(INTERFACE_TYPE.AuthRepositoryImpl)
-  .to(AuthRepositoryImpl);
-container
-  .bind<IAuthService>(INTERFACE_TYPE.AuthServiceImpl)
-  .to(AuthServiceImpl);
 container
   .bind<IAuthInteractor>(INTERFACE_TYPE.AuthInteractorImpl)
   .to(AuthInteractorImpl);
 container
   .bind<AuthController>(INTERFACE_TYPE.AuthController)
   .to(AuthController);
-
-container
-  .bind<IUserRepository>(INTERFACE_TYPE.UserRepositoryImpl)
-  .to(UserRepositoryImpl);
-
-container.bind<ILogger>(INTERFACE_TYPE.Logger).to(LoggerImpl);
-
-container.bind<IMailer>(INTERFACE_TYPE.Mailer).to(MailerImpl);
-
-container
-  .bind<AuthMiddleware>(INTERFACE_TYPE.AuthMiddleware)
-  .to(AuthMiddleware);
 
 // Create a new instance of the controller and bind it to the router.
 const controller = container.get<AuthController>(INTERFACE_TYPE.AuthController);
@@ -72,19 +50,19 @@ const authMiddleware = container.get<AuthMiddleware>(
 const router = express.Router();
 
 router.put(
-  "/api/auth/verifyPasswordReset",
+  "/api/auth/verify_password_reset",
   //authMiddleware.authenticateToken.bind(authMiddleware),
   controller.verifyPasswordReset.bind(controller)
 );
 
 router.post(
-  "/api/auth/resetPassword",
+  "/api/auth/reset_password",
   // authMiddleware.authenticateToken.bind(authMiddleware),
   controller.resetPassword.bind(controller)
 );
 
 router.put(
-  "/api/auth/changePassword",
+  "/api/auth/change_password",
   authMiddleware.authenticateToken.bind(authMiddleware),
   controller.changePassword.bind(controller)
 );
@@ -96,7 +74,7 @@ router.post(
 );
 
 router.post(
-  "/api/auth/verifyOtp",
+  "/api/auth/verify_otp",
   validate(verifySignupOtpSchema),
   controller.verifyOtp.bind(controller)
 );
