@@ -3,6 +3,7 @@ import type { ICustomer } from "../../entities/Customer.js";
 import type {
   ICallStatus,
   IComplaintCategory,
+  ICustomerComplaint,
   ILeadNextStep,
   ILeadStatus,
   ISetupStatus,
@@ -23,10 +24,41 @@ import {
   SubscriptionTypeRepositoryImpl,
   CustomerRepositoryImpl,
   LeadRepositoryImpl,
+  type IAuthRepository,
+  type IRoleRepository,
+  type IUserRepository,
+  AuthRepositoryImpl,
+  RoleRepositoryImpl,
+  UserRepositoryImpl,
+  type IPermissionRepository,
+  PermissionRepositoryImpl,
+  CustomerComplaintRepositoryImpl,
 } from "../../framework/mongodb/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
+  container
+    .bind<IBaseLookupRepository<ICustomerComplaint>>(
+      INTERFACE_TYPE.CustomerComplaintRepositoryImpl
+    )
+    .to(CustomerComplaintRepositoryImpl);
+
+  container
+    .bind<IPermissionRepository>(INTERFACE_TYPE.PermissionRepositoryImpl)
+    .to(PermissionRepositoryImpl);
+
+  container
+    .bind<IAuthRepository>(INTERFACE_TYPE.AuthRepositoryImpl)
+    .to(AuthRepositoryImpl);
+
+  container
+    .bind<IRoleRepository>(INTERFACE_TYPE.RoleRepositoryImpl)
+    .to(RoleRepositoryImpl);
+
+  container
+    .bind<IUserRepository>(INTERFACE_TYPE.UserRepositoryImpl)
+    .to(UserRepositoryImpl);
+
   container
     .bind<IBaseLookupRepository<ICallStatus>>(
       INTERFACE_TYPE.CallStatusRepositoryImpl

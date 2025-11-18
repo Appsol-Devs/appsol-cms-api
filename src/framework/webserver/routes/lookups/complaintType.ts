@@ -17,7 +17,7 @@ const authMiddleware = container.get<AuthMiddleware>(
 const router = express.Router();
 
 router.get(
-  "/api/complaintsTypes",
+  "/api/complaints_types",
   authMiddleware.authenticateToken.bind(authMiddleware),
   authMiddleware
     .checkPermission(Permissions.VIEW_COMPLAINT_TYPES)

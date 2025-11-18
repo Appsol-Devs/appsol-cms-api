@@ -1,5 +1,8 @@
 import { inject, injectable } from "inversify";
-import type { LeadInteractorImpl } from "../../../application/interactors/index.js";
+import type {
+  CustomerComplaintInteractorImpl,
+  LeadInteractorImpl,
+} from "../../../application/interactors/index.js";
 
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseController } from "../base/BaseController.js";
@@ -10,12 +13,17 @@ import type { RequestQuery } from "../../../entities/User.js";
 import { HttpStatusCode } from "../../../utils/constants/enums.js";
 import type { IControllerUserRequest } from "../auth_controller/IController.js";
 import { BadRequestError } from "../../../error_handler/BadRequestError.js";
+import type {
+  ICustomerComplaint,
+  ICustomerComplaintRequestQuery,
+  ICustomerComplaintStatus,
+} from "../../../entities/CustomerComplaint.js";
 
 @injectable()
-export class LeadsController extends BaseController<ILead> {
+export class CustomerComplaintController extends BaseController<ICustomerComplaint> {
   constructor(
-    @inject(INTERFACE_TYPE.LeadInteractorImpl)
-    interactor: LeadInteractorImpl
+    @inject(INTERFACE_TYPE.CustomerComplaintInteractorImpl)
+    interactor: CustomerComplaintInteractorImpl
   ) {
     super(interactor);
   }
@@ -26,19 +34,11 @@ export class LeadsController extends BaseController<ILead> {
     next: NextFunction
   ): TGenericPromise {
     try {
-      const query: ILeadRequestQuery = {
+      const query: ICustomerComplaintRequestQuery = {
         search: req.query.search?.toString(),
         pageIndex: req.query.pageIndex ? Number(req.query.pageIndex) : 1,
         pageSize: req.query.pageSize ? Number(req.query.pageSize) : 10,
-        leadStatus: req.query.leadStatus?.toString(),
-        priority: req.query.priority?.toString(),
-        leadStage: req.query.leadStage?.toString(),
-        nextStep: req.query.nextStep?.toString(),
-        loggedBy: req.query.loggedBy?.toString(),
-        leadSource: req.query.leadSource?.toString(),
-        location: req.query.location?.toString(),
-        name: req.query.name?.toString(),
-        email: req.query.email?.toString(),
+        status: req.query.status?.toString() as ICustomerComplaintStatus,
       };
 
       const response = await this.interactor.getAll(query);

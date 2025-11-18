@@ -23,7 +23,7 @@ const permissionMap = {
 const router = new BaseLookupRouter(
   controller,
   authMiddleware,
-  "/api/callStatuses",
+  "/api/call_statuses",
   permissionMap
 ).register();
 

@@ -9,12 +9,16 @@ import {
   AuthServiceImpl,
   type IStorageBucket,
   CloudinaryImpl,
+  type IMailer,
+  MailerImpl,
 } from "../framework/services/index.js";
 import { ErrorMiddleware } from "../framework/webserver/middleware/ErrorMiddleware.js";
 import { AuthMiddleware } from "../framework/webserver/middleware/AuthMiddleware.js";
 import { registerAllBindings } from "./bindings/index.js";
 
 const container = new Container();
+
+container.bind<IMailer>(INTERFACE_TYPE.Mailer).to(MailerImpl);
 
 container.bind<ILogger>(INTERFACE_TYPE.Logger).to(LoggerImpl);
 container.bind<IErrorHandler>(INTERFACE_TYPE.ErrorHandler).to(ErrorHandlerImpl);

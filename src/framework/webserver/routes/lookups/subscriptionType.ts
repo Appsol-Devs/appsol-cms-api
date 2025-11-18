@@ -25,7 +25,7 @@ const permissionMap = {
 const router = new BaseLookupRouter(
   controller,
   authMiddleware,
-  "/api/subscriptionTypes",
+  "/api/subscription_types",
   permissionMap,
   subscriptionTypeSchema
 ).register();

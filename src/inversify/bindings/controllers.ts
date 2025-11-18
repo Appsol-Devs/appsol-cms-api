@@ -10,8 +10,28 @@ import { SetupStatusController } from "../../adapters/controllers/lookups/SetupS
 import { SoftwareController } from "../../adapters/controllers/lookups/SoftwareController.js";
 import { SubscriptionTypeController } from "../../adapters/controllers/lookups/SubscriptionTypeController.js";
 import { ComplaintTypeController } from "../../adapters/controllers/lookups/ComplaintTypeController.js";
+import { PermissionController } from "../../adapters/controllers/permission_controller/PermissionController.js";
+import { RoleController } from "../../adapters/controllers/role_controller/RoleController.js";
+import { UserController } from "../../adapters/controllers/users_controller/UserController.js";
+import { CustomerComplaintController } from "../../adapters/controllers/customer_complaints/CustomerComplaintsController.js";
 
 export const bindAllControllers = (container: Container) => {
+  container
+    .bind<CustomerComplaintController>(
+      INTERFACE_TYPE.CustomerComplaintController
+    )
+    .to(CustomerComplaintController);
+
+  container.bind<RoleController>(RoleController).to(RoleController);
+
+  container
+    .bind<UserController>(INTERFACE_TYPE.UserController)
+    .to(UserController);
+
+  container
+    .bind<PermissionController>(PermissionController)
+    .to(PermissionController);
+
   container
     .bind<CustomersController>(INTERFACE_TYPE.CustomerController)
     .to(CustomersController);
@@ -49,6 +69,7 @@ export const bindAllControllers = (container: Container) => {
   container
     .bind<SubscriptionTypeController>(INTERFACE_TYPE.SubscriptionTypeController)
     .to(SubscriptionTypeController);
+
   container
     .bind<ComplaintTypeController>(INTERFACE_TYPE.ComplaintTypeController)
     .to(ComplaintTypeController);

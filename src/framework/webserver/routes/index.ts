@@ -13,6 +13,7 @@ import leadStatusroutes from "./lookups/leadStatus.js";
 import leadNextStepRoutes from "./lookups/leadNextStep.js";
 import leadRoutes from "./leadRoutes.js";
 import customerRoutes from "./customerRoutes.js";
+import customerComplaintRoutes from "./customerComplaintsRoutes.js";
 
 const router = express.Router();
 
@@ -30,5 +31,6 @@ router.use(leadStatusroutes);
 router.use(leadNextStepRoutes);
 router.use(leadRoutes);
 router.use(customerRoutes);
+router.use(customerComplaintRoutes);
 
 export default router;
