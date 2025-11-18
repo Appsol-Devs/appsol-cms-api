@@ -4,8 +4,10 @@ import type {
   ICallStatus,
   IComplaintCategory,
   ICustomerComplaint,
+  ICustomerOutreach,
   ILeadNextStep,
   ILeadStatus,
+  IOutreachType,
   ISetupStatus,
   ISoftware,
   ISubscriptionType,
@@ -33,10 +35,24 @@ import {
   type IPermissionRepository,
   PermissionRepositoryImpl,
   CustomerComplaintRepositoryImpl,
+  CustomerOutreachRepositoryImpl,
+  OutreachTypeRepositoryImpl,
 } from "../../framework/mongodb/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
+  container
+    .bind<IBaseLookupRepository<ICustomerOutreach>>(
+      INTERFACE_TYPE.CustomerOutreachRepositoryImpl
+    )
+    .to(CustomerOutreachRepositoryImpl);
+
+  container
+    .bind<IBaseLookupRepository<IOutreachType>>(
+      INTERFACE_TYPE.OutreachTypeRepositoryImpl
+    )
+    .to(OutreachTypeRepositoryImpl);
+
   container
     .bind<IBaseLookupRepository<ICustomerComplaint>>(
       INTERFACE_TYPE.CustomerComplaintRepositoryImpl

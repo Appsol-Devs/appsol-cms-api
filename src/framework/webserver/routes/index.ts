@@ -14,6 +14,8 @@ import leadNextStepRoutes from "./lookups/leadNextStep.js";
 import leadRoutes from "./leadRoutes.js";
 import customerRoutes from "./customerRoutes.js";
 import customerComplaintRoutes from "./customerComplaintsRoutes.js";
+import customerOutreachRoutes from "./customerOutreachRoutes.js";
+import outreachTypeRoutes from "./lookups/outreachType.js";
 
 const router = express.Router();
 
@@ -32,5 +34,7 @@ router.use(leadNextStepRoutes);
 router.use(leadRoutes);
 router.use(customerRoutes);
 router.use(customerComplaintRoutes);
+router.use(customerOutreachRoutes);
+router.use(outreachTypeRoutes);
 
 export default router;

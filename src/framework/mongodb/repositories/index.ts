@@ -8,3 +8,4 @@ export * from "./lookups/index.js";
 export * from "./lead/index.js";
 export * from "./customer/index.js";
 export * from "./customer_complaints/index.js";
+export * from "./customer_outreach/index.js";

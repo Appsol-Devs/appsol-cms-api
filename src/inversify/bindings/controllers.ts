@@ -14,8 +14,13 @@ import { PermissionController } from "../../adapters/controllers/permission_cont
 import { RoleController } from "../../adapters/controllers/role_controller/RoleController.js";
 import { UserController } from "../../adapters/controllers/users_controller/UserController.js";
 import { CustomerComplaintController } from "../../adapters/controllers/customer_complaints/CustomerComplaintsController.js";
+import { CustomerOutreachController } from "../../adapters/controllers/customer_outreach/CustomerOutreachController.js";
+import { OutreachTypeController } from "../../adapters/controllers/lookups/index.js";
 
 export const bindAllControllers = (container: Container) => {
+  container
+    .bind<CustomerOutreachController>(INTERFACE_TYPE.CustomerOutreachController)
+    .to(CustomerOutreachController);
   container
     .bind<CustomerComplaintController>(
       INTERFACE_TYPE.CustomerComplaintController
@@ -43,6 +48,10 @@ export const bindAllControllers = (container: Container) => {
   container
     .bind<LeadNextStepController>(INTERFACE_TYPE.LeadNextStepController)
     .to(LeadNextStepController);
+
+  container
+    .bind<OutreachTypeController>(INTERFACE_TYPE.OutreachTypeController)
+    .to(OutreachTypeController);
 
   container
     .bind<CallStatusController>(INTERFACE_TYPE.CallStatusController)

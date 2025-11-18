@@ -9,10 +9,7 @@ import {
   UnprocessableEntityError,
 } from "../../../error_handler/index.js";
 import { PaginatedResponse } from "../../../entities/UserResponse.js";
-import type {
-  IRoleRepository,
-  IUserRepository,
-} from "../../../framework/mongodb/index.js";
+import type { IUserRepository } from "../../../framework/mongodb/index.js";
 import type { IAuthService } from "../../../framework/services/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 

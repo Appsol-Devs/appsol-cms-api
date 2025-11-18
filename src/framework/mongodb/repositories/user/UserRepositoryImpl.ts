@@ -62,8 +62,6 @@ export class UserRepositoryImpl implements IUserRepository {
         ],
       };
 
-      console.log("searchCriteria:", searchCriteria);
-
       const users = await User.find(searchCriteria)
         .select("-password")
         .populate("role")

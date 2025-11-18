@@ -190,7 +190,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
     }
 
     const user = await this.userRepository.findUserByEmail(email);
-    if (!user) throw new NotFoundError("Sorry User not found");
+    if (!user) throw new BadRequestError("Sorry User not found");
     //compare password to hash
     const isMatch = await this.authService.comparePassword(
       password,
