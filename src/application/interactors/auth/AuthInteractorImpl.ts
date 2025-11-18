@@ -1,4 +1,8 @@
-import { IUser, UserPasswordChangeRequest } from "../../../entities/User.js";
+import {
+  IUser,
+  UserPasswordChangeRequest,
+  type Geolocation,
+} from "../../../entities/User.js";
 import type { IAuthInteractor } from "./IAuthInteractor.js";
 
 import { inject, injectable } from "inversify";
@@ -183,7 +187,8 @@ export class AuthInteractorImpl implements IAuthInteractor {
   async login(
     email: string,
     password: string,
-    deviceToken?: string
+    deviceToken?: string,
+    lastLoginLocation?: Geolocation
   ): Promise<IUser> {
     if (!email || !password) {
       throw new UnauthorizedError("Email and password are required");
@@ -217,6 +222,24 @@ export class AuthInteractorImpl implements IAuthInteractor {
     const loginCount: number =
       (user.loginCount ? Number(user.loginCount) : 0) + 1;
     const lastLogin = new Date().toISOString();
+
+    //check and update last login location
+    if (lastLoginLocation) {
+      const modifiedLocation: Geolocation = {
+        longitude: lastLoginLocation.longitude,
+        latitude: lastLoginLocation.latitude,
+        timestamp: new Date(),
+      };
+      const loginLocations = user.loginLocations || [];
+      loginLocations.push(modifiedLocation);
+
+      user = await this.userRepository.updateUser(user._id!, {
+        _id: user._id,
+        loginCount,
+        lastLogin,
+        loginLocations,
+      });
+    }
 
     user = await this.userRepository.updateUser(user._id!, {
       _id: user._id,

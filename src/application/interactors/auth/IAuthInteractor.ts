@@ -1,4 +1,8 @@
-import { IUser, UserPasswordChangeRequest } from "../../../entities/User.js";
+import {
+  IUser,
+  UserPasswordChangeRequest,
+  type Geolocation,
+} from "../../../entities/User.js";
 import {
   UserOTPResponse,
   UserRegistrationResponse,
@@ -6,7 +10,12 @@ import {
 
 export interface IAuthInteractor {
   logout(): void;
-  login(email: string, password: string, deviceToken?: string): Promise<IUser>;
+  login(
+    email: string,
+    password: string,
+    deviceToken?: string,
+    lastLoginLocation?: Geolocation
+  ): Promise<IUser>;
   test(): void;
   registerUser(data: IUser): Promise<UserRegistrationResponse>;
   verifyOTP(userId: string, otp: string): Promise<UserOTPResponse>;
