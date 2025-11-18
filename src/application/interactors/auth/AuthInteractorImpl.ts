@@ -54,8 +54,8 @@ export class AuthInteractorImpl implements IAuthInteractor {
     //send user otp via email notification
     await this.sendEmailOTP(
       email,
-      "Password Reset",
-      "Please enter this code to reset your password"
+      "Account Verification",
+      "Please enter this code to verify your email"
     );
 
     const response: UserOTPResponse = {
@@ -189,7 +189,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
       throw new UnauthorizedError("Email and password are required");
     }
 
-    const user = await this.userRepository.findUserByEmail(email);
+    let user = await this.userRepository.findUserByEmail(email);
     if (!user) throw new BadRequestError("Sorry User not found");
     //compare password to hash
     const isMatch = await this.authService.comparePassword(
@@ -199,11 +199,12 @@ export class AuthInteractorImpl implements IAuthInteractor {
     if (!isMatch) {
       throw new UnauthorizedError("Invalid credentials");
     }
-    if (!user.isVerified) {
-      throw new UnauthorizedError(
-        "Account not verified. Please verify your email"
-      );
-    }
+
+    // if (!user.isVerified) {
+    //   throw new UnauthorizedError(
+    //     "Account not verified. Please verify your email"
+    //   );
+    // }
 
     const userObj = {
       ...user,
@@ -212,15 +213,26 @@ export class AuthInteractorImpl implements IAuthInteractor {
     const { password: pass, ...rest } = userObj;
     const token = await this.authService.generateToken({ ...rest });
 
-    await this.userRepository.updateUser(user._id!, {
+    // update login count and last login
+    const loginCount: number =
+      (user.loginCount ? Number(user.loginCount) : 0) + 1;
+    const lastLogin = new Date().toISOString();
+
+    user = await this.userRepository.updateUser(user._id!, {
       _id: user._id,
       deviceToken: deviceToken,
+      loginCount,
+      lastLogin,
     });
     const userData: IUser = {
       ...user,
       token,
     };
-    const { password: userPass, ...resData } = userData;
+    const {
+      password: userPass,
+
+      ...resData
+    } = userData;
     return { ...resData };
   }
 
