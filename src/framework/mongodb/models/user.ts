@@ -34,6 +34,13 @@ const userSchema = new mongoose.Schema(
     },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
+    loginCount: {
+      type: Number,
+      default: 0,
+    },
+    lastLogin: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
@@ -84,6 +91,8 @@ export const UserMapper = {
       token: payload.token,
       deviceToken: payload.deviceToken,
       createdBy: payload.createdBy,
+      loginCount: payload.loginCount, // Optional field
+      lastLogin: payload.lastLogin,
       // Optional field
     };
   },
@@ -133,7 +142,9 @@ export const UserMapper = {
       model.password, // Optional field
       model.token, // Optional field
       model.deviceToken,
-      model.createdBy?.toString() // Convert ObjectId to string
+      model.createdBy?.toString(), // Convert ObjectId to string
+      model.loginCount, // Optional field
+      model.lastLogin // Optional field
     );
   },
 };

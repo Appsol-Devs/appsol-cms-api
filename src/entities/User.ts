@@ -15,7 +15,9 @@ export class IUser {
     public readonly password?: string,
     public readonly token?: string,
     public readonly deviceToken?: string,
-    public readonly createdBy?: string
+    public readonly createdBy?: string,
+    public readonly loginCount?: number,
+    public readonly lastLogin?: string
   ) {}
 }
 

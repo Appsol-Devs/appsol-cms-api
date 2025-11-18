@@ -2,31 +2,14 @@ import express from "express";
 import { AuthController } from "../../../adapters/controllers/auth_controller/AuthController.js";
 import { AuthInteractorImpl } from "../../../application/interactors/index.js";
 
-import { Container } from "inversify";
-
-import { AuthServiceImpl, MailerImpl } from "../../services/index.js";
-
 import type { IAuthInteractor } from "../../../application/interactors/auth/IAuthInteractor.js";
-
-import type { IAuthService } from "../../services/auth/IAuthService.js";
-import type { IMailer } from "../../services/mailer/IMailer.js";
 
 import {
   loginUserSchema,
   registerUserSchema,
   verifySignupOtpSchema,
 } from "../../../validation/userSchema.js";
-import type { ILogger } from "../../logging/ILogger.js";
-import { LoggerImpl } from "../../logging/LoggerImpl.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
-import {
-  type IAuthRepository,
-  AuthRepositoryImpl,
-  type IUserRepository,
-  UserRepositoryImpl,
-  type IRoleRepository,
-  RoleRepositoryImpl,
-} from "../../mongodb/index.js";
 import { AuthMiddleware } from "../middleware/AuthMiddleware.js";
 import { validate } from "../middleware/ValidationMiddleware.js";
 import { container } from "../../../inversify/container.js";
@@ -86,8 +69,9 @@ router.post(
 );
 
 router.post(
-  "/api/auth/sendOtp",
+  "/api/auth/send_otp",
   // validate(verifySignupOtpSchema),
+  authMiddleware.authenticateToken.bind(authMiddleware),
   controller.sendEmailOTP.bind(controller)
 );
 
