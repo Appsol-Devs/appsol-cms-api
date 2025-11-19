@@ -28,6 +28,7 @@ import type {
   IMailer,
 } from "../../../framework/services/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
+import { otpTemplateDark } from "../../../framework/services/mailer/otpTemplate.js";
 
 @injectable()
 export class AuthInteractorImpl implements IAuthInteractor {
@@ -378,21 +379,11 @@ export class AuthInteractorImpl implements IAuthInteractor {
       });
 
       // send verification email
-      await this.mailer.sendEmail(
-        user.email!,
-        subject,
-        `
-        <div>
-          <p>Hello,</p>
-          <p>Your verification code is <b>${userOTP.otp}</b></p>
-          <p>${text}.</p>
-          <p>This OTP expires in 1 hour.</p>
-        </div>
-        <div>
-          <p>If you did not request this, please ignore this email.</p>
-        </div>
-      </div>`
+      const emailContent = otpTemplateDark(
+        user.firstName ?? "User",
+        otp.toString()
       );
+      await this.mailer.sendEmail(user.email!, subject, emailContent);
     } catch (error) {
       throw error;
     }
