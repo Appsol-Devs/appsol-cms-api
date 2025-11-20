@@ -6,3 +6,5 @@ export * from "./lookups/index.js";
 export * from "./lead.js";
 export * from "./customer.js";
 export * from "./customerComplaint.js";
+export * from "./customerOutreach.js";
+export * from "./reschedule.js";

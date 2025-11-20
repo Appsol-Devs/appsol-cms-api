@@ -69,4 +69,7 @@ export const INTERFACE_TYPE = {
   OutreachTypeRepositoryImpl: Symbol.for("OutreachTypeRepositoryImpl"),
   OutreachTypeInteractorImpl: Symbol.for("OutreachTypeInteractorImpl"),
   OutreachTypeController: Symbol.for("OutreachTypeController"),
+  RescheduleRepositoryImpl: Symbol.for("RescheduleRepositoryImpl"),
+  RescheduleInteractorImpl: Symbol.for("RescheduleInteractorImpl"),
+  RescheduleController: Symbol.for("RescheduleController"),
 };

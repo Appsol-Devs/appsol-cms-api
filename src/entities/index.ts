@@ -7,3 +7,4 @@ export * from "./Lead.js";
 export * from "./Customer.js";
 export * from "./CustomerComplaint.js";
 export * from "./CustomerOutreach.js";
+export * from "./Reschedule.js";
