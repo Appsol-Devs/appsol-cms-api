@@ -35,10 +35,17 @@ import type {
   ICustomerComplaint,
   ICustomerOutreach,
   IOutreachType,
+  IReschedule,
 } from "../../entities/index.js";
 import { PermissionInteractorImpl } from "../../application/interactors/permission/PermissionInteractorImpl.js";
+import { RescheduleInteractorImpl } from "../../application/interactors/reschedule/index.js";
 
 export const bindAllInteractors = (container: Container) => {
+  container
+    .bind<IBaseLookupInteractor<IReschedule>>(
+      INTERFACE_TYPE.RescheduleInteractorImpl
+    )
+    .to(RescheduleInteractorImpl);
   container
     .bind<IBaseLookupInteractor<ICustomerOutreach>>(
       INTERFACE_TYPE.CustomerOutreachInteractorImpl

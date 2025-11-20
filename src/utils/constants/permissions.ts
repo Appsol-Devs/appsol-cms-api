@@ -76,6 +76,11 @@ const Permissions = Object.freeze({
   VIEW_OUTREACH_TYPE: "view:outreach_type",
   UPDATE_OUTREACH_TYPE: "update:outreach_type",
   DELETE_OUTREACH_TYPE: "delete:outreach_type",
+  CREATE_RESCHEDULE: "create:reschedule",
+  VIEW_RESCHEDULES: "view:reschedules",
+  VIEW_RESCHEDULE: "view:reschedule",
+  UPDATE_RESCHEDULE: "update:reschedule",
+  DELETE_RESCHEDULE: "delete:reschedule",
 } as const);
 
 export default Permissions;

@@ -16,11 +16,17 @@ import { UserController } from "../../adapters/controllers/users_controller/User
 import { CustomerComplaintController } from "../../adapters/controllers/customer_complaints/CustomerComplaintsController.js";
 import { CustomerOutreachController } from "../../adapters/controllers/customer_outreach/CustomerOutreachController.js";
 import { OutreachTypeController } from "../../adapters/controllers/lookups/index.js";
+import { RescheduleController } from "../../adapters/controllers/reschedule/RescheduleController.js";
 
 export const bindAllControllers = (container: Container) => {
   container
+    .bind<RescheduleController>(INTERFACE_TYPE.RescheduleController)
+    .to(RescheduleController);
+
+  container
     .bind<CustomerOutreachController>(INTERFACE_TYPE.CustomerOutreachController)
     .to(CustomerOutreachController);
+
   container
     .bind<CustomerComplaintController>(
       INTERFACE_TYPE.CustomerComplaintController

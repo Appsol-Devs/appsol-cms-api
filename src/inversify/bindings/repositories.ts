@@ -8,6 +8,7 @@ import type {
   ILeadNextStep,
   ILeadStatus,
   IOutreachType,
+  IReschedule,
   ISetupStatus,
   ISoftware,
   ISubscriptionType,
@@ -37,10 +38,17 @@ import {
   CustomerComplaintRepositoryImpl,
   CustomerOutreachRepositoryImpl,
   OutreachTypeRepositoryImpl,
+  RescheduleRepositoryImpl,
 } from "../../framework/mongodb/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
+  container
+    .bind<IBaseLookupRepository<IReschedule>>(
+      INTERFACE_TYPE.RescheduleRepositoryImpl
+    )
+    .to(RescheduleRepositoryImpl);
+
   container
     .bind<IBaseLookupRepository<ICustomerOutreach>>(
       INTERFACE_TYPE.CustomerOutreachRepositoryImpl
