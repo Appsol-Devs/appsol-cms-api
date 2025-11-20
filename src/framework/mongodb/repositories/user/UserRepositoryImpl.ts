@@ -100,7 +100,7 @@ export class UserRepositoryImpl implements IUserRepository {
     }
   }
   async findUserById(id: string): Promise<IUser | null | undefined> {
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate("role");
     if (user) {
       return UserMapper.toEntity(user);
     } else {
