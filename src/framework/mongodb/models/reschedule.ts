@@ -14,7 +14,8 @@ const rescheduleSchema: SchemaDefinition = {
     required: true,
     enum: ["CustomerOutreach", "CustomerComplaint"],
   },
-  targetEntityId: {
+  targetEntityId: { type: String, required: true },
+  targetEntity: {
     type: Schema.Types.ObjectId,
     required: true,
     refPath: "targetEntityType",

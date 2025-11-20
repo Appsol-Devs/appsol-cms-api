@@ -104,7 +104,8 @@ export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
     const created = await this.model.create({ ...data, ...dataWithReferences });
     const populated = await created.populate([
       { path: "customer", select: "name email" },
-      { path: "callStatus", select: "name colorCode" },
+      { path: "loggedBy", select: "firstName lastName email" },
+      { path: "targetEntity" },
     ]);
 
     return this.mapper.toEntity(populated);
@@ -117,9 +118,8 @@ export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
     const updated = await this.model
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
       .populate("customer", "name email")
-      .populate("callStatus", "name colorCode")
       .populate("loggedBy", "firstName lastName email")
-      .populate("outreachType", "name");
+      .populate("targetEntity");
 
     if (!updated) throw new NotFoundError("Customer complaint not found");
     return this.mapper.toEntity(updated);
