@@ -32,7 +32,7 @@ const router = new BaseRouter(
 
 // extra routes for Fetching all reschedules for a specific entity
 router.get(
-  "by-entity/:type/:id",
+  "/api/reschedules/by-entity/:type/:id",
   authMiddleware.authenticateToken.bind(authMiddleware),
   authMiddleware
     .checkPermission(Permissions.VIEW_RESCHEDULES)
