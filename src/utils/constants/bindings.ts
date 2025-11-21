@@ -78,4 +78,11 @@ export const INTERFACE_TYPE = {
   FeatureRequestRepositoryImpl: Symbol.for("FeatureRequestRepositoryImpl"),
   FeatureRequestInteractorImpl: Symbol.for("FeatureRequestInteractorImpl"),
   FeatureRequestController: Symbol.for("FeatureRequestController"),
+  SubscriptionReminderRepositoryImpl: Symbol.for(
+    "SubscriptionReminderRepositoryImpl"
+  ),
+  SubscriptionReminderInteractorImpl: Symbol.for(
+    "SubscriptionReminderInteractorImpl"
+  ),
+  SubscriptionReminderController: Symbol.for("SubscriptionReminderController"),
 };

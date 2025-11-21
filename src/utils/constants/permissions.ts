@@ -92,6 +92,11 @@ const Permissions = Object.freeze({
   VIEW_FEATURE_REQUEST: "view:feature_request",
   UPDATE_FEATURE_REQUEST: "update:feature_request",
   DELETE_FEATURE_REQUEST: "delete:feature_request",
+  CREATE_SUBSCRIPTION_REMINDER: "create:subscription_reminder",
+  VIEW_SUBSCRIPTION_REMINDERS: "view:subscription_reminders",
+  VIEW_SUBSCRIPTION_REMINDER: "view:subscription_reminder",
+  UPDATE_SUBSCRIPTION_REMINDER: "update:subscription_reminder",
+  DELETE_SUBSCRIPTION_REMINDER: "delete:subscription_reminder",
 } as const);
 
 export default Permissions;

@@ -25,6 +25,7 @@ import {
   FeatureRequestInteractorImpl,
   type IBaseInteractor,
   PermissionInteractorImpl,
+  SubscriptionReminderInteractorImpl,
 } from "../../application/interactors/index.js";
 import type { ICustomer } from "../../entities/Customer.js";
 import type { ILead } from "../../entities/Lead.js";
@@ -43,9 +44,16 @@ import type {
   IReschedule,
   IPayment,
   IFeatureRequest,
+  ISubscriptionReminder,
 } from "../../entities/index.js";
 
 export const bindAllInteractors = (container: Container) => {
+  container
+    .bind<IBaseInteractor<ISubscriptionReminder>>(
+      INTERFACE_TYPE.SubscriptionReminderInteractorImpl
+    )
+    .to(SubscriptionReminderInteractorImpl);
+
   container
     .bind<IBaseInteractor<IFeatureRequest>>(
       INTERFACE_TYPE.FeatureRequestInteractorImpl
