@@ -81,6 +81,12 @@ const Permissions = Object.freeze({
   VIEW_RESCHEDULE: "view:reschedule",
   UPDATE_RESCHEDULE: "update:reschedule",
   DELETE_RESCHEDULE: "delete:reschedule",
+  CREATE_PAYMENT: "create:payment",
+  VIEW_PAYMENTS: "view:payments",
+  VIEW_PAYMENT: "view:payment",
+  UPDATE_PAYMENT: "update:payment",
+  DELETE_PAYMENT: "delete:payment",
+  APPROVE_OR_REJECT_PAYMENT: "approve_or_reject:payment",
 } as const);
 
 export default Permissions;

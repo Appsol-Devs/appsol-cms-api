@@ -26,6 +26,8 @@ export class PaginatedResponse<T> {
     public readonly pageCount: number,
     public readonly totalCount: number,
     public readonly totalPages: number,
-    public readonly totalSum?: number
+    public readonly totalSum?: number,
+    public readonly totalPending?: number,
+    public readonly totalApproved?: number
   ) {}
 }

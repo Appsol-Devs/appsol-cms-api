@@ -8,3 +8,4 @@ export * from "./customer.js";
 export * from "./customerComplaint.js";
 export * from "./customerOutreach.js";
 export * from "./reschedule.js";
+export * from "./payment.js";

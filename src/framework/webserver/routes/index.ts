@@ -17,6 +17,7 @@ import customerComplaintRoutes from "./customerComplaintsRoutes.js";
 import customerOutreachRoutes from "./customerOutreachRoutes.js";
 import outreachTypeRoutes from "./lookups/outreachType.js";
 import rescheduleRoutes from "./rescheduleRoutes.js";
+import paymentRoutes from "./paymentRoutes.js";
 
 const router = express.Router();
 
@@ -38,5 +39,6 @@ router.use(customerComplaintRoutes);
 router.use(customerOutreachRoutes);
 router.use(outreachTypeRoutes);
 router.use(rescheduleRoutes);
+router.use(paymentRoutes);
 
 export default router;

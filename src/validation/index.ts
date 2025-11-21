@@ -2,3 +2,5 @@ export * from "./userSchema.js";
 export * from "./lookupShema.js";
 export * from "./baseSchema.js";
 export * from "./customerSchema.js";
+export * from "./rescheduleSchema.js";
+export * from "./paymentSchema.js";

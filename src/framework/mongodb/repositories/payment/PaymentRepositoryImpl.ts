@@ -1,0 +1,152 @@
+import { injectable } from "inversify";
+
+import type { PaginatedResponse } from "../../../../entities/UserResponse.js";
+import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
+import { BaseRepoistoryImpl } from "../base/BaseRepositoryImpl.js";
+import type {
+  IPayment,
+  IPaymentRequestQuery,
+} from "../../../../entities/Payment.js";
+import { PaymentModel, PaymentModelMapper } from "../../models/payment.js";
+
+@injectable()
+export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
+  constructor() {
+    super(PaymentModel, PaymentModelMapper);
+  }
+
+  // ✅ Paginated & Filtered fetch
+  async getAll(
+    query: IPaymentRequestQuery
+  ): Promise<PaginatedResponse<IPayment>> {
+    const search = query.search || "";
+    const limit = query.pageSize || 10;
+    const pageIndex = query.pageIndex || 1;
+    const skip = (pageIndex - 1) * limit;
+
+    const filter: Record<string, any> = {};
+
+    // ✅ Text search
+    if (search) {
+      filter.$or = [
+        { paymentCode: { $regex: new RegExp(search, "i") } },
+        { approvalNotes: { $regex: new RegExp(search, "i") } },
+      ];
+    }
+
+    // ✅ Simple filters
+    if (query.customerId) filter.customerId = query.customerId;
+    if (query.subscriptionTypeId)
+      filter.subscriptionTypeId = query.subscriptionTypeId;
+
+    if (query.status) filter.status = query.status;
+    if (query.loggedBy) filter.loggedBy = query.loggedBy;
+    if (query.paymentDate) filter.paymentDate = query.paymentDate;
+    if (query.renewalDate) filter.renewalDate = query.renewalDate;
+
+    // ✅ Date range
+    if (query.startDate && query.endDate) {
+      filter.createdAt = {
+        $gte: query.startDate,
+        $lte: query.endDate,
+      };
+    }
+
+    const [items, total] = await Promise.all([
+      this.model
+        .find(filter)
+        .populate("customer", "name email phone")
+        .populate("loggedBy", "firstName lastName email")
+        .populate("subscriptionType", "name description colorCode")
+        .skip(skip)
+        .limit(limit),
+      this.model.countDocuments(filter),
+    ]);
+
+    const data = items.map(this.mapper.toEntity);
+    const totalPages = Math.ceil(total / limit);
+    // get total sum of amount field both pending and approved payments
+    const [{ totalPending, totalApproved, totalAmount }] =
+      await this.model.aggregate([
+        {
+          $match: { ...filter },
+        },
+        {
+          $group: {
+            _id: null,
+            totalPending: {
+              $sum: {
+                $cond: [{ $eq: ["$status", "pending"] }, "$amount", 0],
+              },
+            },
+            totalApproved: {
+              $sum: {
+                $cond: [{ $eq: ["$status", "approved"] }, "$amount", 0],
+              },
+            },
+            totalAmount: {
+              $sum: "$amount",
+            },
+          },
+        },
+      ]);
+
+    return {
+      data,
+      totalPages,
+      totalCount: total,
+      pageCount: pageIndex,
+      totalSum: totalAmount,
+      totalPending: totalPending,
+      totalApproved: totalApproved,
+    };
+  }
+
+  // ✅ Fetch single complaint
+  async getById(id: string): Promise<IPayment> {
+    const complaint = await this.model
+      .findById(id)
+      .populate("customer", "name email phone")
+      .populate("loggedBy", "firstName lastName email")
+      .populate("subscriptionType", "name description colorCode");
+
+    if (!complaint) throw new NotFoundError("Payment not found");
+    return this.mapper.toEntity(complaint);
+  }
+
+  // ✅ Assign all references directly from IDs
+  private assignReferences(data: Partial<IPayment>): IPayment {
+    if (data.customerId) data.customer = data.customerId;
+    if (data.subscriptionTypeId)
+      data.subscriptionType = data.subscriptionTypeId;
+    return data;
+  }
+
+  // ✅ Override create
+  async create(data: Partial<IPayment>): Promise<IPayment> {
+    const dataWithReferences = this.assignReferences(data);
+
+    const created = await this.model.create({ ...data, ...dataWithReferences });
+    const populated = await created.populate([
+      { path: "customer", select: "name email" },
+      { path: "loggedBy", select: "firstName lastName email" },
+      { path: "subscriptionType", select: "name description colorCode" },
+    ]);
+
+    return this.mapper.toEntity(populated);
+  }
+
+  // ✅ Override update
+  async update(id: string, data: Partial<IPayment>): Promise<IPayment> {
+    const dataWithReferences = this.assignReferences(data);
+
+    const updated = await this.model
+      .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
+      .populate("customer", "name email")
+      .populate("loggedBy", "firstName lastName email")
+      .populate("subscriptionType", "name description colorCode");
+
+    if (!updated) throw new NotFoundError("Payment not found");
+    return this.mapper.toEntity(updated);
+  }
+}

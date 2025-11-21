@@ -1,24 +1,31 @@
 import type { Container } from "inversify";
-import { CustomersController } from "../../adapters/controllers/customers_controller/CustomersController.js";
-import { LeadsController } from "../../adapters/controllers/leads_controller/LeadsController.js";
+import {
+  RescheduleController,
+  CustomerOutreachController,
+  CustomerComplaintController,
+  RoleController,
+  UserController,
+  PermissionController,
+  CustomersController,
+  LeadsController,
+  LeadNextStepController,
+  OutreachTypeController,
+  CallStatusController,
+  ComplaintCategoryController,
+  LeadStatusController,
+  SetupStatusController,
+  SoftwareController,
+  SubscriptionTypeController,
+  ComplaintTypeController,
+  PaymentController,
+} from "../../adapters/controllers/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
-import { CallStatusController } from "../../adapters/controllers/lookups/CallStatusController.js";
-import { ComplaintCategoryController } from "../../adapters/controllers/lookups/ComplaintCategoryController.js";
-import { LeadNextStepController } from "../../adapters/controllers/lookups/LeadNextStepController.js";
-import { LeadStatusController } from "../../adapters/controllers/lookups/LeadStatusController.js";
-import { SetupStatusController } from "../../adapters/controllers/lookups/SetupStatusController.js";
-import { SoftwareController } from "../../adapters/controllers/lookups/SoftwareController.js";
-import { SubscriptionTypeController } from "../../adapters/controllers/lookups/SubscriptionTypeController.js";
-import { ComplaintTypeController } from "../../adapters/controllers/lookups/ComplaintTypeController.js";
-import { PermissionController } from "../../adapters/controllers/permission_controller/PermissionController.js";
-import { RoleController } from "../../adapters/controllers/role_controller/RoleController.js";
-import { UserController } from "../../adapters/controllers/users_controller/UserController.js";
-import { CustomerComplaintController } from "../../adapters/controllers/customer_complaints/CustomerComplaintsController.js";
-import { CustomerOutreachController } from "../../adapters/controllers/customer_outreach/CustomerOutreachController.js";
-import { OutreachTypeController } from "../../adapters/controllers/lookups/index.js";
-import { RescheduleController } from "../../adapters/controllers/reschedule/RescheduleController.js";
 
 export const bindAllControllers = (container: Container) => {
+  container
+    .bind<PaymentController>(INTERFACE_TYPE.PaymentController)
+    .to(PaymentController);
+
   container
     .bind<RescheduleController>(INTERFACE_TYPE.RescheduleController)
     .to(RescheduleController);
