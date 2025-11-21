@@ -72,4 +72,7 @@ export const INTERFACE_TYPE = {
   RescheduleRepositoryImpl: Symbol.for("RescheduleRepositoryImpl"),
   RescheduleInteractorImpl: Symbol.for("RescheduleInteractorImpl"),
   RescheduleController: Symbol.for("RescheduleController"),
+  PaymentRepositoryImpl: Symbol.for("PaymentRepositoryImpl"),
+  PaymentInteractorImpl: Symbol.for("PaymentInteractorImpl"),
+  PaymentController: Symbol.for("PaymentController"),
 };
