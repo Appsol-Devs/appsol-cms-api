@@ -18,6 +18,7 @@ import customerOutreachRoutes from "./customerOutreachRoutes.js";
 import outreachTypeRoutes from "./lookups/outreachType.js";
 import rescheduleRoutes from "./rescheduleRoutes.js";
 import paymentRoutes from "./paymentRoutes.js";
+import featureRequestRoutes from "./featureRequestRoutes.js";
 
 const router = express.Router();
 
@@ -40,5 +41,6 @@ router.use(customerOutreachRoutes);
 router.use(outreachTypeRoutes);
 router.use(rescheduleRoutes);
 router.use(paymentRoutes);
+router.use(featureRequestRoutes);
 
 export default router;

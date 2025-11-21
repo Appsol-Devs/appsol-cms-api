@@ -5,6 +5,7 @@ import type {
   IComplaintCategory,
   ICustomerComplaint,
   ICustomerOutreach,
+  IFeatureRequest,
   ILeadNextStep,
   ILeadStatus,
   IOutreachType,
@@ -41,22 +42,28 @@ import {
   OutreachTypeRepositoryImpl,
   RescheduleRepositoryImpl,
   PaymentRepositoryImpl,
+  type IBaseRepository,
+  FeatureRequestRepositoryImpl,
 } from "../../framework/mongodb/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
   container
-    .bind<IBaseLookupRepository<IPayment>>(INTERFACE_TYPE.PaymentRepositoryImpl)
+    .bind<IBaseRepository<IFeatureRequest>>(
+      INTERFACE_TYPE.FeatureRequestRepositoryImpl
+    )
+    .to(FeatureRequestRepositoryImpl);
+
+  container
+    .bind<IBaseRepository<IPayment>>(INTERFACE_TYPE.PaymentRepositoryImpl)
     .to(PaymentRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<IReschedule>>(
-      INTERFACE_TYPE.RescheduleRepositoryImpl
-    )
+    .bind<IBaseRepository<IReschedule>>(INTERFACE_TYPE.RescheduleRepositoryImpl)
     .to(RescheduleRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<ICustomerOutreach>>(
+    .bind<IBaseRepository<ICustomerOutreach>>(
       INTERFACE_TYPE.CustomerOutreachRepositoryImpl
     )
     .to(CustomerOutreachRepositoryImpl);
@@ -68,7 +75,7 @@ export const bindRepositories = (container: Container) => {
     .to(OutreachTypeRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<ICustomerComplaint>>(
+    .bind<IBaseRepository<ICustomerComplaint>>(
       INTERFACE_TYPE.CustomerComplaintRepositoryImpl
     )
     .to(CustomerComplaintRepositoryImpl);

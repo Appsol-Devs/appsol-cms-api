@@ -75,4 +75,7 @@ export const INTERFACE_TYPE = {
   PaymentRepositoryImpl: Symbol.for("PaymentRepositoryImpl"),
   PaymentInteractorImpl: Symbol.for("PaymentInteractorImpl"),
   PaymentController: Symbol.for("PaymentController"),
+  FeatureRequestRepositoryImpl: Symbol.for("FeatureRequestRepositoryImpl"),
+  FeatureRequestInteractorImpl: Symbol.for("FeatureRequestInteractorImpl"),
+  FeatureRequestController: Symbol.for("FeatureRequestController"),
 };

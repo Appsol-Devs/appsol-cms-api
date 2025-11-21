@@ -56,8 +56,8 @@ export interface RequestQuery {
   search?: string | undefined;
   pageSize?: number | undefined;
   pageIndex?: number | undefined;
-  startDate?: Date | undefined;
-  endDate?: Date | undefined;
+  startDate?: Date | string | undefined;
+  endDate?: Date | string | undefined;
   status?: string | undefined;
   loggedBy?: string | undefined;
   createdBy?: string | undefined;

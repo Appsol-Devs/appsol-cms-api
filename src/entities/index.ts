@@ -9,3 +9,4 @@ export * from "./CustomerComplaint.js";
 export * from "./CustomerOutreach.js";
 export * from "./Reschedule.js";
 export * from "./Payment.js";
+export * from "./FeatureRequest.js";

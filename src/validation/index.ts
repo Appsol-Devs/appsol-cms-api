@@ -4,3 +4,4 @@ export * from "./baseSchema.js";
 export * from "./customerSchema.js";
 export * from "./rescheduleSchema.js";
 export * from "./paymentSchema.js";
+export * from "./featureRequestSchema.js";
