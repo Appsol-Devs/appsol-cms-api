@@ -11,3 +11,5 @@ export * from "./customer_complaints/index.js";
 export * from "./customer_outreach/index.js";
 export * from "./reshedule/index.js";
 export * from "./payment/index.js";
+export * from "./feature_request/index.js";
+export * from "./base/index.js";

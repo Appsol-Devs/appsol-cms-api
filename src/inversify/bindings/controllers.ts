@@ -18,10 +18,15 @@ import {
   SubscriptionTypeController,
   ComplaintTypeController,
   PaymentController,
+  FeatureRequestController,
 } from "../../adapters/controllers/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindAllControllers = (container: Container) => {
+  container
+    .bind<FeatureRequestController>(INTERFACE_TYPE.FeatureRequestController)
+    .to(FeatureRequestController);
+
   container
     .bind<PaymentController>(INTERFACE_TYPE.PaymentController)
     .to(PaymentController);

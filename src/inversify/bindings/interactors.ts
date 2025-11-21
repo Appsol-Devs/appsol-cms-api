@@ -22,6 +22,9 @@ import {
   OutreachTypeInteractorImpl,
   PaymentInteractorImpl,
   RescheduleInteractorImpl,
+  FeatureRequestInteractorImpl,
+  type IBaseInteractor,
+  PermissionInteractorImpl,
 } from "../../application/interactors/index.js";
 import type { ICustomer } from "../../entities/Customer.js";
 import type { ILead } from "../../entities/Lead.js";
@@ -39,26 +42,32 @@ import type {
   IOutreachType,
   IReschedule,
   IPayment,
+  IFeatureRequest,
 } from "../../entities/index.js";
-import { PermissionInteractorImpl } from "../../application/interactors/permission/PermissionInteractorImpl.js";
 
 export const bindAllInteractors = (container: Container) => {
   container
-    .bind<IBaseLookupInteractor<IPayment>>(INTERFACE_TYPE.PaymentInteractorImpl)
-    .to(PaymentInteractorImpl);
-  container
-    .bind<IBaseLookupInteractor<IReschedule>>(
-      INTERFACE_TYPE.RescheduleInteractorImpl
+    .bind<IBaseInteractor<IFeatureRequest>>(
+      INTERFACE_TYPE.FeatureRequestInteractorImpl
     )
-    .to(RescheduleInteractorImpl);
+    .to(FeatureRequestInteractorImpl);
+
   container
-    .bind<IBaseLookupInteractor<ICustomerOutreach>>(
+    .bind<IBaseInteractor<IPayment>>(INTERFACE_TYPE.PaymentInteractorImpl)
+    .to(PaymentInteractorImpl);
+
+  container
+    .bind<IBaseInteractor<IReschedule>>(INTERFACE_TYPE.RescheduleInteractorImpl)
+    .to(RescheduleInteractorImpl);
+
+  container
+    .bind<IBaseInteractor<ICustomerOutreach>>(
       INTERFACE_TYPE.CustomerOutreachInteractorImpl
     )
     .to(CustomerOutreachInteractorImpl);
 
   container
-    .bind<IBaseLookupInteractor<ICustomerComplaint>>(
+    .bind<IBaseInteractor<ICustomerComplaint>>(
       INTERFACE_TYPE.CustomerComplaintInteractorImpl
     )
     .to(CustomerComplaintInteractorImpl);
