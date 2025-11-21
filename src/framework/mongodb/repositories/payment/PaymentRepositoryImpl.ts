@@ -58,6 +58,8 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
         .populate("customer", "name email phone")
         .populate("loggedBy", "firstName lastName email")
         .populate("subscriptionType", "name description colorCode")
+        .populate("approvedOrRejectedBy", "firstName lastName email")
+
         .skip(skip)
         .limit(limit),
       this.model.countDocuments(filter),
@@ -108,6 +110,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       .findById(id)
       .populate("customer", "name email phone")
       .populate("loggedBy", "firstName lastName email")
+      .populate("approvedOrRejectedBy", "firstName lastName email")
       .populate("subscriptionType", "name description colorCode");
 
     if (!complaint) throw new NotFoundError("Payment not found");
@@ -131,6 +134,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       { path: "customer", select: "name email" },
       { path: "loggedBy", select: "firstName lastName email" },
       { path: "subscriptionType", select: "name description colorCode" },
+      { path: "approvedOrRejectedBy", select: "firstName lastName email" },
     ]);
 
     return this.mapper.toEntity(populated);
@@ -144,6 +148,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
       .populate("customer", "name email")
       .populate("loggedBy", "firstName lastName email")
+      .populate("approvedOrRejectedBy", "firstName lastName email")
       .populate("subscriptionType", "name description colorCode");
 
     if (!updated) throw new NotFoundError("Payment not found");
