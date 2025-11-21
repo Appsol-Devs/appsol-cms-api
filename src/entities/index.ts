@@ -10,3 +10,4 @@ export * from "./CustomerOutreach.js";
 export * from "./Reschedule.js";
 export * from "./Payment.js";
 export * from "./FeatureRequest.js";
+export * from "./SubscriptionReminder.js";

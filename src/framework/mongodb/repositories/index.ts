@@ -13,3 +13,4 @@ export * from "./reshedule/index.js";
 export * from "./payment/index.js";
 export * from "./feature_request/index.js";
 export * from "./base/index.js";
+export * from "./subscription_reminders/indext.js";

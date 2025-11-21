@@ -22,3 +22,4 @@ export * from "./lookups/OutreachTypeController.js";
 export * from "./base/BaseController.js";
 export * from "./auth_controller/AuthController.js";
 export * from "./feature_request/FeatureRequestController.js";
+export * from "./subscription_reminder/SubscriptionReminderController.js";
