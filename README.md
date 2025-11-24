@@ -1,4 +1,4 @@
-![APPSOL CMS](https://lh3.googleusercontent.com/pw/AP1GczMIcX7yNiKM_E_JLE8qsbvZkcUOA5GfYxdGLTkqhj1acnOYutWL2f8JpFScJxc6oR7cKHhKCHx1H-WXmrmJiow86LeB4lzzUq2h-O-lCFFpzWyBBg=w2400)
+![APPSOL CMS](https://lh3.googleusercontent.com/pw/AP1GczMJBTBEHbmDShgTYpWTmikYXobuKnad15FEpd1YJT7MyX7J5tBcnMRhGdIwrvcWB145sOJw2vXru6BTHvZC-OmQchGeAUKvdPDVjCQDmezzfKTtEg=w2400)
 
 
 # 🧩 Appsol CMS - Backend API
