@@ -1,3 +1,6 @@
+![APPSOL CMS]([https://raw.githubusercontent.com/Codecademy/docs/main/media/codey.jpg](https://lh3.googleusercontent.com/pw/AP1GczMIcX7yNiKM_E_JLE8qsbvZkcUOA5GfYxdGLTkqhj1acnOYutWL2f8JpFScJxc6oR7cKHhKCHx1H-WXmrmJiow86LeB4lzzUq2h-O-lCFFpzWyBBg=w2400))
+
+
 # 🧩 Appsol CMS - Backend API
 
 Appsol CMS (Customer Management System) is a bespoke platform designed to help organizations efficiently manage customer relationships, track operational activities, and gain valuable insights through dynamic dashboards.
