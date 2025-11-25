@@ -85,4 +85,7 @@ export const INTERFACE_TYPE = {
     "SubscriptionReminderInteractorImpl"
   ),
   SubscriptionReminderController: Symbol.for("SubscriptionReminderController"),
+  CustomerSetupRepositoryImpl: Symbol.for("CustomerSetupRepositoryImpl"),
+  CustomerSetupInteractorImpl: Symbol.for("CustomerSetupInteractorImpl"),
+  CustomerSetupController: Symbol.for("CustomerSetupController"),
 };

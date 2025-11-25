@@ -39,7 +39,8 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
     // ✅ Simple filters
     if (query.customerId) filter.customerId = query.customerId;
     if (query.complaintTypeId) filter.complaintTypeId = query.complaintTypeId;
-    if (query.categoryId) filter.categoryId = query.categoryId;
+    if (query.complaintCategoryId)
+      filter.complaintCategoryId = query.complaintCategoryId;
     if (query.relatedSoftwareId)
       filter.relatedSoftwareId = query.relatedSoftwareId;
     if (query.status) filter.status = query.status;
@@ -59,7 +60,7 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
         .find(filter)
         .populate("customer", "name email phone")
         .populate("complaintType", "name")
-        .populate("category", "name")
+        .populate("complaintCategory", "name")
         .populate("relatedSoftware", "name version")
         .populate("status", "name colorCode")
         .populate("loggedBy", "firstName lastName email")
@@ -86,7 +87,7 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
       .findById(id)
       .populate("customer", "name email phone")
       .populate("complaintType", "name")
-      .populate("category", "name")
+      .populate("complaintCategory", "name")
       .populate("relatedSoftware", "name version")
       .populate("loggedBy", "firstName lastName email")
       .populate("resolvedBy", "firstName lastName email");
@@ -101,7 +102,8 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
   ): ICustomerComplaint {
     if (data.customerId) data.customer = data.customerId;
     if (data.complaintTypeId) data.complaintType = data.complaintTypeId;
-    if (data.categoryId) data.category = data.categoryId;
+    if (data.complaintCategoryId)
+      data.complaintCategory = data.complaintCategoryId;
     if (data.relatedSoftwareId) data.relatedSoftware = data.relatedSoftwareId;
     return data;
   }
@@ -114,7 +116,7 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
     const populated = await created.populate([
       { path: "customer", select: "name email" },
       { path: "complaintType", select: "name" },
-      { path: "category", select: "name" },
+      { path: "complaintCategory", select: "name" },
       { path: "relatedSoftware", select: "name" },
     ]);
 
@@ -132,7 +134,7 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
       .populate("customer", "name email")
       .populate("complaintType", "name")
-      .populate("category", "name")
+      .populate("complaintCategory", "name")
       .populate("relatedSoftware", "name")
       .populate("loggedBy", "firstName lastName email")
       .populate("resolvedBy", "firstName lastName email");

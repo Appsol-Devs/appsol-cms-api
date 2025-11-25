@@ -4,25 +4,25 @@ import type { PaginatedResponse } from "../../../../entities/UserResponse.js";
 import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
 import { BaseRepoistoryImpl } from "../base/BaseRepositoryImpl.js";
 import type {
-  IFeatureRequest,
-  IFeatureRequestRequestQuery,
-} from "../../../../entities/FeatureRequest.js";
+  ICustomerSetup,
+  ICustomerSetupRequestQuery,
+} from "../../../../entities/CustomerSetup.js";
 import {
-  FeatureRequestModel,
-  FeatureRequestModelMapper,
-} from "../../models/featureRequest.js";
+  CustomerSetupModel,
+  CustomerSetupModelMapper,
+} from "../../models/customerSetup.js";
 import mongoose from "mongoose";
 
 @injectable()
-export class FeatureRequestRepositoryImpl extends BaseRepoistoryImpl<IFeatureRequest> {
+export class CustomerSetupRepositoryImpl extends BaseRepoistoryImpl<ICustomerSetup> {
   constructor() {
-    super(FeatureRequestModel, FeatureRequestModelMapper);
+    super(CustomerSetupModel, CustomerSetupModelMapper);
   }
 
   // ✅ Paginated & Filtered fetch
   async getAll(
-    query: IFeatureRequestRequestQuery
-  ): Promise<PaginatedResponse<IFeatureRequest>> {
+    query: ICustomerSetupRequestQuery
+  ): Promise<PaginatedResponse<ICustomerSetup>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
     const pageIndex = query.pageIndex || 1;
@@ -33,7 +33,7 @@ export class FeatureRequestRepositoryImpl extends BaseRepoistoryImpl<IFeatureReq
     // ✅ Text search
     if (search) {
       filter.$or = [
-        { requestCode: { $regex: new RegExp(search, "i") } },
+        { setupCode: { $regex: new RegExp(search, "i") } },
         { title: { $regex: new RegExp(search, "i") } },
         { description: { $regex: new RegExp(search, "i") } },
       ];
@@ -46,12 +46,13 @@ export class FeatureRequestRepositoryImpl extends BaseRepoistoryImpl<IFeatureReq
     if (query.status) filter.status = query.status;
     if (query.loggedBy)
       filter.loggedBy = new mongoose.Types.ObjectId(query.loggedBy);
-    if (query.softwareId)
-      filter.software = new mongoose.Types.ObjectId(query.softwareId);
+    if (query.softwareId) filter.software = query.softwareId;
     if (query.assignedTo)
       filter.assignedTo = {
         $in: query.assignedTo.map((id) => new mongoose.Types.ObjectId(id)),
       };
+    if (query.setupStatusId)
+      filter.setupStatusId = new mongoose.Types.ObjectId(query.setupStatusId);
 
     // ✅ Date range
     if (query.startDate && query.endDate) {
@@ -68,6 +69,7 @@ export class FeatureRequestRepositoryImpl extends BaseRepoistoryImpl<IFeatureReq
         .populate("loggedBy", "firstName lastName email")
         .populate("software", "name description colorCode")
         .populate("assignedTo", "firstName lastName email")
+        .populate("setupStatus", "name description colorCode")
         .skip(skip)
         .limit(limit),
       this.model.countDocuments(filter),
@@ -85,29 +87,31 @@ export class FeatureRequestRepositoryImpl extends BaseRepoistoryImpl<IFeatureReq
   }
 
   // ✅ Fetch single by ID
-  async getById(id: string): Promise<IFeatureRequest> {
+  async getById(id: string): Promise<ICustomerSetup> {
     const request = await this.model
       .findById(id)
       .populate("customer", "name email phone")
       .populate("loggedBy", "firstName lastName email")
       .populate("assignedTo", "firstName lastName email")
-      .populate("software", "name description colorCode");
+      .populate("software", "name description colorCode")
+      .populate("setupStatus", "name description colorCode");
 
-    if (!request) throw new NotFoundError("Feature Request not found");
+    if (!request) throw new NotFoundError("Customer Setup not found");
     return this.mapper.toEntity(request);
   }
 
   // ✅ Assign all references directly from IDs
-  private assignReferences(data: Partial<IFeatureRequest>): IFeatureRequest {
-    const refs: Partial<IFeatureRequest> = {};
+  private assignReferences(data: Partial<ICustomerSetup>): ICustomerSetup {
+    const refs: Partial<ICustomerSetup> = {};
     if (data.customerId) refs.customer = data.customerId;
     if (data.softwareId) refs.software = data.softwareId;
+    if (data.setupStatusId) refs.setupStatus = data.setupStatusId;
 
     return refs;
   }
 
   // ✅ Override create
-  async create(data: Partial<IFeatureRequest>): Promise<IFeatureRequest> {
+  async create(data: Partial<ICustomerSetup>): Promise<ICustomerSetup> {
     const dataWithReferences = this.assignReferences(data);
 
     const created = await this.model.create({ ...data, ...dataWithReferences });
@@ -116,6 +120,7 @@ export class FeatureRequestRepositoryImpl extends BaseRepoistoryImpl<IFeatureReq
       { path: "loggedBy", select: "firstName lastName email" },
       { path: "software", select: "name description colorCode" },
       { path: "assignedTo", select: "firstName lastName email" },
+      { path: "setupStatus", select: "name description colorCode" },
     ]);
 
     return this.mapper.toEntity(populated);
@@ -124,8 +129,8 @@ export class FeatureRequestRepositoryImpl extends BaseRepoistoryImpl<IFeatureReq
   // ✅ Override update
   async update(
     id: string,
-    data: Partial<IFeatureRequest>
-  ): Promise<IFeatureRequest> {
+    data: Partial<ICustomerSetup>
+  ): Promise<ICustomerSetup> {
     const dataWithReferences = this.assignReferences(data);
 
     const updated = await this.model
@@ -133,9 +138,10 @@ export class FeatureRequestRepositoryImpl extends BaseRepoistoryImpl<IFeatureReq
       .populate("customer", "name email")
       .populate("loggedBy", "firstName lastName email")
       .populate("software", "name description colorCode")
-      .populate("assignedTo", "firstName lastName email");
+      .populate("assignedTo", "firstName lastName email")
+      .populate("setupStatus", "name description colorCode");
 
-    if (!updated) throw new NotFoundError("Feature Request not found");
+    if (!updated) throw new NotFoundError("Customer Setup not found");
     return this.mapper.toEntity(updated);
   }
 }

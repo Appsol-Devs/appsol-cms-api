@@ -14,8 +14,8 @@ const customerComplaintSchema: SchemaDefinition = {
     required: true,
     ref: "ComplaintType",
   },
-  categoryId: { type: String, required: true },
-  category: {
+  complaintCategoryId: { type: String, required: true },
+  complaintCategory: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: "ComplaintCategory",
