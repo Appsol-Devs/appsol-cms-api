@@ -13,8 +13,8 @@ export class ICustomerComplaint {
     public customer?: ICustomer | string,
     public readonly complaintTypeId?: string,
     public complaintType?: IComplaintType | string,
-    public readonly categoryId?: string,
-    public category?: IComplaintCategory | string,
+    public readonly complaintCategoryId?: string,
+    public complaintCategory?: IComplaintCategory | string,
     public readonly description?: string,
     public readonly relatedSoftwareId?: string,
     public relatedSoftware?: ISoftware | string,
@@ -36,7 +36,7 @@ export type ICustomerComplaintStatus =
 export interface ICustomerComplaintRequestQuery extends RequestQuery {
   customerId?: string;
   complaintTypeId?: string;
-  categoryId?: string;
+  complaintCategoryId?: string | undefined;
   relatedSoftwareId?: string;
   status?: ICustomerComplaintStatus;
   loggedBy?: string;

@@ -1,22 +1,26 @@
 import type { TPriority } from "../utils/constants/genTypes.js";
 import type { ICustomer } from "./Customer.js";
-import type { ISoftware } from "./index.js";
+import type { ISetupStatus, ISoftware } from "./index.js";
 import type { IUser, RequestQuery } from "./User.js";
 
-export class IFeatureRequest {
+export class ICustomerSetup {
   constructor(
     public readonly _id?: string,
-    public readonly requestCode?: string,
+    public readonly setupCode?: string,
     public readonly title?: string,
     public readonly customerId?: string,
     public customer?: ICustomer | string,
     public readonly softwareId?: string,
     public software?: ISoftware | string,
-    public readonly requestedDate?: string,
+    public readonly setupStatusId?: string,
+    public setupStatus?: ISetupStatus | string,
+    public readonly scheduledStart?: string,
+    public readonly scheduledEnd?: string,
+    public readonly actualCompletionDate?: string,
     public readonly notes?: string,
     public readonly description?: string,
     public readonly priority?: TPriority,
-    public readonly status?: TFeatureRequestStatus,
+    public readonly status?: TCustomerSetupStatus,
     public readonly loggedBy?: IUser | string,
     public readonly assignedTo?: Array<IUser> | Array<string>,
     public readonly createdAt?: string,
@@ -24,17 +28,17 @@ export class IFeatureRequest {
   ) {}
 }
 
-export type TFeatureRequestStatus =
-  | "new"
-  | "under-review"
-  | "planned"
-  | "complete"
-  | "rejected";
+export type TCustomerSetupStatus =
+  | "scheduled"
+  | "inProgress"
+  | "completed"
+  | "cancelled";
 
-export interface IFeatureRequestRequestQuery extends RequestQuery {
+export interface ICustomerSetupRequestQuery extends RequestQuery {
   customerId?: string | undefined;
   priority?: TPriority | undefined;
-  status?: TFeatureRequestStatus | undefined;
+  status?: TCustomerSetupStatus | undefined;
   softwareId?: string | undefined;
   assignedTo?: Array<string> | undefined;
+  setupStatusId?: string | undefined;
 }

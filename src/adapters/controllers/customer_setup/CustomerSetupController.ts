@@ -1,29 +1,27 @@
 import { inject, injectable } from "inversify";
-import type {
-  CustomerComplaintInteractorImpl,
-  LeadInteractorImpl,
-} from "../../../application/interactors/index.js";
 
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseController } from "../base/BaseController.js";
-import type { ILead, ILeadRequestQuery } from "../../../entities/Lead.js";
 import type { Request, Response, NextFunction } from "express";
-import type { TGenericPromise } from "../../../utils/constants/genTypes.js";
-import type { RequestQuery } from "../../../entities/User.js";
+import type {
+  TGenericPromise,
+  TPriority,
+} from "../../../utils/constants/genTypes.js";
 import { HttpStatusCode } from "../../../utils/constants/enums.js";
 import type { IControllerUserRequest } from "../auth_controller/IController.js";
 import { BadRequestError } from "../../../error_handler/BadRequestError.js";
+
 import type {
-  ICustomerComplaint,
-  ICustomerComplaintRequestQuery,
-  ICustomerComplaintStatus,
-} from "../../../entities/CustomerComplaint.js";
+  ICustomerSetup,
+  ICustomerSetupRequestQuery,
+} from "../../../entities/CustomerSetup.js";
+import type { CustomerSetupInteractorImpl } from "../../../application/interactors/customer_setup/CustomerSetupInteractorImpl.js";
 
 @injectable()
-export class CustomerComplaintController extends BaseController<ICustomerComplaint> {
+export class CustomerSetupController extends BaseController<ICustomerSetup> {
   constructor(
-    @inject(INTERFACE_TYPE.CustomerComplaintInteractorImpl)
-    interactor: CustomerComplaintInteractorImpl
+    @inject(INTERFACE_TYPE.CustomerSetupInteractorImpl)
+    interactor: CustomerSetupInteractorImpl
   ) {
     super(interactor);
   }
@@ -34,25 +32,38 @@ export class CustomerComplaintController extends BaseController<ICustomerComplai
     next: NextFunction
   ): TGenericPromise {
     try {
-      const query: ICustomerComplaintRequestQuery = {
+      const query: ICustomerSetupRequestQuery = {
         search: req.query.search?.toString(),
         pageIndex: req.query.pageIndex ? Number(req.query.pageIndex) : 1,
         pageSize: req.query.pageSize ? Number(req.query.pageSize) : 10,
-        status: req.query.status?.toString() as ICustomerComplaintStatus,
-        complaintCategoryId:
-          req.query.complaintCategoryId?.toString() ?? undefined,
+        status: req.query.status?.toString() as unknown as
+          | ICustomerSetup["status"]
+          | undefined,
+        customerId: req.query.customerId?.toString() ?? undefined,
+        loggedBy: req.query.loggedBy?.toString() ?? undefined,
+        priority: req.query.priority?.toString() as unknown as
+          | TPriority
+          | undefined,
+        softwareId: req.query.softwareId?.toString() ?? undefined,
+        startDate: req.query.startDate?.toString() ?? undefined,
+        endDate: req.query.endDate?.toString() ?? undefined,
+        assignedTo: req.query.assignedTo
+          ? ((Array.isArray(req.query.assignedTo)
+              ? req.query.assignedTo
+              : [req.query.assignedTo]) as string[])
+          : undefined,
+        setupStatusId: req.query.setupStatusId?.toString() ?? undefined,
       };
 
       const response = await this.interactor.getAll(query);
 
-      res.set(
-        "x-pagination",
-        JSON.stringify({
+      res.set({
+        "x-pagination": JSON.stringify({
           totalPages: response.totalPages,
           pageCount: response.pageCount,
           totalCount: response.totalCount,
-        })
-      );
+        }),
+      });
 
       return res.status(HttpStatusCode.OK).json(response.data);
     } catch (error) {

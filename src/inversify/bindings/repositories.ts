@@ -5,6 +5,7 @@ import type {
   IComplaintCategory,
   ICustomerComplaint,
   ICustomerOutreach,
+  ICustomerSetup,
   IFeatureRequest,
   ILeadNextStep,
   ILeadStatus,
@@ -46,10 +47,17 @@ import {
   type IBaseRepository,
   FeatureRequestRepositoryImpl,
   SubscriptionReminderRepositoryImpl,
+  CustomerSetupRepositoryImpl,
 } from "../../framework/mongodb/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
+  container
+    .bind<IBaseRepository<ICustomerSetup>>(
+      INTERFACE_TYPE.CustomerSetupRepositoryImpl
+    )
+    .to(CustomerSetupRepositoryImpl);
+
   container
     .bind<IBaseRepository<ISubscriptionReminder>>(
       INTERFACE_TYPE.SubscriptionReminderRepositoryImpl

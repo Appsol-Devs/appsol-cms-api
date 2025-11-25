@@ -13,13 +13,21 @@ export const createApp = () => {
   // Configure express (middlewares, body parser, etc.)
   // Routes
   expressConfig(app);
-  app.use(routes);
+
   app.use(
     cors({
       origin: "*",
-      exposedHeaders: ["Content-Length", "x-pagination"],
+      exposedHeaders: [
+        "Content-Length",
+        "x-pagination",
+        "x-total-amount",
+        "x-total-approved",
+        "x-total-pending",
+      ],
     })
   );
+
+  app.use(routes);
 
   // Error middleware
   const errorMiddleware = container.get<ErrorMiddleware>(
