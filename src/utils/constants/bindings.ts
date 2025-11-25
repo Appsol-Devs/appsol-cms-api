@@ -88,4 +88,7 @@ export const INTERFACE_TYPE = {
   CustomerSetupRepositoryImpl: Symbol.for("CustomerSetupRepositoryImpl"),
   CustomerSetupInteractorImpl: Symbol.for("CustomerSetupInteractorImpl"),
   CustomerSetupController: Symbol.for("CustomerSetupController"),
+  NotificationRepositoryImpl: Symbol.for("NotificationRepositoryImpl"),
+  NotificationInteractorImpl: Symbol.for("NotificationInteractorImpl"),
+  NotificationController: Symbol.for("NotificationController"),
 };

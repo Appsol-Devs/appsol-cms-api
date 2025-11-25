@@ -43,6 +43,7 @@ export const createModel = <
       const entity: Record<string, any> = {};
       Object.keys(definition).forEach((key) => {
         entity[key] = doc[key];
+        console.log(`Mapping field: ${key} with value: ${doc[key]}`);
       });
       entity._id = doc._id?.toString();
       return entity as TDomain;

@@ -6,9 +6,9 @@ export const customerQuerySchema = baseQuerySchema.extend({
   phone: z.string().max(13).min(10),
   email: z.email(),
   companyName: z.string(),
-  dateConverted: z.string(),
+  dateConverted: z.string().optional(),
   location: z.string().optional(),
-  status: z.enum(["active", "inactive"]),
+  status: z.enum(["active", "inactive"]).optional(),
   geolocation: z
     .object({
       address: z.string().optional(),

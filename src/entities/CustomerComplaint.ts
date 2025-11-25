@@ -18,15 +18,15 @@ export class ICustomerComplaint {
     public readonly description?: string,
     public readonly relatedSoftwareId?: string,
     public relatedSoftware?: ISoftware | string,
-    public readonly status?: ICustomerComplaintStatus,
+    public readonly status?: TCustomerComplaintStatus,
     public readonly loggedBy?: IUser | string,
     public readonly resolvedBy?: IUser | string,
-    public readonly createdAt?: string,
-    public readonly updatedAt?: string
+    public readonly createdAt?: Date | string,
+    public readonly updatedAt?: Date | string
   ) {}
 }
 
-export type ICustomerComplaintStatus =
+export type TCustomerComplaintStatus =
   | "open"
   | "in-progress"
   | "resolved"
@@ -38,7 +38,7 @@ export interface ICustomerComplaintRequestQuery extends RequestQuery {
   complaintTypeId?: string;
   complaintCategoryId?: string | undefined;
   relatedSoftwareId?: string;
-  status?: ICustomerComplaintStatus;
+  status?: TCustomerComplaintStatus;
   loggedBy?: string;
   resolvedBy?: string;
 }

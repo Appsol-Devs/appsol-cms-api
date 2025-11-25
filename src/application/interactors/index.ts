@@ -12,4 +12,5 @@ export * from "./payment/index.js";
 export * from "./feature_request/index.js";
 export * from "./base/index.js";
 export * from "./subscription_reminder/index.js";
-export * from "./customer_setup/CustomerSetupInteractorImpl.js";
+export * from "./customer_setup/index.js";
+export * from "./notification/index.js";
