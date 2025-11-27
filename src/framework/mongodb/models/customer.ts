@@ -9,7 +9,7 @@ const customerSchema: SchemaDefinition = {
   email: { type: String, required: true, unique: true },
   phone: { type: String, required: true },
   companyName: { type: String, required: true },
-  dateConverted: { type: Date, required: true },
+  dateConverted: { type: Date, required: false },
   status: {
     type: String,
     required: true,

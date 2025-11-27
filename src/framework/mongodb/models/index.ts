@@ -12,3 +12,4 @@ export * from "./payment.js";
 export * from "./featureRequest.js";
 export * from "./subscriptionReminder.js";
 export * from "./customerSetup.js";
+export * from "./notification.js";

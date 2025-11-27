@@ -21,10 +21,16 @@ import {
   FeatureRequestController,
   SubscriptionReminderController,
   CustomerSetupController,
+  NotificationController,
+  AuthController,
 } from "../../adapters/controllers/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindAllControllers = (container: Container) => {
+  container
+    .bind<NotificationController>(INTERFACE_TYPE.NotificationController)
+    .to(NotificationController);
+
   container
     .bind<CustomerSetupController>(INTERFACE_TYPE.CustomerSetupController)
     .to(CustomerSetupController);
@@ -57,14 +63,16 @@ export const bindAllControllers = (container: Container) => {
     )
     .to(CustomerComplaintController);
 
-  container.bind<RoleController>(RoleController).to(RoleController);
+  container
+    .bind<RoleController>(INTERFACE_TYPE.RoleController)
+    .to(RoleController);
 
   container
     .bind<UserController>(INTERFACE_TYPE.UserController)
     .to(UserController);
 
   container
-    .bind<PermissionController>(PermissionController)
+    .bind<PermissionController>(INTERFACE_TYPE.PermissionController)
     .to(PermissionController);
 
   container
@@ -112,4 +120,8 @@ export const bindAllControllers = (container: Container) => {
   container
     .bind<ComplaintTypeController>(INTERFACE_TYPE.ComplaintTypeController)
     .to(ComplaintTypeController);
+
+  container
+    .bind<AuthController>(INTERFACE_TYPE.AuthController)
+    .to(AuthController);
 };

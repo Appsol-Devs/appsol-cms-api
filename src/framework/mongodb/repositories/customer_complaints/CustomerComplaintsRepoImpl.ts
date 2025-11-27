@@ -71,6 +71,7 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
     ]);
 
     const data = items.map(this.mapper.toEntity);
+
     const totalPages = Math.ceil(total / limit);
 
     return {

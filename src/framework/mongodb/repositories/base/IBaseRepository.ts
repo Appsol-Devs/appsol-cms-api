@@ -9,4 +9,8 @@ export interface IBaseRepository<TDomain> {
   create(data: TDomain): Promise<TDomain | null | undefined>;
   update(id: string, data: TDomain): Promise<TDomain | null | undefined>;
   delete(id: string): Promise<TDomain | null | undefined>;
+  updateMany(
+    filter: Partial<TDomain>,
+    data: Partial<TDomain>
+  ): Promise<number | null | undefined>;
 }

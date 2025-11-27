@@ -19,6 +19,29 @@ export abstract class BaseRepoistoryImpl<TDomain>
       toDtoCreation: (payload: TDomain) => any;
     }
   ) {}
+  async updateMany(
+    filter: Partial<TDomain>,
+    data: Partial<TDomain>
+  ): Promise<number | null | undefined> {
+    try {
+      if (!filter || Object.keys(filter as any).length === 0) {
+        throw new UnprocessableEntityError("Filter is required");
+      }
+
+      const result = await this.model.updateMany(filter as any, data as any);
+
+      // Mongoose versions may return different shapes; prefer modern `modifiedCount`
+      const modifiedCount =
+        (result as any).modifiedCount ??
+        (result as any).nModified ??
+        (result as any).n ??
+        null;
+
+      return typeof modifiedCount === "number" ? modifiedCount : null;
+    } catch (error) {
+      throw error;
+    }
+  }
   async getAll(query: RequestQuery): Promise<PaginatedResponse<TDomain>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;

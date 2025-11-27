@@ -1,39 +1,64 @@
-import express from "express";
+// app.ts
+import { injectable, inject, Container } from "inversify";
+import express, { type Express } from "express";
 import cors from "cors";
-
-import expressConfig from "./express.js";
-import routes from "./routes/index.js";
-import { container } from "../../inversify/container.js";
+import routes, { createRoutes } from "./routes/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 import type { ErrorMiddleware } from "./middleware/ErrorMiddleware.js";
 
-export const createApp = () => {
-  const app = express();
+export interface IExpressApp {
+  getApp(): Express;
+  configure(container: Container): void;
+}
 
-  // Configure express (middlewares, body parser, etc.)
-  // Routes
-  expressConfig(app);
+@injectable()
+export class ExpressApp implements IExpressApp {
+  private app: Express;
 
-  app.use(
-    cors({
-      origin: "*",
-      exposedHeaders: [
-        "Content-Length",
-        "x-pagination",
-        "x-total-amount",
-        "x-total-approved",
-        "x-total-pending",
-      ],
-    })
-  );
+  constructor(
+    @inject(INTERFACE_TYPE.ErrorMiddleWare)
+    private errorMiddleware: ErrorMiddleware
+  ) {
+    this.app = express();
+  }
 
-  app.use(routes);
+  public configure(container: Container): void {
+    this.setupMiddlewares();
+    this.setupCors();
+    this.setupRoutes(container);
+    this.setupErrorHandling();
+  }
 
-  // Error middleware
-  const errorMiddleware = container.get<ErrorMiddleware>(
-    INTERFACE_TYPE.ErrorMiddleWare
-  );
-  app.use(errorMiddleware.execute().bind(errorMiddleware));
+  private setupMiddlewares(): void {
+    this.app.use(express.json({ limit: "5mb" }));
+    this.app.use(express.urlencoded({ extended: true }));
+  }
 
-  return app;
-};
+  private setupCors(): void {
+    this.app.use(
+      cors({
+        origin: "*",
+        exposedHeaders: [
+          "Content-Length",
+          "x-pagination",
+          "x-total-amount",
+          "x-total-approved",
+          "x-total-pending",
+        ],
+      })
+    );
+  }
+
+  private setupRoutes(container: Container): void {
+    const router = createRoutes(container);
+    this.app.use(router);
+  }
+
+  private setupErrorHandling(): void {
+    this.app.use(this.errorMiddleware.execute().bind(this.errorMiddleware));
+  }
+
+  public getApp(): Express {
+    return this.app;
+  }
+}

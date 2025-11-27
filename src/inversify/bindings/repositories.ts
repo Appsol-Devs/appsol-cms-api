@@ -9,6 +9,7 @@ import type {
   IFeatureRequest,
   ILeadNextStep,
   ILeadStatus,
+  INotification,
   IOutreachType,
   IPayment,
   IReschedule,
@@ -48,10 +49,16 @@ import {
   FeatureRequestRepositoryImpl,
   SubscriptionReminderRepositoryImpl,
   CustomerSetupRepositoryImpl,
+  NotificationRepositoryImpl,
 } from "../../framework/mongodb/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
+  container
+    .bind<IBaseRepository<INotification>>(
+      INTERFACE_TYPE.NotificationRepositoryImpl
+    )
+    .to(NotificationRepositoryImpl);
   container
     .bind<IBaseRepository<ICustomerSetup>>(
       INTERFACE_TYPE.CustomerSetupRepositoryImpl

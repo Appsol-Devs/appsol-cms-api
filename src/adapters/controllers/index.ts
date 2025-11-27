@@ -24,3 +24,4 @@ export * from "./auth_controller/AuthController.js";
 export * from "./feature_request/FeatureRequestController.js";
 export * from "./subscription_reminder/SubscriptionReminderController.js";
 export * from "./customer_setup/CustomerSetupController.js";
+export * from "./notification_controller/NotificationController.js";

@@ -7,4 +7,8 @@ export interface IBaseInteractor<TDomain> {
   create(data: TDomain): Promise<TDomain>;
   update(id: string, data: TDomain): Promise<TDomain>;
   delete(id: string): Promise<TDomain>;
+  updateMany(
+    filter?: Partial<TDomain>,
+    data?: Partial<TDomain>
+  ): Promise<number | null | undefined>;
 }

@@ -16,6 +16,12 @@ export abstract class BaseInteractorImpl<TDomain>
   ) {
     this.repository = repository;
   }
+  async updateMany(
+    filter: Partial<TDomain>,
+    data: Partial<TDomain>
+  ): Promise<number | null | undefined> {
+    return this.repository.updateMany(filter, data);
+  }
   getAll(query: RequestQuery): Promise<PaginatedResponse<TDomain>> {
     return this.repository.getAll(query);
   }
