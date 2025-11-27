@@ -27,6 +27,9 @@ import {
   PermissionInteractorImpl,
   SubscriptionReminderInteractorImpl,
   CustomerSetupInteractorImpl,
+  NotificationInteractorImpl,
+  AuthInteractorImpl,
+  type IAuthInteractor,
 } from "../../application/interactors/index.js";
 import type { ICustomer } from "../../entities/Customer.js";
 import type { ILead } from "../../entities/Lead.js";
@@ -47,9 +50,16 @@ import type {
   IFeatureRequest,
   ISubscriptionReminder,
   ICustomerSetup,
+  INotification,
 } from "../../entities/index.js";
 
 export const bindAllInteractors = (container: Container) => {
+  container
+    .bind<IBaseInteractor<INotification>>(
+      INTERFACE_TYPE.NotificationInteractorImpl
+    )
+    .to(NotificationInteractorImpl);
+
   container
     .bind<IBaseInteractor<ICustomerSetup>>(
       INTERFACE_TYPE.CustomerSetupInteractorImpl
@@ -158,4 +168,8 @@ export const bindAllInteractors = (container: Container) => {
       INTERFACE_TYPE.CallStatusInteractorImpl
     )
     .to(CallStatusInteractorImpl);
+
+  container
+    .bind<IAuthInteractor>(INTERFACE_TYPE.AuthInteractorImpl)
+    .to(AuthInteractorImpl);
 };

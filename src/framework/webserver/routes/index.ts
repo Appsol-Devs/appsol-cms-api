@@ -1,5 +1,8 @@
 import express from "express";
-import authRoutes from "./authRoutes.js";
+import type { Container } from "inversify";
+import type { Router } from "express";
+
+import { createAuthRoutes } from "./authRoutes.js";
 import userRoutes from "./userRoutes.js";
 import roleRoutes from "./roleRoutes.js";
 import permissionRoutes from "./permissionRoutes.js";
@@ -22,29 +25,33 @@ import featureRequestRoutes from "./featureRequestRoutes.js";
 import subscriptionReminderRoutes from "./subscriptionReminderRoutes.js";
 import customerSetupRoutes from "./customerSetupRoutes.js";
 
-const router = express.Router();
+export const createRoutes = (container: Container): Router => {
+  const router = express.Router();
 
-router.use(authRoutes);
-router.use(userRoutes);
-router.use(roleRoutes);
-router.use(permissionRoutes);
-router.use(complaintTypeRoutes);
-router.use(softwareRoutes);
-router.use(complaintCategoryRoutes);
-router.use(callStatusRoutes);
-router.use(setupStatusRoutes);
-router.use(subscriptionRoutes);
-router.use(leadStatusroutes);
-router.use(leadNextStepRoutes);
-router.use(leadRoutes);
-router.use(customerRoutes);
-router.use(customerComplaintRoutes);
-router.use(customerOutreachRoutes);
-router.use(outreachTypeRoutes);
-router.use(rescheduleRoutes);
-router.use(paymentRoutes);
-router.use(featureRequestRoutes);
-router.use(subscriptionReminderRoutes);
-router.use(customerSetupRoutes);
+  router.use(createAuthRoutes(container));
+  router.use(userRoutes(container));
+  router.use(roleRoutes(container));
+  router.use(permissionRoutes(container));
+  router.use(complaintTypeRoutes(container));
+  router.use(softwareRoutes(container));
+  router.use(complaintCategoryRoutes(container));
+  router.use(callStatusRoutes(container));
+  router.use(setupStatusRoutes(container));
+  router.use(subscriptionRoutes(container));
+  router.use(leadStatusroutes(container));
+  router.use(leadNextStepRoutes(container));
+  router.use(leadRoutes(container));
+  router.use(customerRoutes(container));
+  router.use(customerComplaintRoutes(container));
+  router.use(customerOutreachRoutes(container));
+  router.use(outreachTypeRoutes(container));
+  router.use(rescheduleRoutes(container));
+  router.use(paymentRoutes(container));
+  router.use(featureRequestRoutes(container));
+  router.use(subscriptionReminderRoutes(container));
+  router.use(customerSetupRoutes(container));
 
-export default router;
+  return router;
+};
+
+export default createRoutes;

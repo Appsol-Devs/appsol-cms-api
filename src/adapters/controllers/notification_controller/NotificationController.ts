@@ -29,8 +29,8 @@ export class NotificationController extends BaseController<INotification> {
     next: NextFunction
   ): TGenericPromise {
     try {
-      //const response = await this.interactor.markAllNotificationsAsRead();
-      return res.status(HttpStatusCode.OK).json();
+      const response = await this.interactor.updateMany();
+      return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
     }

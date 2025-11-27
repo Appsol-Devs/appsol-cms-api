@@ -97,7 +97,6 @@ export class NotificationRepositoryImpl extends BaseRepoistoryImpl<INotification
   // ✅ Override create
   async create(data: Partial<INotification>): Promise<INotification> {
     const dataWithReferences = this.assignReferences(data);
-
     const created = await this.model.create({ ...data, ...dataWithReferences });
     const populated = await created.populate([
       { path: "user", select: "firstName lastName phone email" },

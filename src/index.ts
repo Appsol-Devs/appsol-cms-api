@@ -1,16 +1,33 @@
+// index.ts
 import "reflect-metadata";
-import { container, createApp } from "./framework/webserver/index.js";
-import config from "./config/config.js";
-import serverConfig from "./framework/webserver/server.js";
-import type { ILogger } from "./framework/index.js";
+import { container } from "./inversify/container.js";
 import { INTERFACE_TYPE } from "./utils/constants/bindings.js";
-import mongoose from "mongoose";
-import connection from "./framework/mongodb/connection.js";
+import type { IApplication } from "./framework/webserver/Application.js";
+import type { ILogger } from "./framework/index.js";
 
-const app = createApp();
+const main = async () => {
+  try {
+    const app = container.get<IApplication>(INTERFACE_TYPE.Application);
+    await app.start();
 
-const logger = container.get<ILogger>(INTERFACE_TYPE.Logger);
+    // Graceful shutdown
+    const logger = container.get<ILogger>(INTERFACE_TYPE.Logger);
 
-// Start database and server
-connection(mongoose, config, logger).connectToMongo();
-serverConfig(app, config, logger).startServer();
+    process.on("SIGTERM", async () => {
+      logger.info("SIGTERM received, shutting down gracefully...");
+      await app.shutdown();
+      process.exit(0);
+    });
+
+    process.on("SIGINT", async () => {
+      logger.info("SIGINT received, shutting down gracefully...");
+      await app.shutdown();
+      process.exit(0);
+    });
+  } catch (error) {
+    console.error("Failed to start application:", error);
+    process.exit(1);
+  }
+};
+
+main();

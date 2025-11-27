@@ -12,7 +12,7 @@ export class NotificationInteractorImpl extends BaseInteractorImpl<INotification
     super(notificationRepositoryImpl);
   }
 
-  async markAllNotificationsAsRead(): Promise<number | null | undefined> {
+  async updateMany(): Promise<number | null | undefined> {
     const result = await this.repository.updateMany(
       { isRead: false },
       { isRead: true }
