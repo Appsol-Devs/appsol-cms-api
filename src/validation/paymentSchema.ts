@@ -4,6 +4,7 @@ import { baseQuerySchema } from "./baseSchema.js";
 export const paymentSchema = baseQuerySchema.extend({
   customerId: z.string().optional(),
   subscriptionTypeId: z.string(),
+  softwareId: z.string().optional(),
   paymentDate: z.string(),
   renewalDate: z.string(),
   notes: z.string().optional(),

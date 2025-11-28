@@ -37,7 +37,6 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
     // ✅ Simple filters
     if (query.customerId) filter.customerId = query.customerId;
     if (query.status) filter.status = query.status;
-    if (query.loggedBy) filter.loggedBy = query.loggedBy;
     if (query.softwareId) filter.software = query.softwareId;
     if (query.reminderType) filter.reminderType = query.reminderType;
     if (query.isSent !== undefined) filter.isSent = query.isSent;
@@ -55,8 +54,8 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
       this.model
         .find(filter)
         .populate("customer", "name email phone")
-        .populate("loggedBy", "firstName lastName email")
         .populate("software", "name description colorCode")
+        .populate("payment")
 
         .skip(skip)
         .limit(limit),
@@ -79,7 +78,7 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
     const reminder = await this.model
       .findById(id)
       .populate("customer", "name email phone")
-      .populate("loggedBy", "firstName lastName email")
+      .populate("payment")
       .populate("software", "name description colorCode");
 
     if (!reminder) throw new NotFoundError("Subscription Reminder not found");
@@ -93,7 +92,7 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
     const refs: Partial<ISubscriptionReminder> = {};
     if (data.customerId) refs.customer = data.customerId;
     if (data.softwareId) refs.software = data.softwareId;
-
+    if (data.paymentId) refs.payment = data.paymentId;
     return refs;
   }
 
@@ -106,8 +105,8 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
     const created = await this.model.create({ ...data, ...dataWithReferences });
     const populated = await created.populate([
       { path: "customer", select: "name email" },
-      { path: "loggedBy", select: "firstName lastName email" },
       { path: "software", select: "name description colorCode" },
+      { path: "payment" },
     ]);
 
     return this.mapper.toEntity(populated);
@@ -123,7 +122,7 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
     const updated = await this.model
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
       .populate("customer", "name email")
-      .populate("loggedBy", "firstName lastName email")
+      .populate("payment")
       .populate("software", "name description colorCode");
 
     if (!updated) throw new NotFoundError("Subscription Reminder not found");

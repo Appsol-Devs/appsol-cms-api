@@ -52,14 +52,28 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       };
     }
 
+    //renewal date range
+    if (query.renewalDate) {
+      if (query.renewalDate.gte) {
+        filter.renewalDate = {
+          $gte: query.renewalDate.gte,
+        };
+      }
+      if (query.renewalDate.lte) {
+        filter.renewalDate = {
+          $lte: query.renewalDate.lte,
+        };
+      }
+    }
+
     const [items, total] = await Promise.all([
       this.model
         .find(filter)
-        .populate("customer", "name email phone")
+        .populate("customer", "name email phone companyName")
         .populate("loggedBy", "firstName lastName email")
         .populate("subscriptionType", "name description colorCode")
         .populate("approvedOrRejectedBy", "firstName lastName email")
-
+        .populate("software", "name description")
         .skip(skip)
         .limit(limit),
       this.model.countDocuments(filter),
@@ -68,39 +82,42 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
     const data = items.map(this.mapper.toEntity);
     const totalPages = Math.ceil(total / limit);
     // get total sum of amount field both pending and approved payments
-    const [{ totalPending, totalApproved, totalAmount }] =
-      await this.model.aggregate([
-        {
-          $match: { ...filter },
-        },
-        {
-          $group: {
-            _id: null,
-            totalPending: {
-              $sum: {
-                $cond: [{ $eq: ["$status", "pending"] }, "$amount", 0],
-              },
-            },
-            totalApproved: {
-              $sum: {
-                $cond: [{ $eq: ["$status", "approved"] }, "$amount", 0],
-              },
-            },
-            totalAmount: {
-              $sum: "$amount",
+    const results = await this.model.aggregate([
+      {
+        $match: { ...filter },
+      },
+      {
+        $group: {
+          _id: null,
+          totalPending: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "pending"] }, "$amount", 0],
             },
           },
+          totalApproved: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "approved"] }, "$amount", 0],
+            },
+          },
+          totalAmount: {
+            $sum: "$amount",
+          },
         },
-      ]);
+      },
+    ]);
+
+    const totalPending = results[0]?.totalPending || 0;
+    const totalApproved = results[0]?.totalApproved || 0;
+    const totalAmount = results[0]?.totalAmount || 0;
 
     return {
       data,
       totalPages,
       totalCount: total,
       pageCount: pageIndex,
-      totalSum: totalAmount,
-      totalPending: totalPending,
-      totalApproved: totalApproved,
+      totalSum: totalAmount || 0,
+      totalPending: totalPending || 0,
+      totalApproved: totalApproved || 0,
     };
   }
 
@@ -108,9 +125,10 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
   async getById(id: string): Promise<IPayment> {
     const complaint = await this.model
       .findById(id)
-      .populate("customer", "name email phone")
+      .populate("customer", "name email phone companyName")
       .populate("loggedBy", "firstName lastName email")
       .populate("approvedOrRejectedBy", "firstName lastName email")
+      .populate("software", "name description ")
       .populate("subscriptionType", "name description colorCode");
 
     if (!complaint) throw new NotFoundError("Payment not found");
@@ -122,6 +140,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
     if (data.customerId) data.customer = data.customerId;
     if (data.subscriptionTypeId)
       data.subscriptionType = data.subscriptionTypeId;
+    if (data.softwareId) data.software = data.softwareId;
     return data;
   }
 
@@ -131,10 +150,11 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
 
     const created = await this.model.create({ ...data, ...dataWithReferences });
     const populated = await created.populate([
-      { path: "customer", select: "name email" },
+      { path: "customer", select: "name email companyName" },
       { path: "loggedBy", select: "firstName lastName email" },
       { path: "subscriptionType", select: "name description colorCode" },
       { path: "approvedOrRejectedBy", select: "firstName lastName email" },
+      { path: "software", select: "name description" },
     ]);
 
     return this.mapper.toEntity(populated);
@@ -146,7 +166,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
 
     const updated = await this.model
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
-      .populate("customer", "name email")
+      .populate("customer", "name email companyName")
       .populate("loggedBy", "firstName lastName email")
       .populate("approvedOrRejectedBy", "firstName lastName email")
       .populate("subscriptionType", "name description colorCode");

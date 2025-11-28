@@ -1,13 +1,17 @@
 import type { TPriority } from "../utils/constants/genTypes.js";
 import type { ICustomer } from "./Customer.js";
-import type { ISoftware } from "./index.js";
+import type { IPayment, ISoftware } from "./index.js";
 import type { IUser, RequestQuery } from "./User.js";
 
 export class ISubscriptionReminder {
   constructor(
     public readonly _id?: string,
+    public readonly title?: string,
+    public readonly message?: string,
     public readonly reminderCode?: string,
     public readonly customerId?: string,
+    public readonly paymentId?: string,
+    public payment?: IPayment | string,
     public customer?: ICustomer | string,
     public readonly softwareId?: string,
     public software?: ISoftware | string,
@@ -26,6 +30,7 @@ export type TSubscriptionReminderType =
   | "30_days"
   | "14_days"
   | "7_days"
+  | "due_today"
   | "overdue";
 
 export interface ISubscriptionReminderRequestQuery extends RequestQuery {

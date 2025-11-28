@@ -21,6 +21,7 @@ const config: IConfig = {
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME?.toString() || "",
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || "",
   cloudinaryApiSecrete: process.env.CLOUDINARY_API_SECRETE || "",
+  internalApiKey: process.env.INTERNAL_API_KEY || "",
 };
 
 export default config;

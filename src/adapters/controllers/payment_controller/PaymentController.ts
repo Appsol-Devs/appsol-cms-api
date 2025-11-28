@@ -70,7 +70,10 @@ export class PaymentController extends BaseController<IPayment> {
         subscriptionTypeId:
           req.query.subscriptionTypeId?.toString() ?? undefined,
         paymentDate: req.query.paymentDate?.toString() ?? undefined,
-        renewalDate: req.query.renewalDate?.toString() ?? undefined,
+        renewalDate: {
+          gte: req.query.renewalStartDate?.toString() ?? undefined,
+          lte: req.query.renewalEndDate?.toString() ?? undefined,
+        },
       };
 
       const response = await this.interactor.getAll(query);
