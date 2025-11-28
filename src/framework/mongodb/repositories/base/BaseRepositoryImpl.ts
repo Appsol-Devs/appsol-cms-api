@@ -19,6 +19,21 @@ export abstract class BaseRepoistoryImpl<TDomain>
       toDtoCreation: (payload: TDomain) => any;
     }
   ) {}
+
+  async findOne(filter: Partial<TDomain>): Promise<TDomain | null | undefined> {
+    try {
+      if (!filter || Object.keys(filter as any).length === 0) {
+        throw new UnprocessableEntityError("Filter is required");
+      }
+
+      const doc = await this.model.findOne(filter as any);
+      if (!doc) return null;
+      return this.mapper.toEntity(doc);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async updateMany(
     filter: Partial<TDomain>,
     data: Partial<TDomain>

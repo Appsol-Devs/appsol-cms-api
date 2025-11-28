@@ -13,4 +13,5 @@ export interface IConfig {
   cloudinaryCloudName: string;
   cloudinaryApiKey: string;
   cloudinaryApiSecrete: string;
+  internalApiKey: string;
 }

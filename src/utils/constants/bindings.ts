@@ -11,6 +11,7 @@ export const INTERFACE_TYPE = {
   Application: Symbol.for("Application"),
   NotificationService: Symbol.for("NotificationService"),
   AuthMiddleware: Symbol.for("AuthMiddleware"),
+  ApikeyMiddleware: Symbol.for("ApikeyMiddleware"),
   UserController: Symbol.for("UserController"),
   UserInteractor: Symbol.for("UserInteractor"),
   AuthRepositoryImpl: Symbol.for("AuthRepositoryImpl"),
@@ -102,4 +103,5 @@ export const INTERFACE_TYPE = {
   NotificationRepositoryImpl: Symbol.for("NotificationRepositoryImpl"),
   NotificationInteractorImpl: Symbol.for("NotificationInteractorImpl"),
   NotificationController: Symbol.for("NotificationController"),
+  ReminderServiceImpl: Symbol.for("ReminderServiceImpl"),
 };

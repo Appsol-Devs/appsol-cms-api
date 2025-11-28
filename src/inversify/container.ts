@@ -35,6 +35,9 @@ import {
   Application,
   type IApplication,
 } from "../framework/webserver/Application.js";
+import type { IReminderService } from "../framework/services/reminder/IReminderService.js";
+import { ReminderService } from "../framework/services/reminder/ReminderServiceImpl.js";
+import { ApiKeyMiddleware } from "../framework/webserver/index.js";
 
 const container = new Container();
 
@@ -61,6 +64,9 @@ container
 container
   .bind<ErrorMiddleware>(INTERFACE_TYPE.ErrorMiddleWare)
   .to(ErrorMiddleware);
+container
+  .bind<ApiKeyMiddleware>(INTERFACE_TYPE.ApikeyMiddleware)
+  .to(ApiKeyMiddleware);
 
 // Services
 container
@@ -74,6 +80,10 @@ container
 container
   .bind<IMailer>(INTERFACE_TYPE.Mailer)
   .to(MailerImpl)
+  .inSingletonScope();
+container
+  .bind<IReminderService>(INTERFACE_TYPE.ReminderServiceImpl)
+  .to(ReminderService)
   .inSingletonScope();
 
 // Express App (must be bound before Server)

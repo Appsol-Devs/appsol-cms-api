@@ -13,4 +13,5 @@ export interface IBaseRepository<TDomain> {
     filter: Partial<TDomain>,
     data: Partial<TDomain>
   ): Promise<number | null | undefined>;
+  findOne(filter: Partial<TDomain>): Promise<TDomain | null | undefined>;
 }

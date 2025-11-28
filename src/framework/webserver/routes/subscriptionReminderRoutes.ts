@@ -7,6 +7,7 @@ import { BaseRouter } from "./BaseRoutes.js";
 import type { SubscriptionReminderController } from "../../../adapters/controllers/index.js";
 import { baseQuerySchema } from "../../../validation/baseSchema.js";
 import type { Router } from "express";
+import { ApiKeyMiddleware } from "../middleware/ApiKeyMiddleware.js";
 
 export const createSubscriptionReminderRoutes = (
   container: Container
@@ -16,6 +17,10 @@ export const createSubscriptionReminderRoutes = (
   );
   const authMiddleware = container.get<AuthMiddleware>(
     INTERFACE_TYPE.AuthMiddleware
+  );
+
+  const apiKeyMiddleware = container.get<ApiKeyMiddleware>(
+    INTERFACE_TYPE.ApikeyMiddleware
   );
 
   const permissionMap = {
@@ -42,6 +47,15 @@ export const createSubscriptionReminderRoutes = (
       .checkPermission(Permissions.VIEW_SUBSCRIPTION_REMINDERS)
       .bind(authMiddleware),
     controller.getRemindersByCustomer.bind(controller)
+  );
+  router.post(
+    "/api/trigger-reminders",
+    apiKeyMiddleware.execute.bind(apiKeyMiddleware),
+    authMiddleware.authenticateToken.bind(authMiddleware),
+    authMiddleware
+      .checkPermission(Permissions.CREATE_SUBSCRIPTION_REMINDER)
+      .bind(authMiddleware),
+    controller.triggerReminders.bind(controller)
   );
 
   return router;

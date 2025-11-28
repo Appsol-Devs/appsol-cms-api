@@ -7,6 +7,8 @@ const paymentSchema: SchemaDefinition = {
   paymentCode: { type: String, unique: true },
   customerId: { type: String, required: true },
   customer: { type: Schema.Types.ObjectId, required: true, ref: "Customer" },
+  softwareId: { type: String, required: true },
+  software: { type: Schema.Types.ObjectId, required: true, ref: "Software" },
   approvalNotes: { type: String, required: false },
   amount: { type: Number, required: true },
   subscriptionTypeId: { type: String, required: true },

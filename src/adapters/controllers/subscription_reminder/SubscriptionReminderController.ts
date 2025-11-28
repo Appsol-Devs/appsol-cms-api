@@ -17,14 +17,32 @@ import type {
   TSubscriptionReminderType,
 } from "../../../entities/SubscriptionReminder.js";
 import type { SubscriptionReminderInteractorImpl } from "../../../application/interactors/index.js";
+import type { IReminderService } from "../../../framework/services/reminder/IReminderService.js";
 
 @injectable()
 export class SubscriptionReminderController extends BaseController<ISubscriptionReminder> {
   constructor(
     @inject(INTERFACE_TYPE.SubscriptionReminderInteractorImpl)
-    interactor: SubscriptionReminderInteractorImpl
+    interactor: SubscriptionReminderInteractorImpl,
+    @inject(INTERFACE_TYPE.ReminderServiceImpl)
+    private reminderService: IReminderService
   ) {
     super(interactor);
+  }
+
+  async triggerReminders(req: Request, res: Response, next: NextFunction) {
+    console.log("triggerReminders");
+    try {
+      const result = await this.reminderService.triggerReminders();
+
+      return res.status(HttpStatusCode.OK).json({
+        success: true,
+        message: "Reminders processed successfully",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   async getRemindersByCustomer(

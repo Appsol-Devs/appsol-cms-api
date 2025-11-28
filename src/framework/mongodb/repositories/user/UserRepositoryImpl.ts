@@ -111,7 +111,9 @@ export class UserRepositoryImpl implements IUserRepository {
     try {
       const updatedUser = await User.findOneAndUpdate({ _id: id }, data, {
         new: true,
-      }).select("-password");
+      })
+        .select("-password")
+        .populate("role");
 
       if (updatedUser) {
         return UserMapper.toEntity(updatedUser);
