@@ -1,3 +1,4 @@
+import type { ISoftware } from "./index.js";
 import type { ILeadNextStep } from "./lookups/LeadNextStep.js";
 import type { ILeadStatus } from "./lookups/LeadStatus.js";
 
@@ -12,6 +13,8 @@ export class ILead {
     public readonly companyName?: string,
     public readonly leadSource?: string,
     public readonly initialEnquiryDate?: string,
+    public readonly softwareId?: string,
+    public software?: ISoftware | string,
     public readonly leadStatus?: `${LeadStatus}`,
     public readonly loggedBy?: IUser | string,
     public readonly createdAt?: string,

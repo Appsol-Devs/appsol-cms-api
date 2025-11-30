@@ -24,7 +24,7 @@ const subscriptionSchema = new Schema({
   subscriptionTypeId: {
     type: Schema.Types.ObjectId,
     ref: "SubscriptionType",
-    required: true,
+    required: false,
     index: true,
   },
   status: {
@@ -54,6 +54,10 @@ const subscriptionSchema = new Schema({
     index: true,
   },
   lastPaymentId: {
+    type: String,
+    required: false,
+  },
+  lastPayment: {
     type: Schema.Types.ObjectId,
     ref: "Payment",
   },
@@ -94,13 +98,13 @@ subscriptionSchema.index({ status: 1, nextBillingDate: 1 });
 subscriptionSchema.index({ status: 1, currentPeriodEnd: 1 });
 
 // Prevent duplicate active subscriptions for same customer + software
-subscriptionSchema.index(
-  { customerId: 1, softwareId: 1, status: 1 },
-  {
-    unique: true,
-    partialFilterExpression: { status: "active" },
-  }
-);
+// subscriptionSchema.index(
+//   { customerId: 1, softwareId: 1, status: 1 },
+//   {
+//     unique: true,
+//     partialFilterExpression: { status: "active" },
+//   }
+// );
 
 export const { Model: SubscriptionModel, Mapper: SubscriptionModelMapper } =
   createModel<ISubscription>(

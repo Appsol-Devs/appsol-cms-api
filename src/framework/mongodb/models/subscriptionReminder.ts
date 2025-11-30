@@ -12,7 +12,13 @@ const subscriptionReminderSchema: SchemaDefinition = {
   softwareId: { type: String, required: true },
   software: { type: Schema.Types.ObjectId, required: true, ref: "Software" },
   paymentId: { type: String, required: true },
-  payment: { type: Schema.Types.ObjectId, required: true, ref: "Payment" },
+  payment: { type: Schema.Types.ObjectId, required: false, ref: "Payment" },
+  subscriptionId: { type: String, required: false },
+  subscription: {
+    type: Schema.Types.ObjectId,
+    required: false,
+    ref: "Subscription",
+  },
   dueDate: { type: Date, required: true },
   isSent: { type: Boolean, required: true, default: false },
   reminderType: {

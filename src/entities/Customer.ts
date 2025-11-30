@@ -1,5 +1,6 @@
 import type { IGeolocation } from "./Lead.js";
-import type { IUser } from "./User.js";
+import type { ISoftware } from "./lookups/Software.js";
+import type { IUser, RequestQuery } from "./User.js";
 
 export class ICustomer {
   constructor(
@@ -11,6 +12,8 @@ export class ICustomer {
     public readonly dateConverted?: string,
     public readonly notes?: string,
     public readonly geolocation?: IGeolocation,
+    public readonly softwareId?: string,
+    public software?: ISoftware | string,
     public readonly location?: string,
     public readonly status?: CustomerStatus,
     public readonly loggedBy?: IUser | string,
@@ -21,3 +24,11 @@ export class ICustomer {
 }
 
 export type CustomerStatus = "active" | "inactive";
+
+export interface ICustomerRequestQuery extends RequestQuery {
+  status?: CustomerStatus;
+  name?: string;
+  email?: string;
+  companyName?: string;
+  softwareId?: string;
+}
