@@ -1,3 +1,4 @@
+import type { IDateRange } from "../utils/constants/genTypes.js";
 import type { ICustomer } from "./Customer.js";
 import type { ICustomerComplaint } from "./CustomerComplaint.js";
 import type { ICustomerOutreach } from "./CustomerOutreach.js";
@@ -35,8 +36,5 @@ export interface IPaymentRequestQuery extends RequestQuery {
   status?: "pending" | "approved" | "rejected" | undefined;
   loggedBy?: string | undefined;
   paymentDate?: string | undefined;
-  renewalDate?: {
-    gte?: Date | string | undefined | null;
-    lte?: Date | string | undefined | null;
-  };
+  renewalDate?: IDateRange;
 }

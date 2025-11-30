@@ -15,6 +15,7 @@ import type {
   IReschedule,
   ISetupStatus,
   ISoftware,
+  ISubscription,
   ISubscriptionReminder,
   ISubscriptionType,
 } from "../../entities/index.js";
@@ -50,15 +51,23 @@ import {
   SubscriptionReminderRepositoryImpl,
   CustomerSetupRepositoryImpl,
   NotificationRepositoryImpl,
+  SubscriptionRepositoryImpl,
 } from "../../framework/mongodb/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
   container
+    .bind<IBaseRepository<ISubscription>>(
+      INTERFACE_TYPE.SubscriptionRepositoryImpl
+    )
+    .to(SubscriptionRepositoryImpl);
+
+  container
     .bind<IBaseRepository<INotification>>(
       INTERFACE_TYPE.NotificationRepositoryImpl
     )
     .to(NotificationRepositoryImpl);
+
   container
     .bind<IBaseRepository<ICustomerSetup>>(
       INTERFACE_TYPE.CustomerSetupRepositoryImpl
