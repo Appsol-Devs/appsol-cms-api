@@ -71,7 +71,10 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
         .find(filter)
         .populate("customer", "name email phone companyName")
         .populate("loggedBy", "firstName lastName email")
-        .populate("subscriptionType", "name description colorCode")
+        .populate(
+          "subscriptionType",
+          "name description colorCode durationInMonths"
+        )
         .populate("approvedOrRejectedBy", "firstName lastName email")
         .populate("software", "name description")
         .skip(skip)
@@ -129,7 +132,10 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       .populate("loggedBy", "firstName lastName email")
       .populate("approvedOrRejectedBy", "firstName lastName email")
       .populate("software", "name description ")
-      .populate("subscriptionType", "name description colorCode");
+      .populate(
+        "subscriptionType",
+        "name description colorCode durationInMonths"
+      );
 
     if (!complaint) throw new NotFoundError("Payment not found");
     return this.mapper.toEntity(complaint);
@@ -169,7 +175,10 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       .populate("customer", "name email companyName")
       .populate("loggedBy", "firstName lastName email")
       .populate("approvedOrRejectedBy", "firstName lastName email")
-      .populate("subscriptionType", "name description colorCode");
+      .populate(
+        "subscriptionType",
+        "name description colorCode durationInMonths"
+      );
 
     if (!updated) throw new NotFoundError("Payment not found");
     return this.mapper.toEntity(updated);

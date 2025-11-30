@@ -3,17 +3,23 @@ import type { ICustomer, ILead } from "../../../entities/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseInteractorImpl } from "../base/BaseInteractorImpl.js";
 import type { LeadRepositoryImpl } from "../../../framework/mongodb/repositories/lead/index.js";
-import type { CustomerRepositoryImpl } from "../../../framework/mongodb/index.js";
+import type {
+  CustomerRepositoryImpl,
+  SubscriptionRepositoryImpl,
+} from "../../../framework/mongodb/index.js";
 
 export class LeadInteractorImpl extends BaseInteractorImpl<ILead> {
   constructor(
     @inject(INTERFACE_TYPE.LeadRepositoryImpl)
     leadRepositoryImpl: LeadRepositoryImpl,
     @inject(INTERFACE_TYPE.CustomerRepositoryImpl)
-    readonly customerRepository: CustomerRepositoryImpl
+    readonly customerRepository: CustomerRepositoryImpl,
+    @inject(INTERFACE_TYPE.SubscriptionRepositoryImpl)
+    readonly subscriptionRepository: SubscriptionRepositoryImpl
   ) {
     super(leadRepositoryImpl);
     this.customerRepository = customerRepository;
+    this.subscriptionRepository = subscriptionRepository;
   }
 
   async update(id: string, data: ILead): Promise<ILead> {
@@ -35,9 +41,27 @@ export class LeadInteractorImpl extends BaseInteractorImpl<ILead> {
         location: res.location,
         notes: res.notes,
         geolocation: res.geolocation,
+        softwareId: res.softwareId,
       };
 
-      await this.customerRepository.create(customer);
+      const newCustomer = await this.customerRepository.create(customer);
+      if (newCustomer) {
+        const startDate = new Date();
+        const currentPeriodStart = new Date(startDate);
+        const currentPeriodEnd = new Date(startDate);
+        currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
+        await this.subscriptionRepository.create({
+          customerId: newCustomer._id,
+          softwareId: customer.softwareId,
+          // amount: payment.amount,
+          nextBillingDate: new Date(currentPeriodEnd),
+          currentPeriodStart,
+          currentPeriodEnd,
+          startDate: startDate,
+          loggedBy: res.loggedBy as string,
+          status: "active",
+        });
+      }
     }
     return res;
   }

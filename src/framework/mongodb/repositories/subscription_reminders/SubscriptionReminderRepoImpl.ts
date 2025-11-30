@@ -11,6 +11,7 @@ import {
   SubscriptionReminderModel,
   SubscriptionReminderModelMapper,
 } from "../../models/index.js";
+import mongoose from "mongoose";
 
 @injectable()
 export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubscriptionReminder> {
@@ -35,12 +36,17 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
     }
 
     // ✅ Simple filters
-    if (query.customerId) filter.customerId = query.customerId;
+    if (query.customerId)
+      filter.customer = new mongoose.Types.ObjectId(query.customerId);
     if (query.status) filter.status = query.status;
-    if (query.softwareId) filter.software = query.softwareId;
+    if (query.softwareId)
+      filter.software = new mongoose.Types.ObjectId(query.softwareId);
     if (query.reminderType) filter.reminderType = query.reminderType;
     if (query.isSent !== undefined) filter.isSent = query.isSent;
     if (query.sentVia) filter.sentVia = query.sentVia;
+
+    if (query.subscriptionId)
+      filter.subscription = new mongoose.Types.ObjectId(query.subscriptionId);
 
     // ✅ Date range
     if (query.startDate && query.endDate) {
@@ -56,7 +62,7 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
         .populate("customer", "name email phone")
         .populate("software", "name description colorCode")
         .populate("payment")
-
+        .populate("subscription")
         .skip(skip)
         .limit(limit),
       this.model.countDocuments(filter),
@@ -79,8 +85,8 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
       .findById(id)
       .populate("customer", "name email phone")
       .populate("payment")
-      .populate("software", "name description colorCode");
-
+      .populate("software", "name description colorCode")
+      .populate("subscription");
     if (!reminder) throw new NotFoundError("Subscription Reminder not found");
     return this.mapper.toEntity(reminder);
   }
@@ -93,6 +99,7 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
     if (data.customerId) refs.customer = data.customerId;
     if (data.softwareId) refs.software = data.softwareId;
     if (data.paymentId) refs.payment = data.paymentId;
+    if (data.subscriptionId) refs.subscription = data.subscriptionId;
     return refs;
   }
 
@@ -107,6 +114,7 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
       { path: "customer", select: "name email" },
       { path: "software", select: "name description colorCode" },
       { path: "payment" },
+      { path: "subscription" },
     ]);
 
     return this.mapper.toEntity(populated);
@@ -123,8 +131,8 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
       .populate("customer", "name email")
       .populate("payment")
-      .populate("software", "name description colorCode");
-
+      .populate("software", "name description colorCode")
+      .populate("subscription");
     if (!updated) throw new NotFoundError("Subscription Reminder not found");
     return this.mapper.toEntity(updated);
   }

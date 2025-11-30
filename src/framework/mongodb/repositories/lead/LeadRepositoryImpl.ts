@@ -1,6 +1,9 @@
 import type { PaginatedResponse } from "../../../../entities/index.js";
 import type { ILead, ILeadRequestQuery } from "../../../../entities/Lead.js";
-import { NotFoundError } from "../../../../error_handler/index.js";
+import {
+  BadRequestError,
+  NotFoundError,
+} from "../../../../error_handler/index.js";
 import { LeadModel, LeadModelMapper } from "../../models/lead.js";
 import { BaseRepoistoryImpl } from "../base/BaseRepositoryImpl.js";
 
@@ -51,6 +54,7 @@ export class LeadRepositoryImpl extends BaseRepoistoryImpl<ILead> {
         //.populate("leadStage", "name")
         .populate("nextStep", "name")
         .populate("loggedBy", "firstName lastName email")
+        .populate("software", "name description colorCode")
         .skip(skip)
         .limit(limit),
       this.model.countDocuments(filter),
@@ -75,5 +79,35 @@ export class LeadRepositoryImpl extends BaseRepoistoryImpl<ILead> {
       .populate("loggedBy", "firstName lastName email");
     if (!lead) throw new NotFoundError("Lead not found");
     return this.mapper.toEntity(lead);
+  }
+
+  // ✅ Override create
+  async create(data: Partial<ILead>): Promise<ILead> {
+    const dataWithReferences = this.assignReferences(data);
+
+    const created = await this.model.create({ ...data, ...dataWithReferences });
+    const populated = await created.populate([
+      { path: "software", select: "name description colorCode" },
+    ]);
+
+    return this.mapper.toEntity(populated);
+  }
+
+  // ✅ Override update
+  async update(id: string, data: Partial<ILead>): Promise<ILead> {
+    const dataWithReferences = this.assignReferences(data);
+    const updated = await this.model
+      .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
+      .populate("software", "name description colorCode");
+    if (!updated) throw new BadRequestError("Lead not found");
+    return this.mapper.toEntity(updated);
+  }
+
+  private assignReferences(data: Partial<ILead>): ILead {
+    const refs: Partial<ILead> = {};
+
+    if (data.softwareId) refs.software = data.softwareId;
+
+    return refs;
   }
 }

@@ -1,6 +1,6 @@
 import type { TPriority } from "../utils/constants/genTypes.js";
 import type { ICustomer } from "./Customer.js";
-import type { IPayment, ISoftware } from "./index.js";
+import type { IPayment, ISoftware, ISubscription } from "./index.js";
 import type { IUser, RequestQuery } from "./User.js";
 
 export class ISubscriptionReminder {
@@ -12,6 +12,8 @@ export class ISubscriptionReminder {
     public readonly customerId?: string,
     public readonly paymentId?: string,
     public payment?: IPayment | string,
+    public readonly subscriptionId?: string,
+    public subscription?: ISubscription | string,
     public customer?: ICustomer | string,
     public readonly softwareId?: string,
     public software?: ISoftware | string,
@@ -36,6 +38,7 @@ export type TSubscriptionReminderType =
 export interface ISubscriptionReminderRequestQuery extends RequestQuery {
   customerId?: string | undefined;
   softwareId?: string | undefined;
+  subscriptionId?: string | undefined;
   reminderType?: TSubscriptionReminderType | undefined;
   isSent?: boolean | undefined;
   sentVia?: "email" | "notification" | "sms" | undefined;
