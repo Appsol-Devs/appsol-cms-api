@@ -22,8 +22,12 @@ import outreachTypeRoutes from "./lookups/outreachType.js";
 import rescheduleRoutes from "./rescheduleRoutes.js";
 import paymentRoutes from "./paymentRoutes.js";
 import featureRequestRoutes from "./featureRequestRoutes.js";
-import subscriptionReminderRoutes from "./subscriptionReminderRoutes.js";
+import subscriptionReminderRoutes, {
+  createSubscriptionReminderRoutes,
+} from "./subscriptionReminderRoutes.js";
 import customerSetupRoutes from "./customerSetupRoutes.js";
+import createNotificationRoutes from "./notificationRoutes.js";
+import createSubscriptionRoutes from "./subscriptionRoutes.js";
 
 export const createRoutes = (container: Container): Router => {
   const router = express.Router();
@@ -50,6 +54,9 @@ export const createRoutes = (container: Container): Router => {
   router.use(featureRequestRoutes(container));
   router.use(subscriptionReminderRoutes(container));
   router.use(customerSetupRoutes(container));
+  router.use(createNotificationRoutes(container));
+  router.use(createSubscriptionReminderRoutes(container));
+  router.use(createSubscriptionRoutes(container));
 
   return router;
 };

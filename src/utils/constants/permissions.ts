@@ -107,6 +107,11 @@ const Permissions = Object.freeze({
   VIEW_NOTIFICATION: "view:notification",
   MARK_NOTIFICATION_AS_READ: "mark_as_read:notification",
   MARK_ALL_NOTIFICATIONS_AS_READ: "mark_all_as_read:notification",
+  CREATE_SUBSCRIPTION: "create:subscription",
+  VIEW_SUBSCRIPTIONS: "view:subscriptions",
+  VIEW_SUBSCRIPTION: "view:subscription",
+  UPDATE_SUBSCRIPTION: "update:subscription",
+  DELETE_SUBSCRIPTION: "delete:subscription",
 } as const);
 
 export default Permissions;

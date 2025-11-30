@@ -13,3 +13,4 @@ export * from "./FeatureRequest.js";
 export * from "./SubscriptionReminder.js";
 export * from "./CustomerSetup.js";
 export * from "./Notification.js";
+export * from "./Subscription.js";

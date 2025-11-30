@@ -12,7 +12,7 @@ export const createModel = <
   TDocument extends Document = BaseLookupDocument // mongoose document type
 >(
   modelName: string,
-  definition: SchemaDefinition,
+  definition: SchemaDefinition | Schema,
   prefix: string,
   idFieldName: string
 ): {
@@ -22,9 +22,15 @@ export const createModel = <
     toEntity: (doc: any) => TDomain;
   };
 } => {
-  const schema = new Schema<TDocument>(definition, { timestamps: true });
+  //check whether definition is a schema or a schema definition
 
-  withBaseSchema(schema, {
+  let schema: Schema<TDocument>;
+  if (definition instanceof Schema) {
+    schema = definition;
+  } else {
+    schema = new Schema<TDocument>(definition, { timestamps: true });
+  }
+  withBaseSchema(schema!, {
     prefix: prefix,
     idFieldName: idFieldName,
   });

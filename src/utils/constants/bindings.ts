@@ -104,4 +104,7 @@ export const INTERFACE_TYPE = {
   NotificationInteractorImpl: Symbol.for("NotificationInteractorImpl"),
   NotificationController: Symbol.for("NotificationController"),
   ReminderServiceImpl: Symbol.for("ReminderServiceImpl"),
+  SubscriptionRepositoryImpl: Symbol.for("SubscriptionRepositoryImpl"),
+  SubscriptionInteractorImpl: Symbol.for("SubscriptionInteractorImpl"),
+  SubscriptionController: Symbol.for("SubscriptionController"),
 };

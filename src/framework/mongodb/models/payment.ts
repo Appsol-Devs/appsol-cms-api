@@ -19,7 +19,7 @@ const paymentSchema: SchemaDefinition = {
   },
   notes: { type: String, required: false },
   paymentDate: { type: Date, required: true },
-  renewalDate: { type: Date, required: true },
+  renewalDate: { type: Date, required: true, index: true },
   loggedBy: { type: Schema.Types.ObjectId, required: true, ref: "User" },
   approvedOrRejectedBy: {
     type: Schema.Types.ObjectId,
@@ -29,6 +29,7 @@ const paymentSchema: SchemaDefinition = {
   status: {
     type: String,
     required: true,
+    index: true,
     default: "pending",
     enum: ["pending", "approved", "rejected"],
   },
