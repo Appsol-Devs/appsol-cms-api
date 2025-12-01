@@ -36,18 +36,18 @@ export const createModel = <
   });
 
   const Model = mongoose.model<TDocument>(modelName, schema);
-
+  const def = definition instanceof Schema ? definition.obj : definition;
   const Mapper = {
     toDtoCreation: (payload: any) => {
       const dto: Record<string, any> = {};
-      Object.keys(definition).forEach((key) => {
+      Object.keys(def).forEach((key) => {
         dto[key] = payload[key];
       });
       return dto;
     },
     toEntity: (doc: any) => {
       const entity: Record<string, any> = {};
-      Object.keys(definition).forEach((key) => {
+      Object.keys(def).forEach((key) => {
         entity[key] = doc[key];
       });
       entity._id = doc._id?.toString();

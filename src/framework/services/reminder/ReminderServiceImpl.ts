@@ -41,13 +41,19 @@ export class ReminderService implements IReminderService {
 
       const remindersCreated: ISubscriptionReminder[] = [];
       const now = new Date();
+      const endOfDay = new Date();
       now.setHours(0, 0, 0, 0); // Start of today
-      const date30DaysAhead = new Date(now);
+      endOfDay.setHours(23, 59, 59, 999); // End of today
+      const date30DaysAhead = new Date(endOfDay);
       date30DaysAhead.setDate(date30DaysAhead.getDate() + 30);
 
+      // Get the current date and time
       const dateOverdue = new Date(now);
+      dateOverdue.setDate(dateOverdue.getDate() - 1);
+      //const dateOverdue = new Date(now.getDate() - 1);
 
       // Get all approved payments that haven't been fully processed
+      console.log(dateOverdue, date30DaysAhead);
       const paginatedResponse = await this.subscriptionRepository.getAll({
         status: "active",
         nextBillingDate: {
@@ -219,6 +225,8 @@ export class ReminderService implements IReminderService {
       case 30:
         reminderType = "30_days";
         break;
+      case -1:
+        reminderType = "overdue";
       default:
         break;
     }

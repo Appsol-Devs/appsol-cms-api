@@ -52,6 +52,10 @@ export class SubscriptionController extends BaseController<ISubscription> {
     next: NextFunction
   ): TGenericPromise {
     try {
+      const autoRenew: boolean | undefined =
+        req.query.autoRenew === undefined
+          ? undefined
+          : Boolean(req.query.autoRenew);
       const query: ISubscriptionRequestQuery = {
         search: req.query.search?.toString(),
         pageIndex: req.query.pageIndex ? Number(req.query.pageIndex) : 1,
@@ -62,7 +66,7 @@ export class SubscriptionController extends BaseController<ISubscription> {
         softwareId: req.query.softwareId?.toString() ?? undefined,
         startDate: req.query.startDate?.toString() ?? undefined,
         endDate: req.query.endDate?.toString() ?? undefined,
-        autoRenew: Boolean(req.query.autoRenew) ?? undefined,
+        autoRenew: autoRenew,
         nextBillingDate: {
           gte: req.query.nextBillingDate?.toString() ?? undefined,
           lte: req.query.nextBillingDate?.toString() ?? undefined,

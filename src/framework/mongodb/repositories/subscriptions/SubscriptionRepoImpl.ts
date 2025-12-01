@@ -80,18 +80,19 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
     const [items, total] = await Promise.all([
       this.model
         .find(filter)
-        .populate("customer", "name email phone")
+        .populate("customer", "name email phone companyName")
         .populate("software", "name description colorCode")
-        .populate("payment")
+        .populate("lastPayment")
         .populate("subscriptionType", "name description colorCode")
-
         .skip(skip)
         .limit(limit),
       this.model.countDocuments(filter),
     ]);
 
-    const data = items.map(this.mapper.toEntity);
+    const data = items.map((item) => this.mapper.toEntity(item));
     const totalPages = Math.ceil(total / limit);
+
+    console.log(data);
 
     return {
       data,
@@ -105,8 +106,8 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
   async getById(id: string): Promise<ISubscription> {
     const reminder = await this.model
       .findById(id)
-      .populate("customer", "name email phone")
-      .populate("payment")
+      .populate("customer", "name email phone companyName")
+      .populate("lastPayment")
       .populate("software", "name description colorCode")
       .populate("subscriptionType", "name description colorCode");
 
@@ -131,9 +132,9 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
 
     const created = await this.model.create({ ...data, ...dataWithReferences });
     const populated = await created.populate([
-      { path: "customer", select: "name email" },
+      { path: "customer", select: "name email phone companyName" },
       { path: "software", select: "name description colorCode" },
-      { path: "payment" },
+      { path: "lastPayment" },
       { path: "subscriptionType", select: "name description colorCode" },
     ]);
 
@@ -150,7 +151,7 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
     const updated = await this.model
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
       .populate("customer", "name email")
-      .populate("payment")
+      .populate("lastPayment")
       .populate("software", "name description colorCode")
       .populate("subscriptionType", "name description colorCode");
 

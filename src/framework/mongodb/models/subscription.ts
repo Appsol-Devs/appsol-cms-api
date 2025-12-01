@@ -4,26 +4,34 @@ import { createModel } from "../utils/modelFactory.js";
 import type { ISubscription } from "../../../entities/Subscription.js";
 
 const subscriptionSchema = new Schema({
-  subscriptionCode: {
-    type: String,
-    unique: true,
-    required: true,
-  },
-  customerId: {
+  subscriptionCode: { type: String, unique: true },
+  customer: {
     type: Schema.Types.ObjectId,
     ref: "Customer",
     required: true,
-    index: true,
   },
-  softwareId: {
-    type: Schema.Types.ObjectId,
-    ref: "Software",
+  customerId: {
+    type: String,
     required: true,
     index: true,
   },
-  subscriptionTypeId: {
+  software: {
+    type: Schema.Types.ObjectId,
+    ref: "Software",
+    required: true,
+  },
+  softwareId: {
+    type: String,
+    required: true,
+    index: true,
+  },
+  subscriptionType: {
     type: Schema.Types.ObjectId,
     ref: "SubscriptionType",
+    required: false,
+  },
+  subscriptionTypeId: {
+    type: String,
     required: false,
     index: true,
   },
@@ -67,6 +75,7 @@ const subscriptionSchema = new Schema({
   amount: {
     type: Number,
     required: true,
+    default: 0.0,
   },
   autoRenew: {
     type: Boolean,
@@ -85,7 +94,7 @@ const subscriptionSchema = new Schema({
   notes: {
     type: String,
   },
-  createdBy: {
+  loggedBy: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
