@@ -14,3 +14,4 @@ export * from "./subscriptionReminder.js";
 export * from "./customerSetup.js";
 export * from "./notification.js";
 export * from "./subscription.js";
+export * from "./visitor.js";

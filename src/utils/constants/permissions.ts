@@ -112,6 +112,13 @@ const Permissions = Object.freeze({
   VIEW_SUBSCRIPTION: "view:subscription",
   UPDATE_SUBSCRIPTION: "update:subscription",
   DELETE_SUBSCRIPTION: "delete:subscription",
+  CREATE_VISITOR: "create:visitor",
+  VIEW_VISITORS: "view:visitors",
+  VIEW_VISITOR: "view:visitor",
+  UPDATE_VISITOR: "update:visitor",
+  DELETE_VISITOR: "delete:visitor",
+  CHECK_IN_VISITOR: "check_in:visitor",
+  CHECK_OUT_VISITOR: "check_out:visitor",
 } as const);
 
 export default Permissions;

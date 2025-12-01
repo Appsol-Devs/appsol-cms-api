@@ -31,6 +31,7 @@ import {
   AuthInteractorImpl,
   type IAuthInteractor,
   SubscriptionInteractorImpl,
+  VisitorInteractorImpl,
 } from "../../application/interactors/index.js";
 import type { ICustomer } from "../../entities/Customer.js";
 import type { ILead } from "../../entities/Lead.js";
@@ -53,9 +54,14 @@ import type {
   ICustomerSetup,
   INotification,
   ISubscription,
+  IVisitor,
 } from "../../entities/index.js";
 
 export const bindAllInteractors = (container: Container) => {
+  container
+    .bind<IBaseInteractor<IVisitor>>(INTERFACE_TYPE.VisitorInteractorImpl)
+    .to(VisitorInteractorImpl);
+
   container
     .bind<IBaseInteractor<ISubscription>>(
       INTERFACE_TYPE.SubscriptionInteractorImpl

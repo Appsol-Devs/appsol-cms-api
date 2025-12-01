@@ -5,7 +5,7 @@ export interface IBaseInteractor<TDomain> {
   getAll(query: RequestQuery): Promise<PaginatedResponse<TDomain>>;
   getById(id: string): Promise<TDomain>;
   create(data: TDomain): Promise<TDomain>;
-  update(id: string, data: TDomain): Promise<TDomain>;
+  update(id: string, data: Partial<TDomain>): Promise<TDomain>;
   delete(id: string): Promise<TDomain>;
   updateMany(
     filter?: Partial<TDomain>,
