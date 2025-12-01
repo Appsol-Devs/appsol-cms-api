@@ -19,6 +19,7 @@ export class NotificationServiceImpl implements INotificationService {
     this.logger = logger;
   }
   async create(payload: Partial<INotification>): Promise<INotification> {
+    this.logger.info("Creating notification");
     const n = await this.repo.create({
       isRead: false,
       createdAt: new Date(),
@@ -27,6 +28,7 @@ export class NotificationServiceImpl implements INotificationService {
 
     // Emit real-time event to recipient room: `user:${userId}`
     try {
+      this.logger.info("Emitting notification:new event");
       if (this.io && n.userId) {
         this.io.to(`user:${n.userId}`).emit("notification:new", {
           id: n._id,
