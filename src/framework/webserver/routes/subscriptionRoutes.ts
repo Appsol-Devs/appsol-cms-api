@@ -7,7 +7,6 @@ import { BaseRouter } from "./BaseRoutes.js";
 import type { SubscriptionController } from "../../../adapters/controllers/index.js";
 import { baseQuerySchema } from "../../../validation/baseSchema.js";
 import type { Router } from "express";
-import { ApiKeyMiddleware } from "../middleware/ApiKeyMiddleware.js";
 
 export const createSubscriptionRoutes = (container: Container): Router => {
   const controller = container.get<SubscriptionController>(

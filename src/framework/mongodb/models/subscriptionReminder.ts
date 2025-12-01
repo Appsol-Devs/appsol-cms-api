@@ -11,7 +11,7 @@ const subscriptionReminderSchema: SchemaDefinition = {
   customer: { type: Schema.Types.ObjectId, required: true, ref: "Customer" },
   softwareId: { type: String, required: true },
   software: { type: Schema.Types.ObjectId, required: true, ref: "Software" },
-  paymentId: { type: String, required: true },
+  paymentId: { type: String, required: false },
   payment: { type: Schema.Types.ObjectId, required: false, ref: "Payment" },
   subscriptionId: { type: String, required: false },
   subscription: {

@@ -7,6 +7,7 @@ export const leadQuerySchema = baseQuerySchema.extend({
   email: z.email(),
   companyName: z.string(),
   leadSource: z.string(),
+  softwareId: z.string(),
   initialEnquiryDate: z.string(),
   location: z.string().optional(),
   leadStatus: z.enum([

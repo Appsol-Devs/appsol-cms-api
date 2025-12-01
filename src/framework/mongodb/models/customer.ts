@@ -17,6 +17,8 @@ const customerSchema: SchemaDefinition = {
     default: "active",
   },
   loggedBy: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+  softwareId: { type: String, required: true },
+  software: { type: Schema.Types.ObjectId, required: true, ref: "Software" },
   location: { type: String, required: false },
   notes: { type: String, required: false },
   geolocation: {
