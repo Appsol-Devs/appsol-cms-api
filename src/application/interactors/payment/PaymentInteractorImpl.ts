@@ -10,7 +10,6 @@ import type {
   IBaseRepository,
   PaymentRepositoryImpl,
 } from "../../../framework/mongodb/repositories/index.js";
-import type { IBaseInteractor } from "../base/IBaseInteractor.js";
 import { BadRequestError } from "../../../error_handler/BadRequestError.js";
 
 export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
@@ -27,12 +26,12 @@ export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
   async update(id: string, data: IPayment): Promise<IPayment> {
     if (!data.status) throw new BadRequestError("Data is required");
     if (data.status === "approved") {
-      const transaction = await Promise.all([
-        super.update(id, data),
-        this.extendSubscription(data),
-      ]);
+      const payment = await super.update(id, data);
+      if (payment) {
+        await this.extendSubscription(payment);
+      }
 
-      return transaction[0];
+      return payment;
     }
 
     return super.update(id, data);
@@ -85,6 +84,7 @@ export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
         newPeriodEnd.setMonth(newPeriodEnd.getMonth() + duration);
 
         const newNextBillingDate = new Date(newPeriodEnd);
+
         const data: Partial<ISubscription> = {
           currentPeriodStart: newPeriodStart,
           currentPeriodEnd: newPeriodEnd,
