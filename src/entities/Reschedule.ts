@@ -23,7 +23,10 @@ export class IReschedule {
   ) {}
 }
 
-export type TargetEntityType = "CustomerOutreach" | "CustomerComplaint";
+export type TargetEntityType =
+  | "CustomerOutreach"
+  | "CustomerComplaint"
+  | "SubscriptionReminder";
 
 export interface IRescheduleRequestQuery extends RequestQuery {
   customerId?: string | undefined;

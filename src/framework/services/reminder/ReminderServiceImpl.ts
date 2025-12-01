@@ -19,6 +19,7 @@ import type {
   ISoftware,
   ISubscription,
 } from "../../../entities/index.js";
+import type { INotificationService } from "../index.js";
 
 @injectable()
 export class ReminderService implements IReminderService {
@@ -28,8 +29,15 @@ export class ReminderService implements IReminderService {
     @inject(INTERFACE_TYPE.SubscriptionReminderRepositoryImpl)
     private reminderRepository: SubscriptionReminderRepositoryImpl,
     @inject(INTERFACE_TYPE.Logger)
-    private logger: ILogger
-  ) {}
+    private logger: ILogger,
+    @inject(INTERFACE_TYPE.NotificationService)
+    private notificationService: INotificationService
+  ) {
+    this.subscriptionRepository = subscriptionRepository;
+    this.reminderRepository = reminderRepository;
+    this.logger = logger;
+    this.notificationService = notificationService;
+  }
 
   async triggerReminders(): Promise<{
     success: boolean;
@@ -50,10 +58,7 @@ export class ReminderService implements IReminderService {
       // Get the current date and time
       const dateOverdue = new Date(now);
       dateOverdue.setDate(dateOverdue.getDate() - 1);
-      //const dateOverdue = new Date(now.getDate() - 1);
 
-      // Get all approved payments that haven't been fully processed
-      console.log(dateOverdue, date30DaysAhead);
       const paginatedResponse = await this.subscriptionRepository.getAll({
         status: "active",
         nextBillingDate: {
@@ -141,6 +146,13 @@ export class ReminderService implements IReminderService {
           this.logger.info(
             `✅ Created ${reminderType} reminder for subscription ${subscription.subscriptionCode}`
           );
+          await this.notificationService.create({
+            userId: subscription.loggedBy,
+            message: reminder.title,
+            link: `/subscription_reminders/${reminder._id}`,
+            targetEntityId: reminder._id,
+            targetEntityType: "SubscriptionReminder",
+          });
         } catch (error: any) {
           // Handle duplicate key errors gracefully
           if (error.code === 11000) {

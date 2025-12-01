@@ -9,7 +9,7 @@ const notificationSchema: SchemaDefinition = {
   targetEntityType: {
     type: String,
     required: true,
-    enum: ["CustomerOutreach", "CustomerComplaint"],
+    enum: ["CustomerOutreach", "CustomerComplaint", "SubscriptionReminder"],
   },
   userId: { type: String, required: true },
   user: { type: Schema.Types.ObjectId, required: true, ref: "User" },

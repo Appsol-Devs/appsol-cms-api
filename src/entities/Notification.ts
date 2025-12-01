@@ -2,6 +2,7 @@ import type { ICustomer } from "./Customer.js";
 import type { ICustomerComplaint } from "./CustomerComplaint.js";
 import type { ICustomerOutreach } from "./CustomerOutreach.js";
 import type { TargetEntityType } from "./Reschedule.js";
+import type { ISubscriptionReminder } from "./SubscriptionReminder.js";
 import type { IUser, RequestQuery } from "./User.js";
 
 export class INotification {
@@ -11,7 +12,11 @@ export class INotification {
     public readonly targetEntityId?: string,
     public readonly userId?: string,
     public user?: IUser | string,
-    public targetEntity?: ICustomerOutreach | ICustomerComplaint | string,
+    public targetEntity?:
+      | ICustomerOutreach
+      | ICustomerComplaint
+      | ISubscriptionReminder
+      | string,
     public readonly message?: string,
     public readonly link?: string,
     public readonly isRead?: boolean,
