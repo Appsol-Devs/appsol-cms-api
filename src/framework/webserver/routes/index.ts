@@ -28,6 +28,7 @@ import subscriptionReminderRoutes, {
 import customerSetupRoutes from "./customerSetupRoutes.js";
 import createNotificationRoutes from "./notificationRoutes.js";
 import createSubscriptionRoutes from "./subscriptionRoutes.js";
+import createVisitorRoutes from "./visitorRoutes.js";
 
 export const createRoutes = (container: Container): Router => {
   const router = express.Router();
@@ -57,6 +58,7 @@ export const createRoutes = (container: Container): Router => {
   router.use(createNotificationRoutes(container));
   router.use(createSubscriptionReminderRoutes(container));
   router.use(createSubscriptionRoutes(container));
+  router.use(createVisitorRoutes(container));
 
   return router;
 };

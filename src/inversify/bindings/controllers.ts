@@ -24,10 +24,15 @@ import {
   NotificationController,
   AuthController,
   SubscriptionController,
+  VisitorController,
 } from "../../adapters/controllers/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindAllControllers = (container: Container) => {
+  container
+    .bind<VisitorController>(INTERFACE_TYPE.VisitorController)
+    .to(VisitorController);
+
   container
     .bind<SubscriptionController>(INTERFACE_TYPE.SubscriptionController)
     .to(SubscriptionController);

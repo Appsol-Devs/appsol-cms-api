@@ -107,4 +107,7 @@ export const INTERFACE_TYPE = {
   SubscriptionRepositoryImpl: Symbol.for("SubscriptionRepositoryImpl"),
   SubscriptionInteractorImpl: Symbol.for("SubscriptionInteractorImpl"),
   SubscriptionController: Symbol.for("SubscriptionController"),
+  VisitorRepositoryImpl: Symbol.for("VisitorRepositoryImpl"),
+  VisitorInteractorImpl: Symbol.for("VisitorInteractorImpl"),
+  VisitorController: Symbol.for("VisitorController"),
 };

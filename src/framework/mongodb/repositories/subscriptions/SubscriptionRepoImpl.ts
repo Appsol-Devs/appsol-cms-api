@@ -91,9 +91,6 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
 
     const data = items.map((item) => this.mapper.toEntity(item));
     const totalPages = Math.ceil(total / limit);
-
-    console.log(data);
-
     return {
       data,
       totalPages,

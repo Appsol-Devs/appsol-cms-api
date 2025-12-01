@@ -18,6 +18,7 @@ import type {
   ISubscription,
   ISubscriptionReminder,
   ISubscriptionType,
+  IVisitor,
 } from "../../entities/index.js";
 import type { ILead } from "../../entities/Lead.js";
 import {
@@ -52,10 +53,15 @@ import {
   CustomerSetupRepositoryImpl,
   NotificationRepositoryImpl,
   SubscriptionRepositoryImpl,
+  VisitorRepositoryImpl,
 } from "../../framework/mongodb/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
+  container
+    .bind<IBaseRepository<IVisitor>>(INTERFACE_TYPE.VisitorRepositoryImpl)
+    .to(VisitorRepositoryImpl);
+
   container
     .bind<IBaseRepository<ISubscription>>(
       INTERFACE_TYPE.SubscriptionRepositoryImpl
