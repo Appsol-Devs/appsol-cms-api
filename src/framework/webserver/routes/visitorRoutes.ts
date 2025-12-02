@@ -28,14 +28,14 @@ export const createVisitorRoutes = (container: Container): Router => {
   const router = new BaseRouter(
     controller,
     authMiddleware,
-    "/api/visitors-log",
+    "/api/visitors_log",
     permissionMap,
     visitorsSchema
   ).register();
 
   //check-in
   router.put(
-    "/api/visitors-log/:id/check-in",
+    "/api/visitors_log/:id/check_in",
     authMiddleware.authenticateToken.bind(authMiddleware),
     authMiddleware
       .checkPermission(Permissions.CHECK_IN_VISITOR)
@@ -45,7 +45,7 @@ export const createVisitorRoutes = (container: Container): Router => {
 
   //check-out
   router.put(
-    "/api/visitors-log/:id/check-out",
+    "/api/visitors_log/:id/check_out",
     authMiddleware.authenticateToken.bind(authMiddleware),
     authMiddleware
       .checkPermission(Permissions.CHECK_OUT_VISITOR)
