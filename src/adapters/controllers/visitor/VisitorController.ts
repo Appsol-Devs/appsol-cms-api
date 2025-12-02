@@ -119,4 +119,21 @@ export class VisitorController extends BaseController<IVisitor> {
       next(error);
     }
   }
+
+  async update(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): TGenericPromise {
+    try {
+      if (!req.params.id) throw new BadRequestError("Visitor id is required");
+      if (!req.body) throw new BadRequestError("Update data is required");
+      const { checkInTime, checkOutTime, ...rest }: Partial<IVisitor> =
+        req.body;
+      const response = await this.interactor.update(req.params.id, rest);
+      return res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

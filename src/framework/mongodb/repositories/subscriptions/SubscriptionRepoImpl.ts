@@ -49,7 +49,7 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
 
     // ✅ Date range
     if (query.startDate && query.endDate) {
-      filter.createdAt = {
+      filter.nextBillingDate = {
         $gte: query.startDate,
         $lte: query.endDate,
       };
