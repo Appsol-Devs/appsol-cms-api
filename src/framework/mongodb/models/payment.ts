@@ -11,6 +11,7 @@ const paymentSchema: SchemaDefinition = {
   software: { type: Schema.Types.ObjectId, required: true, ref: "Software" },
   approvalNotes: { type: String, required: false },
   amount: { type: Number, required: true },
+  totalDue: { type: Number, required: false },
   subscriptionTypeId: { type: String, required: true },
   subscriptionType: {
     type: Schema.Types.ObjectId,
@@ -20,7 +21,7 @@ const paymentSchema: SchemaDefinition = {
   notes: { type: String, required: false },
   paymentDate: { type: Date, required: true },
   renewalDate: { type: Date, required: true, index: true },
-  loggedBy: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+  loggedBy: { type: Schema.Types.ObjectId, required: false, ref: "User" },
   approvedOrRejectedBy: {
     type: Schema.Types.ObjectId,
     required: false,
@@ -31,7 +32,7 @@ const paymentSchema: SchemaDefinition = {
     required: true,
     index: true,
     default: "pending",
-    enum: ["pending", "approved", "rejected"],
+    enum: ["pending", "approved", "rejected", "generated"],
   },
   paymentReference: { type: String, required: false },
 };
