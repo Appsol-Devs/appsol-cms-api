@@ -31,12 +31,15 @@ export class ReminderService implements IReminderService {
     @inject(INTERFACE_TYPE.Logger)
     private logger: ILogger,
     @inject(INTERFACE_TYPE.NotificationService)
-    private notificationService: INotificationService
+    private notificationService: INotificationService,
+    @inject(INTERFACE_TYPE.PaymentRepositoryImpl)
+    private paymentRepository: PaymentRepositoryImpl
   ) {
     this.subscriptionRepository = subscriptionRepository;
     this.reminderRepository = reminderRepository;
     this.logger = logger;
     this.notificationService = notificationService;
+    this.paymentRepository = paymentRepository;
   }
 
   async triggerReminders(): Promise<{
@@ -134,6 +137,20 @@ export class ReminderService implements IReminderService {
               `Error creating reminder for subscription ${subscription.subscriptionCode} (${reminderType})`
             );
             continue;
+          }
+
+          if (reminder.reminderType === "due_today") {
+            //create payment for reminder
+            await this.paymentRepository.create({
+              subscriptionTypeId: subscription.subscriptionTypeId,
+              customerId: subscription.customerId,
+              softwareId: subscription.softwareId,
+              totalDue: subscription.amount,
+              amount: 0,
+              status: "generated",
+              renewalDate: subscription.currentPeriodEnd?.toISOString(),
+              paymentDate: new Date().toISOString(),
+            });
           }
 
           remindersCreated.push({
