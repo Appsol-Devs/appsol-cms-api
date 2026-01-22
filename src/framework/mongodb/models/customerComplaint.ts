@@ -31,6 +31,7 @@ const customerComplaintSchema: SchemaDefinition = {
     enum: ["open", "in-progress", "resolved", "closed", "rescheduled"],
     default: "open",
   },
+  resolvedAt: { type: Date, required: false },
   loggedBy: { type: Schema.Types.ObjectId, required: true, ref: "User" },
   resolvedBy: { type: Schema.Types.ObjectId, required: false, ref: "User" },
 };

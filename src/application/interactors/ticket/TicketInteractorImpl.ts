@@ -6,7 +6,11 @@ import type {
 } from "../../../entities/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseInteractorImpl } from "../base/BaseInteractorImpl.js";
-import type { TicketRepositoryImpl } from "../../../framework/mongodb/index.js";
+import type {
+  IBaseRepository,
+  ITicketRepo,
+  TicketRepositoryImpl,
+} from "../../../framework/mongodb/index.js";
 import {
   BadRequestError,
   UnprocessableEntityError,
@@ -22,12 +26,24 @@ export class TicketInteractorImpl
   implements ITicketInteractor
 {
   constructor(
-    @inject(INTERFACE_TYPE.TicketRepositoryImpl)
-    TicketRepositoryImpl: TicketRepositoryImpl,
+    // @inject(INTERFACE_TYPE.TicketRepositoryImpl)
+    // TicketRepositoryImpl: TicketRepositoryImpl,
     @inject(INTERFACE_TYPE.Mailer) private mailer: IMailer,
+    @inject(INTERFACE_TYPE.TicketRepositoryImpl)
+    private readonly ticketRepo: ITicketRepo,
   ) {
-    super(TicketRepositoryImpl);
+    super(ticketRepo);
     this.mailer = mailer;
+    this.ticketRepo = ticketRepo;
+  }
+  async closeTicket(id: string): Promise<ITicket> {
+    const ticket = await this.repository.getById(id);
+    if (!ticket) throw new BadRequestError("Ticket not found");
+    if (ticket.status === "closed")
+      throw new BadRequestError("Ticket already closed");
+    const updatedTicket = await this.ticketRepo.closeTicket(ticket._id!);
+    if (!updatedTicket) throw new BadRequestError("Failed to close ticket");
+    return updatedTicket;
   }
   async assignTicket(data: ITicketHistory, id: string): Promise<ITicket> {
     if (!data || data.to == null)

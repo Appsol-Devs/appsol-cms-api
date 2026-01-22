@@ -33,6 +33,7 @@ const ticketSchema: SchemaDefinition = {
     enum: ["low", "medium", "high", "critical"],
     default: "low",
   },
+  closedAt: { type: Date, required: false },
   rejectionReason: { type: String, required: false },
   history: [
     {

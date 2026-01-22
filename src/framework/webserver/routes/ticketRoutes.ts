@@ -28,6 +28,15 @@ export const createTicketRoutes = (container: Container): Router => {
   };
 
   router.patch(
+    "/api/tickets/:id/close",
+    authMiddleware.authenticateToken.bind(authMiddleware),
+    authMiddleware
+      .checkPermission(Permissions.UPDATE_TICKET)
+      .bind(authMiddleware),
+    controller.closeTicket.bind(controller),
+  );
+
+  router.patch(
     "/api/tickets/:id",
     authMiddleware.authenticateToken.bind(authMiddleware),
     authMiddleware
