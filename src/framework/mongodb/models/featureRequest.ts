@@ -24,8 +24,8 @@ const featureRequestSchema: SchemaDefinition = {
   priority: {
     type: String,
     required: true,
-    default: "P4",
-    enum: ["P1", "P2", "P3", "P4"],
+    default: "low",
+    enum: ["low", "medium", "high", "critical"],
   },
 };
 
@@ -34,5 +34,5 @@ export const { Model: FeatureRequestModel, Mapper: FeatureRequestModelMapper } =
     "FeatureRequest",
     featureRequestSchema,
     "FRC",
-    "requestCode"
+    "requestCode",
   );

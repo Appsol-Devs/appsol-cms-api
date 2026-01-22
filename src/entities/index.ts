@@ -15,3 +15,5 @@ export * from "./CustomerSetup.js";
 export * from "./Notification.js";
 export * from "./Subscription.js";
 export * from "./Vistor.js";
+export * from "./Ticket.js";
+export * from "./Dashboard.js";

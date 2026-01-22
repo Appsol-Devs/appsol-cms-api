@@ -32,6 +32,7 @@ import {
   type IAuthInteractor,
   SubscriptionInteractorImpl,
   VisitorInteractorImpl,
+  TicketInteractorImpl,
 } from "../../application/interactors/index.js";
 import type { ICustomer } from "../../entities/Customer.js";
 import type { ILead } from "../../entities/Lead.js";
@@ -55,41 +56,45 @@ import type {
   INotification,
   ISubscription,
   IVisitor,
+  ITicket,
 } from "../../entities/index.js";
 
 export const bindAllInteractors = (container: Container) => {
+  container
+    .bind<IBaseInteractor<ITicket>>(INTERFACE_TYPE.TicketInteractorImpl)
+    .to(TicketInteractorImpl);
   container
     .bind<IBaseInteractor<IVisitor>>(INTERFACE_TYPE.VisitorInteractorImpl)
     .to(VisitorInteractorImpl);
 
   container
-    .bind<IBaseInteractor<ISubscription>>(
-      INTERFACE_TYPE.SubscriptionInteractorImpl
-    )
+    .bind<
+      IBaseInteractor<ISubscription>
+    >(INTERFACE_TYPE.SubscriptionInteractorImpl)
     .to(SubscriptionInteractorImpl);
 
   container
-    .bind<IBaseInteractor<INotification>>(
-      INTERFACE_TYPE.NotificationInteractorImpl
-    )
+    .bind<
+      IBaseInteractor<INotification>
+    >(INTERFACE_TYPE.NotificationInteractorImpl)
     .to(NotificationInteractorImpl);
 
   container
-    .bind<IBaseInteractor<ICustomerSetup>>(
-      INTERFACE_TYPE.CustomerSetupInteractorImpl
-    )
+    .bind<
+      IBaseInteractor<ICustomerSetup>
+    >(INTERFACE_TYPE.CustomerSetupInteractorImpl)
     .to(CustomerSetupInteractorImpl);
 
   container
-    .bind<IBaseInteractor<ISubscriptionReminder>>(
-      INTERFACE_TYPE.SubscriptionReminderInteractorImpl
-    )
+    .bind<
+      IBaseInteractor<ISubscriptionReminder>
+    >(INTERFACE_TYPE.SubscriptionReminderInteractorImpl)
     .to(SubscriptionReminderInteractorImpl);
 
   container
-    .bind<IBaseInteractor<IFeatureRequest>>(
-      INTERFACE_TYPE.FeatureRequestInteractorImpl
-    )
+    .bind<
+      IBaseInteractor<IFeatureRequest>
+    >(INTERFACE_TYPE.FeatureRequestInteractorImpl)
     .to(FeatureRequestInteractorImpl);
 
   container
@@ -101,15 +106,15 @@ export const bindAllInteractors = (container: Container) => {
     .to(RescheduleInteractorImpl);
 
   container
-    .bind<IBaseInteractor<ICustomerOutreach>>(
-      INTERFACE_TYPE.CustomerOutreachInteractorImpl
-    )
+    .bind<
+      IBaseInteractor<ICustomerOutreach>
+    >(INTERFACE_TYPE.CustomerOutreachInteractorImpl)
     .to(CustomerOutreachInteractorImpl);
 
   container
-    .bind<IBaseInteractor<ICustomerComplaint>>(
-      INTERFACE_TYPE.CustomerComplaintInteractorImpl
-    )
+    .bind<
+      IBaseInteractor<ICustomerComplaint>
+    >(INTERFACE_TYPE.CustomerComplaintInteractorImpl)
     .to(CustomerComplaintInteractorImpl);
 
   container
@@ -125,9 +130,9 @@ export const bindAllInteractors = (container: Container) => {
     .to(UserInteractorImpl);
 
   container
-    .bind<IBaseLookupInteractor<IOutreachType>>(
-      INTERFACE_TYPE.OutreachTypeInteractorImpl
-    )
+    .bind<
+      IBaseLookupInteractor<IOutreachType>
+    >(INTERFACE_TYPE.OutreachTypeInteractorImpl)
     .to(OutreachTypeInteractorImpl);
 
   container
@@ -135,52 +140,52 @@ export const bindAllInteractors = (container: Container) => {
     .to(LeadInteractorImpl);
 
   container
-    .bind<IBaseLookupInteractor<ICustomer>>(
-      INTERFACE_TYPE.CustomerInteractorImpl
-    )
+    .bind<
+      IBaseLookupInteractor<ICustomer>
+    >(INTERFACE_TYPE.CustomerInteractorImpl)
     .to(CustomerInteractorImpl);
 
   container
-    .bind<IBaseLookupInteractor<ISubscriptionType>>(
-      INTERFACE_TYPE.SubscriptionTypeInteractorImpl
-    )
+    .bind<
+      IBaseLookupInteractor<ISubscriptionType>
+    >(INTERFACE_TYPE.SubscriptionTypeInteractorImpl)
     .to(SubscriptionTypeInteractorImpl);
 
   container
-    .bind<IBaseLookupInteractor<ISoftware>>(
-      INTERFACE_TYPE.SoftwareInteractorImpl
-    )
+    .bind<
+      IBaseLookupInteractor<ISoftware>
+    >(INTERFACE_TYPE.SoftwareInteractorImpl)
     .to(SoftwareInteractorImpl);
   container
-    .bind<IBaseLookupInteractor<ISetupStatus>>(
-      INTERFACE_TYPE.SetupStatusInteractorImpl
-    )
+    .bind<
+      IBaseLookupInteractor<ISetupStatus>
+    >(INTERFACE_TYPE.SetupStatusInteractorImpl)
     .to(SetupStatusInteractorImpl);
   container
-    .bind<IBaseLookupInteractor<ILeadStatus>>(
-      INTERFACE_TYPE.LeadStatusInteractorImpl
-    )
+    .bind<
+      IBaseLookupInteractor<ILeadStatus>
+    >(INTERFACE_TYPE.LeadStatusInteractorImpl)
     .to(LeadStatusInteractorImpl);
 
   container
-    .bind<IBaseLookupInteractor<ILeadNextStep>>(
-      INTERFACE_TYPE.LeadNextStepInteractorImpl
-    )
+    .bind<
+      IBaseLookupInteractor<ILeadNextStep>
+    >(INTERFACE_TYPE.LeadNextStepInteractorImpl)
     .to(LeadNextStepInteractorImpl);
   container
     .bind<IComplaintTypeInteractor>(INTERFACE_TYPE.ComplaintTypeInteractor)
     .to(ComplaintTypeInteractorImpl);
 
   container
-    .bind<IBaseLookupInteractor<IComplaintCategory>>(
-      INTERFACE_TYPE.ComplaintCategoryInteractorImpl
-    )
+    .bind<
+      IBaseLookupInteractor<IComplaintCategory>
+    >(INTERFACE_TYPE.ComplaintCategoryInteractorImpl)
     .to(ComplaintCategoryInteractorImpl);
 
   container
-    .bind<IBaseLookupInteractor<ICallStatus>>(
-      INTERFACE_TYPE.CallStatusInteractorImpl
-    )
+    .bind<
+      IBaseLookupInteractor<ICallStatus>
+    >(INTERFACE_TYPE.CallStatusInteractorImpl)
     .to(CallStatusInteractorImpl);
 
   container

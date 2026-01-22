@@ -12,52 +12,30 @@ import type { IControllerUserRequest } from "../auth_controller/IController.js";
 import { BadRequestError } from "../../../error_handler/BadRequestError.js";
 
 import type {
-  ISubscriptionReminder,
-  ISubscriptionReminderRequestQuery,
-  TSubscriptionReminderType,
-} from "../../../entities/SubscriptionReminder.js";
-import type { SubscriptionReminderInteractorImpl } from "../../../application/interactors/index.js";
+  ITicket,
+  ITicketRequestQuery,
+  TTicketStatus,
+} from "../../../entities/Ticket.js";
+import type { TicketInteractorImpl } from "../../../application/interactors/index.js";
 import type { IReminderService } from "../../../framework/services/reminder/IReminderService.js";
 
 @injectable()
-export class SubscriptionReminderController extends BaseController<ISubscriptionReminder> {
+export class TicketController extends BaseController<ITicket> {
   constructor(
-    @inject(INTERFACE_TYPE.SubscriptionReminderInteractorImpl)
-    interactor: SubscriptionReminderInteractorImpl,
-    @inject(INTERFACE_TYPE.ReminderServiceImpl)
-    private reminderService: IReminderService,
+    @inject(INTERFACE_TYPE.TicketInteractorImpl)
+    interactor: TicketInteractorImpl,
   ) {
     super(interactor);
   }
 
-  async triggerReminders(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await this.reminderService.triggerReminders();
-
-      return res.status(HttpStatusCode.OK).json({
-        success: true,
-        message: "Reminders processed successfully",
-        data: result,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async getRemindersByCustomer(
+  async getComplaintTickets(
     req: Request,
     res: Response,
     next: NextFunction,
   ): TGenericPromise {
     try {
-      const customerId = req.params.customerId;
-      if (!customerId) {
-        throw new BadRequestError("Customer ID is required");
-      }
-      const query: ISubscriptionReminderRequestQuery = {
-        customerId: customerId,
-      };
-      const response = await this.interactor.getAll(query);
+      const complaintId = req.params.id;
+      const response = await this.interactor.getOne({ complaintId });
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -69,23 +47,21 @@ export class SubscriptionReminderController extends BaseController<ISubscription
     next: NextFunction,
   ): TGenericPromise {
     try {
-      const query: ISubscriptionReminderRequestQuery = {
+      const query: ITicketRequestQuery = {
         search: req.query.search?.toString(),
         pageIndex: req.query.pageIndex ? Number(req.query.pageIndex) : 1,
         pageSize: req.query.pageSize ? Number(req.query.pageSize) : 10,
-        customerId: req.query.customerId?.toString() ?? undefined,
+        assignedEngineerId:
+          req.query.assignedEngineerId?.toString() ?? undefined,
         loggedBy: req.query.loggedBy?.toString() ?? undefined,
-        reminderType: req.query.reminderType?.toString() as unknown as
-          | TSubscriptionReminderType
+        status: req.query.status?.toString() as unknown as
+          | TTicketStatus
           | undefined,
-        softwareId: req.query.softwareId?.toString() ?? undefined,
+        complaintId: req.query.complaintId?.toString() ?? undefined,
         startDate: req.query.startDate?.toString() ?? undefined,
         endDate: req.query.endDate?.toString() ?? undefined,
-        isSent: req.query.isSent
-          ? req.query.isSent.toString().toLowerCase() === "true"
-          : undefined,
-        sentVia: req.query.sentVia?.toString() as unknown as
-          | ISubscriptionReminder["sentVia"]
+        priority: req.query.priority?.toString() as unknown as
+          | TPriority
           | undefined,
       };
 

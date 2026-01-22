@@ -9,15 +9,15 @@ import {
 import { injectable } from "inversify";
 
 @injectable()
-export abstract class BaseRepoistoryImpl<TDomain>
-  implements IBaseRepository<TDomain>
-{
+export abstract class BaseRepoistoryImpl<
+  TDomain,
+> implements IBaseRepository<TDomain> {
   protected constructor(
     protected readonly model: Model<any>,
     protected readonly mapper: {
       toEntity: (doc: any) => TDomain;
       toDtoCreation: (payload: TDomain) => any;
-    }
+    },
   ) {}
 
   async findOne(filter: Partial<TDomain>): Promise<TDomain | null | undefined> {
@@ -27,7 +27,7 @@ export abstract class BaseRepoistoryImpl<TDomain>
       }
 
       const doc = await this.model.findOne(filter as any);
-      if (!doc) return null;
+      if (!doc) return {} as TDomain;
       return this.mapper.toEntity(doc);
     } catch (error) {
       throw error;
@@ -36,7 +36,7 @@ export abstract class BaseRepoistoryImpl<TDomain>
 
   async updateMany(
     filter: Partial<TDomain>,
-    data: Partial<TDomain>
+    data: Partial<TDomain>,
   ): Promise<number | null | undefined> {
     try {
       if (!filter || Object.keys(filter as any).length === 0) {
@@ -126,14 +126,14 @@ export abstract class BaseRepoistoryImpl<TDomain>
   }
   async update(
     id: string,
-    data: Partial<TDomain>
+    data: Partial<TDomain>,
   ): Promise<TDomain | null | undefined> {
     const updated = await this.model.findOneAndUpdate(
       { _id: id },
       data as any,
       {
         new: true,
-      }
+      },
     );
     if (!updated) throw new NotFoundError("Item not found");
     return this.mapper.toEntity(updated);
@@ -151,7 +151,7 @@ export abstract class BaseRepoistoryImpl<TDomain>
         },
         {
           new: true,
-        }
+        },
       );
       return this.mapper.toEntity(user);
     } catch (error) {

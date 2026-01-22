@@ -16,6 +16,9 @@ export abstract class BaseInteractorImpl<TDomain>
   ) {
     this.repository = repository;
   }
+  getOne(query: Partial<TDomain>): Promise<TDomain> {
+    return this.repository.findOne(query) as Promise<TDomain>;
+  }
   async updateMany(
     filter: Partial<TDomain>,
     data: Partial<TDomain>

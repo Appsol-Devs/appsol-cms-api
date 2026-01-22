@@ -1,5 +1,4 @@
-import mongoose, { Schema, Document, type SchemaDefinition } from "mongoose";
-import type { ILead } from "../../../entities/Lead.js";
+import { Schema, type SchemaDefinition } from "mongoose";
 import { createModel } from "../utils/modelFactory.js";
 import type { ICustomer } from "../../../entities/Customer.js";
 

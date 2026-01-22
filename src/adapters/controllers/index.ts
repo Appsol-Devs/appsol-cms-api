@@ -27,3 +27,4 @@ export * from "./customer_setup/CustomerSetupController.js";
 export * from "./notification_controller/NotificationController.js";
 export * from "./subscription/SubscriptionController.js";
 export * from "./visitor/VisitorController.js";
+export * from "./ticket_controller/TicketController.js";
