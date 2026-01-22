@@ -31,7 +31,7 @@ export type TTicketStatus =
   | "rejected";
 
 export interface ITicketHistory {
-  from: IUser | string;
+  from: IUser | string | undefined | null;
   to: IUser | string;
   date: string;
   reason?: string;

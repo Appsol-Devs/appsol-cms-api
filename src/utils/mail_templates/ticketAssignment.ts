@@ -67,9 +67,23 @@ export function ticketAssignmentTemplate(params: {
     </style>
   </head>
   <body>
-    <div class="container">
-      <div style="text-align:center;margin-bottom:24px;">
-        <img src="https://lh3.googleusercontent.com/pw/AP1GczMIcX7yNiKM_E_JLE8qsbvZkcUOA5GfYxdGLTkqhj1acnOYutWL2f8JpFScJxc6oR7cKHhKCHx1H-WXmrmJiow86LeB4lzzUq2h-O-lCFFpzWyBBg=w2400" alt="Logo" style="height:40px; background-color: white; padding: 10px;" />
+      <div class="container">
+              <div style="text-align:center;margin-bottom:24px;">
+              <div
+          style="
+            display: inline-block;
+            background-color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 8px;
+          "
+        >
+          <img
+            src="https://lh3.googleusercontent.com/pw/AP1GczMIcX7yNiKM_E_JLE8qsbvZkcUOA5GfYxdGLTkqhj1acnOYutWL2f8JpFScJxc6oR7cKHhKCHx1H-WXmrmJiow86LeB4lzzUq2h-O-lCFFpzWyBBg=w2400"
+            alt="Appsol Logo"
+            height="40"
+            style="display:block;"
+          />
+        </div>
       </div>
 
       <h2 style="margin-top:0; font-size: 20px;">New Ticket Assigned</h2>

@@ -33,10 +33,12 @@ import {
   SubscriptionInteractorImpl,
   VisitorInteractorImpl,
   TicketInteractorImpl,
+  type ITicketInteractor,
 } from "../../application/interactors/index.js";
 import type { ICustomer } from "../../entities/Customer.js";
 import type { ILead } from "../../entities/Lead.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
+
 import type {
   ISubscriptionType,
   ISoftware,
@@ -61,7 +63,7 @@ import type {
 
 export const bindAllInteractors = (container: Container) => {
   container
-    .bind<IBaseInteractor<ITicket>>(INTERFACE_TYPE.TicketInteractorImpl)
+    .bind<ITicketInteractor>(INTERFACE_TYPE.TicketInteractorImpl)
     .to(TicketInteractorImpl);
   container
     .bind<IBaseInteractor<IVisitor>>(INTERFACE_TYPE.VisitorInteractorImpl)

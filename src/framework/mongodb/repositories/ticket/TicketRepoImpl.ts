@@ -9,6 +9,7 @@ import type {
 } from "../../../../entities/Ticket.js";
 import { TicketModel, TicketModelMapper } from "../../models/index.js";
 import mongoose from "mongoose";
+import { populate } from "dotenv";
 
 @injectable()
 export class TicketRepositoryImpl extends BaseRepoistoryImpl<ITicket> {
@@ -59,6 +60,13 @@ export class TicketRepositoryImpl extends BaseRepoistoryImpl<ITicket> {
         .populate("assignedEngineer", "firstName lastName email phone ")
         .populate("complaint", "title description complaintCode")
         .populate("loggedBy", "name email phone companyName")
+        .populate({
+          path: "history",
+          populate: {
+            path: "from to",
+            select: "firstName lastName email phone companyName",
+          },
+        })
         .skip(skip)
         .limit(limit),
       this.model.countDocuments(filter),
@@ -82,8 +90,22 @@ export class TicketRepositoryImpl extends BaseRepoistoryImpl<ITicket> {
         "assignedEngineer",
         "firstName lastName email phone companyName",
       )
-      .populate("complaint", "title description complaintCode")
-      .populate("loggedBy", "name email phone companyName");
+      .populate({
+        path: "complaint",
+        select: "title description complaintCode",
+        populate: {
+          path: "customer",
+          select: "name email phone companyName",
+        },
+      })
+      .populate("loggedBy", "name email phone companyName")
+      .populate({
+        path: "history",
+        populate: {
+          path: "from to",
+          select: "firstName lastName email phone companyName",
+        },
+      });
 
     if (!result) throw new NotFoundError("Ticket  not found");
     return this.mapper.toEntity(result);
@@ -92,7 +114,6 @@ export class TicketRepositoryImpl extends BaseRepoistoryImpl<ITicket> {
   // ✅ Assign all references directly from IDs
   private assignReferences(data: Partial<ITicket>): ITicket {
     const refs: Partial<ITicket> = {};
-    console.log("Data in assignReferences:", data);
     if (data.assignedEngineerId)
       refs.assignedEngineer = data.assignedEngineerId;
     if (data.complaintId) refs.complaint = data.complaintId;
@@ -110,11 +131,22 @@ export class TicketRepositoryImpl extends BaseRepoistoryImpl<ITicket> {
         path: "assignedEngineer",
         select: "firstName lastName email phone companyName",
       },
-      { path: "complaint", select: "title description complaintCode",  populate: {
-      path: "customer",
-      select: "name email phone companyName",
-    },},
+      {
+        path: "complaint",
+        select: "title description complaintCode",
+        populate: {
+          path: "customer",
+          select: "name email phone companyName",
+        },
+      },
       { path: "loggedBy", select: "name email phone companyName" },
+      {
+        path: "history",
+        populate: {
+          path: "from to",
+          select: "firstName lastName email phone companyName",
+        },
+      },
     ]);
 
     return this.mapper.toEntity(populated);
@@ -130,8 +162,22 @@ export class TicketRepositoryImpl extends BaseRepoistoryImpl<ITicket> {
         "assignedEngineer",
         "firstName lastName email phone companyName",
       )
-      .populate("complaint", "title description complaintCode")
-      .populate("loggedBy", "name email phone companyName");
+      .populate({
+        path: "complaint",
+        select: "title description complaintCode",
+        populate: {
+          path: "customer",
+          select: "name email phone companyName",
+        },
+      })
+      .populate("loggedBy", "name email phone companyName")
+      .populate({
+        path: "history",
+        populate: {
+          path: "from to",
+          select: "firstName lastName email phone companyName",
+        },
+      });
 
     if (!updated) throw new NotFoundError("Ticket Reminder not found");
     return this.mapper.toEntity(updated);
@@ -144,8 +190,22 @@ export class TicketRepositoryImpl extends BaseRepoistoryImpl<ITicket> {
         "assignedEngineer",
         "firstName lastName email phone companyName",
       )
-      .populate("complaint", "title description complaintCode")
-      .populate("loggedBy", "name email phone companyName");
+      .populate({
+        path: "complaint",
+        select: "title description complaintCode",
+        populate: {
+          path: "customer",
+          select: "name email phone companyName",
+        },
+      })
+      .populate("loggedBy", "name email phone companyName")
+      .populate({
+        path: "history",
+        populate: {
+          path: "from to",
+          select: "firstName lastName email phone companyName",
+        },
+      });
     if (!result) return null;
     return this.mapper.toEntity(result);
   }

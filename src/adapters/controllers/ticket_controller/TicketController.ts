@@ -16,18 +16,40 @@ import type {
   ITicketRequestQuery,
   TTicketStatus,
 } from "../../../entities/Ticket.js";
-import type { TicketInteractorImpl } from "../../../application/interactors/index.js";
-import type { IReminderService } from "../../../framework/services/reminder/IReminderService.js";
+import type {
+  ITicketInteractor,
+  TicketInteractorImpl,
+} from "../../../application/interactors/index.js";
 
 @injectable()
-export class TicketController extends BaseController<ITicket> {
+export class TicketController {
   constructor(
     @inject(INTERFACE_TYPE.TicketInteractorImpl)
-    interactor: TicketInteractorImpl,
+    private readonly interactor: ITicketInteractor,
   ) {
-    super(interactor);
+    this.interactor = interactor;
   }
 
+  async assignTicket(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): TGenericPromise {
+    try {
+      const ticketId = req.params.id;
+      if (!req.body) throw new BadRequestError("Request body is required");
+      if (!ticketId) throw new BadRequestError("Ticket id is required");
+      const response = await this.interactor.assignTicket(
+        {
+          ...req.body,
+        },
+        ticketId,
+      );
+      return res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
   async getComplaintTickets(
     req: Request,
     res: Response,
@@ -35,6 +57,7 @@ export class TicketController extends BaseController<ITicket> {
   ): TGenericPromise {
     try {
       const complaintId = req.params.id;
+      if (!complaintId) throw new BadRequestError("Complaint id is required");
       const response = await this.interactor.getOne({ complaintId });
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
@@ -81,6 +104,22 @@ export class TicketController extends BaseController<ITicket> {
     }
   }
 
+   async getOne(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): TGenericPromise {
+    try {
+      const { id } = req.params;
+      if (!id) throw new BadRequestError("ID is required");
+
+      const response = await this.interactor.getById(id);
+      return res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async create(
     req: IControllerUserRequest,
     res: Response,
@@ -96,6 +135,45 @@ export class TicketController extends BaseController<ITicket> {
       });
 
       return res.status(HttpStatusCode.CREATED).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async update(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): TGenericPromise {
+    try {
+      const { id } = req.params;
+      if (!id) throw new BadRequestError("ID is required");
+      if (!req.body) throw new BadRequestError("Update data is required");
+
+      const response = await this.interactor.update(id, req.body);
+      return res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * @route DELETE /api/s/:id
+   * @desc Soft delete a  entity
+   */
+  async delete(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): TGenericPromise {
+    try {
+      const { id } = req.params;
+      if (!id) throw new BadRequestError("ID is required");
+
+      const response = await this.interactor.delete(id);
+      if (!response) throw new BadRequestError("Error deleting entity");
+
+      return res.status(HttpStatusCode.NO_CONTENT).json();
     } catch (error) {
       next(error);
     }
