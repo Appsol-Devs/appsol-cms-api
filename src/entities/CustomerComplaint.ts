@@ -17,12 +17,13 @@ export class ICustomerComplaint {
     public complaintCategory?: IComplaintCategory | string,
     public readonly description?: string,
     public readonly relatedSoftwareId?: string,
+    public readonly resolvedAt?: string,
     public relatedSoftware?: ISoftware | string,
     public readonly status?: TCustomerComplaintStatus,
     public readonly loggedBy?: IUser | string,
     public readonly resolvedBy?: IUser | string,
     public readonly createdAt?: Date | string,
-    public readonly updatedAt?: Date | string
+    public readonly updatedAt?: Date | string,
   ) {}
 }
 

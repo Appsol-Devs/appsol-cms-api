@@ -1,4 +1,4 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
 import type { PaginatedResponse } from "../../../../entities/UserResponse.js";
 import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
@@ -7,14 +7,82 @@ import type {
   ITicket,
   ITicketRequestQuery,
 } from "../../../../entities/Ticket.js";
-import { TicketModel, TicketModelMapper } from "../../models/index.js";
+import {
+  CustomerComplaintModel,
+  TicketModel,
+  TicketModelMapper,
+} from "../../models/index.js";
 import mongoose from "mongoose";
 import { populate } from "dotenv";
+import type { ITicketRepo } from "./ITicketRepo.js";
 
 @injectable()
-export class TicketRepositoryImpl extends BaseRepoistoryImpl<ITicket> {
+export class TicketRepositoryImpl
+  extends BaseRepoistoryImpl<ITicket>
+  implements ITicketRepo
+{
   constructor() {
     super(TicketModel, TicketModelMapper);
+  }
+  async closeTicket(id: string): Promise<ITicket> {
+    try {
+      const session = await mongoose.startSession();
+
+      //find ticket
+      const ticket = await TicketModel.findById(id);
+      if (!ticket) throw new NotFoundError("Ticket not found");
+
+      // Start a transaction
+
+      await session.withTransaction(async () => {
+        // 1. Close the ticket
+        await TicketModel.updateOne(
+          { _id: ticket._id },
+          { $set: { status: "closed", closedAt: new Date() } },
+          { session },
+        );
+
+        // 2. Resolve the linked complaint
+        await CustomerComplaintModel.updateOne(
+          { _id: (ticket as any).complaint },
+          {
+            $set: {
+              status: "resolved",
+              resolvedAt: new Date(),
+            },
+          },
+          { session },
+        );
+      });
+
+      await session.endSession();
+      // Fetch the updated ticket
+      const updatedTicket = await TicketModel.findById(id)
+        .populate(
+          "assignedEngineer",
+          "firstName lastName email phone companyName",
+        )
+        .populate({
+          path: "complaint",
+          populate: {
+            path: "customer",
+            select: "name email phone",
+          },
+        })
+        .populate("loggedBy", "firstName lastName email")
+        .populate({
+          path: "history",
+          populate: {
+            path: "from to",
+            select: "firstName lastName email phone companyName",
+          },
+        });
+
+      if (!updatedTicket) throw new NotFoundError("Ticket not found");
+      return this.mapper.toEntity(updatedTicket);
+    } catch (error) {
+      throw error;
+    }
   }
 
   // ✅ Paginated & Filtered fetch

@@ -30,6 +30,21 @@ export class TicketController {
     this.interactor = interactor;
   }
 
+  async closeTicket(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): TGenericPromise {
+    try {
+      const ticketId = req.params.id;
+      if (!ticketId) throw new BadRequestError("Ticket id is required");
+      const response = await this.interactor.closeTicket(ticketId);
+      return res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async assignTicket(
     req: Request,
     res: Response,
@@ -104,10 +119,10 @@ export class TicketController {
     }
   }
 
-   async getOne(
+  async getOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;

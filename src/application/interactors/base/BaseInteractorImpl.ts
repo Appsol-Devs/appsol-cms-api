@@ -8,11 +8,11 @@ import type { IBaseRepository } from "../../../framework/mongodb/repositories/ba
 import type { IBaseInteractor } from "./IBaseInteractor.js";
 
 @injectable()
-export abstract class BaseInteractorImpl<TDomain>
-  implements IBaseInteractor<TDomain>
-{
+export abstract class BaseInteractorImpl<
+  TDomain,
+> implements IBaseInteractor<TDomain> {
   protected constructor(
-    protected readonly repository: IBaseRepository<TDomain>
+    protected readonly repository: IBaseRepository<TDomain>,
   ) {
     this.repository = repository;
   }
@@ -21,7 +21,7 @@ export abstract class BaseInteractorImpl<TDomain>
   }
   async updateMany(
     filter: Partial<TDomain>,
-    data: Partial<TDomain>
+    data: Partial<TDomain>,
   ): Promise<number | null | undefined> {
     return this.repository.updateMany(filter, data);
   }

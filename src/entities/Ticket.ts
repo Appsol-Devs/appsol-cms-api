@@ -18,6 +18,7 @@ export class ITicket {
     public readonly status?: TTicketStatus,
     public readonly history?: Array<ITicketHistory>,
     public loggedBy?: IUser | string,
+    public readonly closedAt?: string,
     public readonly createdAt?: string,
     public readonly updatedAt?: string,
   ) {}
