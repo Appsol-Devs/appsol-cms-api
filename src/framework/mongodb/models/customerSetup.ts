@@ -32,8 +32,8 @@ const customerSetupSchema: SchemaDefinition = {
   priority: {
     type: String,
     required: true,
-    default: "P1",
-    enum: ["P1", "P2", "P3", "P4"],
+    default: "low",
+    enum: ["low", "medium", "high", "critical"],
   },
 };
 
@@ -42,5 +42,5 @@ export const { Model: CustomerSetupModel, Mapper: CustomerSetupModelMapper } =
     "CustomerSetup",
     customerSetupSchema,
     "CSC",
-    "setupCode"
+    "setupCode",
   );

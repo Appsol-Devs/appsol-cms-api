@@ -5,3 +5,4 @@ export * from "./customerSchema.js";
 export * from "./rescheduleSchema.js";
 export * from "./paymentSchema.js";
 export * from "./featureRequestSchema.js";
+export * from "./ticketSchema.js";

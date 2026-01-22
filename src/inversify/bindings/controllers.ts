@@ -25,10 +25,15 @@ import {
   AuthController,
   SubscriptionController,
   VisitorController,
+  TicketController,
 } from "../../adapters/controllers/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindAllControllers = (container: Container) => {
+  container
+    .bind<TicketController>(INTERFACE_TYPE.TicketController)
+    .to(TicketController);
+
   container
     .bind<VisitorController>(INTERFACE_TYPE.VisitorController)
     .to(VisitorController);
@@ -47,7 +52,7 @@ export const bindAllControllers = (container: Container) => {
 
   container
     .bind<SubscriptionReminderController>(
-      INTERFACE_TYPE.SubscriptionReminderController
+      INTERFACE_TYPE.SubscriptionReminderController,
     )
     .to(SubscriptionReminderController);
 
@@ -69,7 +74,7 @@ export const bindAllControllers = (container: Container) => {
 
   container
     .bind<CustomerComplaintController>(
-      INTERFACE_TYPE.CustomerComplaintController
+      INTERFACE_TYPE.CustomerComplaintController,
     )
     .to(CustomerComplaintController);
 
@@ -107,7 +112,7 @@ export const bindAllControllers = (container: Container) => {
 
   container
     .bind<ComplaintCategoryController>(
-      INTERFACE_TYPE.ComplaintCategoryController
+      INTERFACE_TYPE.ComplaintCategoryController,
     )
     .to(ComplaintCategoryController);
 

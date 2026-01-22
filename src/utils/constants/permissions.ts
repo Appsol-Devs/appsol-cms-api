@@ -119,6 +119,11 @@ const Permissions = Object.freeze({
   DELETE_VISITOR: "delete:visitor",
   CHECK_IN_VISITOR: "check_in:visitor",
   CHECK_OUT_VISITOR: "check_out:visitor",
+  CREATE_TICKET: "create:ticket",
+  VIEW_TICKETS: "view:tickets",
+  VIEW_TICKET: "view:ticket",
+  UPDATE_TICKET: "update:ticket",
+  DELETE_TICKET: "delete:ticket",
 } as const);
 
 export default Permissions;

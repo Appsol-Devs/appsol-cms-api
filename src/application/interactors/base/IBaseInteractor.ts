@@ -3,6 +3,7 @@ import type { PaginatedResponse } from "../../../entities/UserResponse.js";
 
 export interface IBaseInteractor<TDomain> {
   getAll(query: RequestQuery): Promise<PaginatedResponse<TDomain>>;
+  getOne(query: Partial<TDomain>): Promise<TDomain>;
   getById(id: string): Promise<TDomain>;
   create(data: TDomain): Promise<TDomain>;
   update(id: string, data: Partial<TDomain>): Promise<TDomain>;

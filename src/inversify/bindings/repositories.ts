@@ -18,6 +18,7 @@ import type {
   ISubscription,
   ISubscriptionReminder,
   ISubscriptionType,
+  ITicket,
   IVisitor,
 } from "../../entities/index.js";
 import type { ILead } from "../../entities/Lead.js";
@@ -54,42 +55,46 @@ import {
   NotificationRepositoryImpl,
   SubscriptionRepositoryImpl,
   VisitorRepositoryImpl,
+  TicketRepositoryImpl,
 } from "../../framework/mongodb/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
   container
+    .bind<IBaseRepository<ITicket>>(INTERFACE_TYPE.TicketRepositoryImpl)
+    .to(TicketRepositoryImpl);
+  container
     .bind<IBaseRepository<IVisitor>>(INTERFACE_TYPE.VisitorRepositoryImpl)
     .to(VisitorRepositoryImpl);
 
   container
-    .bind<IBaseRepository<ISubscription>>(
-      INTERFACE_TYPE.SubscriptionRepositoryImpl
-    )
+    .bind<
+      IBaseRepository<ISubscription>
+    >(INTERFACE_TYPE.SubscriptionRepositoryImpl)
     .to(SubscriptionRepositoryImpl);
 
   container
-    .bind<IBaseRepository<INotification>>(
-      INTERFACE_TYPE.NotificationRepositoryImpl
-    )
+    .bind<
+      IBaseRepository<INotification>
+    >(INTERFACE_TYPE.NotificationRepositoryImpl)
     .to(NotificationRepositoryImpl);
 
   container
-    .bind<IBaseRepository<ICustomerSetup>>(
-      INTERFACE_TYPE.CustomerSetupRepositoryImpl
-    )
+    .bind<
+      IBaseRepository<ICustomerSetup>
+    >(INTERFACE_TYPE.CustomerSetupRepositoryImpl)
     .to(CustomerSetupRepositoryImpl);
 
   container
-    .bind<IBaseRepository<ISubscriptionReminder>>(
-      INTERFACE_TYPE.SubscriptionReminderRepositoryImpl
-    )
+    .bind<
+      IBaseRepository<ISubscriptionReminder>
+    >(INTERFACE_TYPE.SubscriptionReminderRepositoryImpl)
     .to(SubscriptionReminderRepositoryImpl);
 
   container
-    .bind<IBaseRepository<IFeatureRequest>>(
-      INTERFACE_TYPE.FeatureRequestRepositoryImpl
-    )
+    .bind<
+      IBaseRepository<IFeatureRequest>
+    >(INTERFACE_TYPE.FeatureRequestRepositoryImpl)
     .to(FeatureRequestRepositoryImpl);
 
   container
@@ -101,21 +106,21 @@ export const bindRepositories = (container: Container) => {
     .to(RescheduleRepositoryImpl);
 
   container
-    .bind<IBaseRepository<ICustomerOutreach>>(
-      INTERFACE_TYPE.CustomerOutreachRepositoryImpl
-    )
+    .bind<
+      IBaseRepository<ICustomerOutreach>
+    >(INTERFACE_TYPE.CustomerOutreachRepositoryImpl)
     .to(CustomerOutreachRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<IOutreachType>>(
-      INTERFACE_TYPE.OutreachTypeRepositoryImpl
-    )
+    .bind<
+      IBaseLookupRepository<IOutreachType>
+    >(INTERFACE_TYPE.OutreachTypeRepositoryImpl)
     .to(OutreachTypeRepositoryImpl);
 
   container
-    .bind<IBaseRepository<ICustomerComplaint>>(
-      INTERFACE_TYPE.CustomerComplaintRepositoryImpl
-    )
+    .bind<
+      IBaseRepository<ICustomerComplaint>
+    >(INTERFACE_TYPE.CustomerComplaintRepositoryImpl)
     .to(CustomerComplaintRepositoryImpl);
 
   container
@@ -135,15 +140,15 @@ export const bindRepositories = (container: Container) => {
     .to(UserRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<ICallStatus>>(
-      INTERFACE_TYPE.CallStatusRepositoryImpl
-    )
+    .bind<
+      IBaseLookupRepository<ICallStatus>
+    >(INTERFACE_TYPE.CallStatusRepositoryImpl)
     .to(CallStatusRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<IComplaintCategory>>(
-      INTERFACE_TYPE.ComplaintCategoryRepositoryImpl
-    )
+    .bind<
+      IBaseLookupRepository<IComplaintCategory>
+    >(INTERFACE_TYPE.ComplaintCategoryRepositoryImpl)
     .to(ComplaintCategoryRepositoryImpl);
 
   container
@@ -151,39 +156,39 @@ export const bindRepositories = (container: Container) => {
     .to(ComplaintTypeRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<ILeadNextStep>>(
-      INTERFACE_TYPE.LeadNextStepRepositoryImpl
-    )
+    .bind<
+      IBaseLookupRepository<ILeadNextStep>
+    >(INTERFACE_TYPE.LeadNextStepRepositoryImpl)
     .to(LeadNextStepRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<ILeadStatus>>(
-      INTERFACE_TYPE.LeadStatusRepositoryImpl
-    )
+    .bind<
+      IBaseLookupRepository<ILeadStatus>
+    >(INTERFACE_TYPE.LeadStatusRepositoryImpl)
     .to(LeadStatusRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<ISetupStatus>>(
-      INTERFACE_TYPE.SetupStatusRepositoryImpl
-    )
+    .bind<
+      IBaseLookupRepository<ISetupStatus>
+    >(INTERFACE_TYPE.SetupStatusRepositoryImpl)
     .to(SetupStatusRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<ISoftware>>(
-      INTERFACE_TYPE.SoftwareRepositoryImpl
-    )
+    .bind<
+      IBaseLookupRepository<ISoftware>
+    >(INTERFACE_TYPE.SoftwareRepositoryImpl)
     .to(SoftwareRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<ISubscriptionType>>(
-      INTERFACE_TYPE.SubscriptionTypeRepositoryImpl
-    )
+    .bind<
+      IBaseLookupRepository<ISubscriptionType>
+    >(INTERFACE_TYPE.SubscriptionTypeRepositoryImpl)
     .to(SubscriptionTypeRepositoryImpl);
 
   container
-    .bind<IBaseLookupRepository<ICustomer>>(
-      INTERFACE_TYPE.CustomerRepositoryImpl
-    )
+    .bind<
+      IBaseLookupRepository<ICustomer>
+    >(INTERFACE_TYPE.CustomerRepositoryImpl)
     .to(CustomerRepositoryImpl);
 
   container

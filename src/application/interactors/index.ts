@@ -16,3 +16,4 @@ export * from "./customer_setup/index.js";
 export * from "./notification/index.js";
 export * from "./subscription/index.js";
 export * from "./visitor/index.js";
+export * from "./ticket/index.js";

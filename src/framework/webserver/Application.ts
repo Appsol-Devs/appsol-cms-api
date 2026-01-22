@@ -1,4 +1,3 @@
-// framework/webserver/Application.ts
 import { injectable, inject, Container } from "inversify";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 import type { IExpressApp } from "./app.js";
@@ -19,7 +18,7 @@ export class Application implements IApplication {
     @inject(INTERFACE_TYPE.DatabaseConnection)
     private database: IDatabaseConnection,
     @inject(INTERFACE_TYPE.Logger) private logger: ILogger,
-    @inject(INTERFACE_TYPE.Container) private container: Container
+    @inject(INTERFACE_TYPE.Container) private container: Container,
   ) {}
 
   public async start(): Promise<void> {

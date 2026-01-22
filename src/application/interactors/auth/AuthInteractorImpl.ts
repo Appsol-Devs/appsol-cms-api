@@ -28,7 +28,7 @@ import type {
   IMailer,
 } from "../../../framework/services/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
-import { otpTemplateDark } from "../../../framework/services/mailer/otpTemplate.js";
+import { otpTemplateDark } from "../../../utils/mail_templates/otpTemplate.js";
 
 @injectable()
 export class AuthInteractorImpl implements IAuthInteractor {
@@ -43,7 +43,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
     @inject(INTERFACE_TYPE.AuthServiceImpl) authService: IAuthService,
     @inject(INTERFACE_TYPE.Mailer) mailer: IMailer,
     @inject(INTERFACE_TYPE.UserRepositoryImpl) userRepository: IUserRepository,
-    @inject(INTERFACE_TYPE.RoleRepositoryImpl) roleRepository: IRoleRepository
+    @inject(INTERFACE_TYPE.RoleRepositoryImpl) roleRepository: IRoleRepository,
   ) {
     this.repository = repository;
     this.authService = authService;
@@ -60,7 +60,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
     await this.sendEmailOTP(
       email,
       "Account Verification",
-      "Please enter this code to verify your email"
+      "Please enter this code to verify your email",
     );
 
     const response: UserOTPResponse = {
@@ -79,7 +79,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
   async verifyPasswordReset(
     userId: string,
     otp: string,
-    newPassword: string
+    newPassword: string,
   ): Promise<UserOTPResponse> {
     const userOtpRecords = await this.repository.findOtps({ user: userId });
     if (userOtpRecords.length === 0) {
@@ -106,9 +106,8 @@ export class AuthInteractorImpl implements IAuthInteractor {
             throw new Error("User not found");
           }
 
-          const hashedPassword = await this.authService.encriptPassword(
-            newPassword
-          ); // hash password before updating
+          const hashedPassword =
+            await this.authService.encriptPassword(newPassword); // hash password before updating
           const userData: IUser = {
             ...user,
             password: hashedPassword,
@@ -116,7 +115,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
 
           const updatedUser = await this.userRepository.updateUser(
             user._id!,
-            userData
+            userData,
           );
 
           if (!updatedUser) throw new Error("Error while updating user");
@@ -144,7 +143,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
     await this.sendEmailOTP(
       email,
       "Password Reset",
-      "Please enter this code to reset your password"
+      "Please enter this code to reset your password",
     );
 
     const response: UserOTPResponse = {
@@ -167,7 +166,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
     if (!user) throw new NotFoundError("User not found");
     const isMatch = await this.authService.comparePassword(
       currentPassword,
-      user.password!
+      user.password!,
     );
     if (!isMatch) {
       throw new BadRequestError("Invalid credentials");
@@ -179,7 +178,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
     };
     const updatedUser = await this.userRepository.updateUser(
       user._id!,
-      userData
+      userData,
     );
     if (!updatedUser) throw new Error("Error while updating user");
     const { password: pass, ...rest } = userData;
@@ -189,7 +188,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
     email: string,
     password: string,
     deviceToken?: string,
-    lastLoginLocation?: Geolocation
+    lastLoginLocation?: Geolocation,
   ): Promise<IUser> {
     if (!email || !password) {
       throw new UnauthorizedError("Email and password are required");
@@ -200,7 +199,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
     //compare password to hash
     const isMatch = await this.authService.comparePassword(
       password,
-      user.password!
+      user.password!,
     );
     if (!isMatch) {
       throw new UnauthorizedError("Invalid credentials");
@@ -265,7 +264,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
 
     if (userOtpRecords.length === 0) {
       throw new Error(
-        "Account record does not exist or has already been verified. Please sign up or login"
+        "Account record does not exist or has already been verified. Please sign up or login",
       );
     } else {
       const { expiresAt } = userOtpRecords[0]!;
@@ -275,10 +274,10 @@ export class AuthInteractorImpl implements IAuthInteractor {
         await this.sendEmailOTP(
           user?.email!,
           "Account Verification New OTP",
-          "Please enter this code to verify your email"
+          "Please enter this code to verify your email",
         );
         throw new BadRequestError(
-          "OTP has expired. A new OTP has been sent to your email."
+          "OTP has expired. A new OTP has been sent to your email.",
         );
       } else {
         if (Number(otp) !== userOtpRecords[0]?.otp) {
@@ -317,14 +316,14 @@ export class AuthInteractorImpl implements IAuthInteractor {
     if (!data) throw new UnprocessableEntityError("User data is required");
 
     const hashedPassword = await this.authService.encriptPassword(
-      data.password!
+      data.password!,
     ); // hash password before saving it
 
     // find adminstrator role to assign to new user
     const adminRole = await this.roleRepository.findByName("Administrator");
     if (!adminRole)
       throw new NotFoundError(
-        "Administrator role not found, please upload permissions first."
+        "Administrator role not found, please upload permissions first.",
       );
 
     const userData: IUser = {
@@ -342,7 +341,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
     await this.sendEmailOTP(
       userData.email!,
       "Account Verification",
-      "Please enter this code to verify your email"
+      "Please enter this code to verify your email",
     );
 
     const response: UserRegistrationResponse = {
@@ -363,7 +362,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
   async sendEmailOTP(
     email: string,
     subject: string,
-    text: string
+    text: string,
   ): Promise<void> {
     try {
       if (!email) throw new UnprocessableEntityError("Email is required");
@@ -381,7 +380,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
       // send verification email
       const emailContent = otpTemplateDark(
         user.firstName ?? "User",
-        otp.toString()
+        otp.toString(),
       );
       await this.mailer.sendEmail(user.email!, subject, emailContent);
     } catch (error) {

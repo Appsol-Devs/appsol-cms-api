@@ -41,10 +41,10 @@ export const INTERFACE_TYPE = {
   SoftwareInteractorImpl: Symbol.for("SoftwareInteractorImpl"),
   SoftwareController: Symbol.for("SoftwareController"),
   ComplaintCategoryRepositoryImpl: Symbol.for(
-    "ComplaintCategoryRepositoryImpl"
+    "ComplaintCategoryRepositoryImpl",
   ),
   ComplaintCategoryInteractorImpl: Symbol.for(
-    "ComplaintCategoryInteractorImpl"
+    "ComplaintCategoryInteractorImpl",
   ),
   ComplaintCategoryController: Symbol.for("ComplaintCategoryController"),
   CallStatusRepositoryImpl: Symbol.for("CallStatusRepositoryImpl"),
@@ -69,10 +69,10 @@ export const INTERFACE_TYPE = {
   CustomerInteractorImpl: Symbol.for("CustomerInteractorImpl"),
   CustomerController: Symbol.for("CustomerController"),
   CustomerComplaintRepositoryImpl: Symbol.for(
-    "CustomerComplaintRepositoryImpl"
+    "CustomerComplaintRepositoryImpl",
   ),
   CustomerComplaintInteractorImpl: Symbol.for(
-    "CustomerComplaintInteractorImpl"
+    "CustomerComplaintInteractorImpl",
   ),
   CustomerComplaintController: Symbol.for("CustomerComplaintController"),
   CustomerOutreachRepositoryImpl: Symbol.for("CustomerOutreachRepositoryImpl"),
@@ -91,10 +91,10 @@ export const INTERFACE_TYPE = {
   FeatureRequestInteractorImpl: Symbol.for("FeatureRequestInteractorImpl"),
   FeatureRequestController: Symbol.for("FeatureRequestController"),
   SubscriptionReminderRepositoryImpl: Symbol.for(
-    "SubscriptionReminderRepositoryImpl"
+    "SubscriptionReminderRepositoryImpl",
   ),
   SubscriptionReminderInteractorImpl: Symbol.for(
-    "SubscriptionReminderInteractorImpl"
+    "SubscriptionReminderInteractorImpl",
   ),
   SubscriptionReminderController: Symbol.for("SubscriptionReminderController"),
   CustomerSetupRepositoryImpl: Symbol.for("CustomerSetupRepositoryImpl"),
@@ -110,4 +110,7 @@ export const INTERFACE_TYPE = {
   VisitorRepositoryImpl: Symbol.for("VisitorRepositoryImpl"),
   VisitorInteractorImpl: Symbol.for("VisitorInteractorImpl"),
   VisitorController: Symbol.for("VisitorController"),
+  TicketRepositoryImpl: Symbol.for("TicketRepositoryImpl"),
+  TicketInteractorImpl: Symbol.for("TicketInteractorImpl"),
+  TicketController: Symbol.for("TicketController"),
 };
