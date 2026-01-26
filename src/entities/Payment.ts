@@ -24,8 +24,8 @@ export class IPayment {
     public readonly approvedOrRejectedBy?: IUser | string,
     public readonly approvalNotes?: string,
     public readonly paymentReference?: string,
-    public readonly createdAt?: string,
-    public readonly updatedAt?: string
+    public readonly createdAt?: string | Date,
+    public readonly updatedAt?: string | Date,
   ) {}
 }
 

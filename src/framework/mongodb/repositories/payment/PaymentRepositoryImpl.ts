@@ -17,7 +17,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
 
   // ✅ Paginated & Filtered fetch
   async getAll(
-    query: IPaymentRequestQuery
+    query: IPaymentRequestQuery,
   ): Promise<PaginatedResponse<IPayment>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
@@ -42,7 +42,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
     if (query.status) filter.status = query.status;
     if (query.loggedBy) filter.loggedBy = query.loggedBy;
     if (query.paymentDate) filter.paymentDate = query.paymentDate;
-    if (query.renewalDate) filter.renewalDate = query.renewalDate;
+    // if (query.renewalDate) filter.renewalDate = query.renewalDate;
 
     // ✅ Date range
     if (query.startDate && query.endDate) {
@@ -54,15 +54,18 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
 
     //renewal date range
     if (query.renewalDate) {
-      if (query.renewalDate.gte) {
-        filter.renewalDate = {
-          $gte: query.renewalDate.gte,
-        };
-      }
-      if (query.renewalDate.lte) {
-        filter.renewalDate = {
-          $lte: query.renewalDate.lte,
-        };
+      const { gte, lte } = query.renewalDate;
+
+      if (gte !== undefined || lte !== undefined) {
+        filter.renewalDate = {};
+
+        if (gte !== undefined) {
+          filter.renewalDate.$gte = gte;
+        }
+
+        if (lte !== undefined) {
+          filter.renewalDate.$lte = lte;
+        }
       }
     }
 
@@ -73,7 +76,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
         .populate("loggedBy", "firstName lastName email")
         .populate(
           "subscriptionType",
-          "name description colorCode durationInMonths"
+          "name description colorCode durationInMonths",
         )
         .populate("approvedOrRejectedBy", "firstName lastName email")
         .populate("software", "name description")
@@ -134,7 +137,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       .populate("software", "name description ")
       .populate(
         "subscriptionType",
-        "name description colorCode durationInMonths"
+        "name description colorCode durationInMonths",
       );
 
     if (!complaint) throw new NotFoundError("Payment not found");
@@ -177,7 +180,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       .populate("approvedOrRejectedBy", "firstName lastName email")
       .populate(
         "subscriptionType",
-        "name description colorCode durationInMonths"
+        "name description colorCode durationInMonths",
       );
 
     if (!updated) throw new NotFoundError("Payment not found");

@@ -24,12 +24,15 @@ export class ITicket {
   ) {}
 }
 
-export type TTicketStatus =
-  | "open"
-  | "assigned"
-  | "fixed"
-  | "closed"
-  | "rejected";
+export const TICKET_STATUSES = [
+  "open",
+  "fixed",
+  "closed",
+  "assigned",
+  "rejected",
+] as const;
+
+export type TTicketStatus = (typeof TICKET_STATUSES)[number];
 
 export interface ITicketHistory {
   from: IUser | string | undefined | null;

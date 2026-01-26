@@ -19,7 +19,7 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
 
   // ✅ Paginated & Filtered fetch
   async getAll(
-    query: ICustomerComplaintRequestQuery
+    query: ICustomerComplaintRequestQuery,
   ): Promise<PaginatedResponse<ICustomerComplaint>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
@@ -99,7 +99,7 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
 
   // ✅ Assign all references directly from IDs
   private assignReferences(
-    data: Partial<ICustomerComplaint>
+    data: Partial<ICustomerComplaint>,
   ): ICustomerComplaint {
     if (data.customerId) data.customer = data.customerId;
     if (data.complaintTypeId) data.complaintType = data.complaintTypeId;
@@ -127,7 +127,7 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
   // ✅ Override update
   async update(
     id: string,
-    data: Partial<ICustomerComplaint>
+    data: Partial<ICustomerComplaint>,
   ): Promise<ICustomerComplaint> {
     const dataWithReferences = this.assignReferences(data);
 

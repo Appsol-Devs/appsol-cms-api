@@ -7,14 +7,24 @@ import mongoose, {
 import { withBaseSchema } from "./baseModel.js";
 import type { BaseLookupDocument } from "./lookupFactory.js";
 
+/**
+ * Creates a mongoose model and a mapper for the given domain entity type.
+ *
+ * @param modelName - name of the mongoose model
+ * @param definition - mongoose schema definition or a schema
+ * @param prefix - prefix for the model's id field
+ * @param idFieldName - name of the model's id field
+ *
+ * @returns {{Model: Model<TDocument>, Mapper: {toDtoCreation: (payload: TDomain) => any, toEntity: (doc: any) => TDomain}}}
+ */
 export const createModel = <
   TDomain extends object, // domain entity type (e.g. ISoftware)
-  TDocument extends Document = BaseLookupDocument // mongoose document type
+  TDocument extends Document = BaseLookupDocument, // mongoose document type
 >(
   modelName: string,
   definition: SchemaDefinition | Schema,
   prefix: string,
-  idFieldName: string
+  idFieldName: string,
 ): {
   Model: Model<TDocument>;
   Mapper: {
@@ -51,6 +61,10 @@ export const createModel = <
         entity[key] = doc[key];
       });
       entity._id = doc._id?.toString();
+
+      // ✅ explicitly map timestamps
+      if (doc.createdAt) entity.createdAt = doc.createdAt;
+      if (doc.updatedAt) entity.updatedAt = doc.updatedAt;
       return entity as TDomain;
     },
   };

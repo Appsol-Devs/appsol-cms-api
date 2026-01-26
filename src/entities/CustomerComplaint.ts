@@ -27,12 +27,15 @@ export class ICustomerComplaint {
   ) {}
 }
 
-export type TCustomerComplaintStatus =
-  | "open"
-  | "in-progress"
-  | "resolved"
-  | "closed"
-  | "rescheduled";
+export const COMPLAINT_STATUSES = [
+  "open",
+  "in-progress",
+  "rescheduled",
+  "resolved",
+  "closed",
+] as const;
+
+export type TCustomerComplaintStatus = (typeof COMPLAINT_STATUSES)[number];
 
 export interface ICustomerComplaintRequestQuery extends RequestQuery {
   customerId?: string;

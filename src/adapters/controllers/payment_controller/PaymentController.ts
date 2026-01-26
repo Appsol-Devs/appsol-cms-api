@@ -12,13 +12,12 @@ import type {
   IPayment,
   IPaymentRequestQuery,
 } from "../../../entities/Payment.js";
-import type { TargetEntityType } from "../../../entities/Reschedule.js";
 
 @injectable()
 export class PaymentController extends BaseController<IPayment> {
   constructor(
     @inject(INTERFACE_TYPE.PaymentInteractorImpl)
-    interactor: PaymentInteractorImpl
+    interactor: PaymentInteractorImpl,
   ) {
     super(interactor);
   }
@@ -26,7 +25,7 @@ export class PaymentController extends BaseController<IPayment> {
   async approveOrRejectPayment(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.params) throw new BadRequestError("Request params are required");
@@ -57,7 +56,7 @@ export class PaymentController extends BaseController<IPayment> {
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: IPaymentRequestQuery = {
@@ -71,8 +70,12 @@ export class PaymentController extends BaseController<IPayment> {
           req.query.subscriptionTypeId?.toString() ?? undefined,
         paymentDate: req.query.paymentDate?.toString() ?? undefined,
         renewalDate: {
-          gte: req.query.renewalStartDate?.toString() ?? undefined,
-          lte: req.query.renewalEndDate?.toString() ?? undefined,
+          gte: req.query.renewalStartDate
+            ? req.query.renewalStartDate?.toString()
+            : undefined,
+          lte: req.query.renewalEndDate
+            ? req.query.renewalEndDate?.toString()
+            : undefined,
         },
       };
 
@@ -98,7 +101,7 @@ export class PaymentController extends BaseController<IPayment> {
   async create(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
