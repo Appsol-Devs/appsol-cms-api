@@ -34,6 +34,8 @@ import {
   VisitorInteractorImpl,
   TicketInteractorImpl,
   type ITicketInteractor,
+  type IDashboardInteractor,
+  DashboardInteractorImpl,
 } from "../../application/interactors/index.js";
 import type { ICustomer } from "../../entities/Customer.js";
 import type { ILead } from "../../entities/Lead.js";
@@ -63,8 +65,15 @@ import type {
 
 export const bindAllInteractors = (container: Container) => {
   container
+    .bind<IDashboardInteractor>(INTERFACE_TYPE.DashboardInteractorImpl)
+    .to(DashboardInteractorImpl);
+
+
+  container
     .bind<ITicketInteractor>(INTERFACE_TYPE.TicketInteractorImpl)
     .to(TicketInteractorImpl);
+
+
   container
     .bind<IBaseInteractor<IVisitor>>(INTERFACE_TYPE.VisitorInteractorImpl)
     .to(VisitorInteractorImpl);

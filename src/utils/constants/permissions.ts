@@ -124,6 +124,7 @@ const Permissions = Object.freeze({
   VIEW_TICKET: "view:ticket",
   UPDATE_TICKET: "update:ticket",
   DELETE_TICKET: "delete:ticket",
+  VIEW_DASHBOARD: "view:dashboard",
 } as const);
 
 export default Permissions;

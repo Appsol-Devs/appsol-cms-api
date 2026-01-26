@@ -3,26 +3,31 @@ import type { TTicketStatus } from "./Ticket.js";
 
 export class IDashboardSummary {
   constructor(
-    public readonly openIssuesCount?: number,
-    public readonly revenue?: number,
-    public readonly activeSubscriptions?: number,
-    public readonly leadGrowthPercentage?: string,
+    public  openIssuesCount?: number,
+    public  revenue?: number,
+    public  activeSubscriptions?: number,
+    public  leadGrowthPercentage?: string,
   ) {}
 }
 export class IDashboardOperationalInsights {
   constructor(
-    public readonly complaints?: TComplaintInsights,
-    public readonly tickets?: TTicketInsights,
+    public  complaints?: TComplaintInsights,
+    public  tickets?: TTicketInsights,
   ) {}
 }
 
 export class IDashboardWeeklyRevenueTrend {
   constructor(
-    public readonly dates?: string[],
-    public readonly revenues?: number[],
+    public  dates?: string[],
+    public  revenues?: number[],
   ) {}
 }
 
 type TComplaintInsights = Record<TCustomerComplaintStatus, number>;
 
 type TTicketInsights = Record<TTicketStatus, number>;
+
+export interface IDashbaordRequest{
+  startDate?: string | null ;
+  endDate?: string | null ;
+}

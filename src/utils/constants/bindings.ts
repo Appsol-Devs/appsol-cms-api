@@ -113,4 +113,7 @@ export const INTERFACE_TYPE = {
   TicketRepositoryImpl: Symbol.for("TicketRepositoryImpl"),
   TicketInteractorImpl: Symbol.for("TicketInteractorImpl"),
   TicketController: Symbol.for("TicketController"),
+  DashboardRepoImpl: Symbol.for("DashboardRepoImpl"),
+  DashboardInteractorImpl: Symbol.for("DashboardInteractorImpl"),
+  DashboardController: Symbol.for("DashboardController"),
 };

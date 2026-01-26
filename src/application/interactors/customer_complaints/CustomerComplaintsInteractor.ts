@@ -1,7 +1,6 @@
 import { inject } from "inversify";
 import type {
   IComplaintType,
-  ICustomer,
   ICustomerComplaint,
   IUser,
 } from "../../../entities/index.js";
@@ -15,7 +14,7 @@ export class CustomerComplaintInteractorImpl extends BaseInteractorImpl<ICustome
     @inject(INTERFACE_TYPE.CustomerComplaintRepositoryImpl)
     customerComplaintRepositoryImpl: CustomerComplaintRepositoryImpl,
     @inject(INTERFACE_TYPE.NotificationService)
-    private notificationService: INotificationService
+    private notificationService: INotificationService,
   ) {
     super(customerComplaintRepositoryImpl);
     this.notificationService = notificationService;
@@ -31,6 +30,7 @@ export class CustomerComplaintInteractorImpl extends BaseInteractorImpl<ICustome
         })`,
         link: `/complaints/${res._id}`,
         targetEntityId: res._id,
+        targetEntityType: "CustomerComplaint",
       });
       return res;
     }
@@ -39,7 +39,7 @@ export class CustomerComplaintInteractorImpl extends BaseInteractorImpl<ICustome
 
   async update(
     id: string,
-    data: ICustomerComplaint
+    data: ICustomerComplaint,
   ): Promise<ICustomerComplaint> {
     if (!id) throw new Error("Id is required");
     if (!data) throw new Error("Data is required");

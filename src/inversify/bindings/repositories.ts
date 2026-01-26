@@ -56,13 +56,19 @@ import {
   SubscriptionRepositoryImpl,
   VisitorRepositoryImpl,
   TicketRepositoryImpl,
+  DashboardRepoImpl,
+  type IDashboardRepo,
 } from "../../framework/mongodb/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
   container
+    .bind<IDashboardRepo>(INTERFACE_TYPE.DashboardRepoImpl)
+    .to(DashboardRepoImpl);
+  container
     .bind<IBaseRepository<ITicket>>(INTERFACE_TYPE.TicketRepositoryImpl)
     .to(TicketRepositoryImpl);
+
   container
     .bind<IBaseRepository<IVisitor>>(INTERFACE_TYPE.VisitorRepositoryImpl)
     .to(VisitorRepositoryImpl);
