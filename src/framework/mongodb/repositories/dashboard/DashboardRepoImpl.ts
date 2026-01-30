@@ -140,106 +140,90 @@ export class DashboardRepoImpl implements IDashboardRepo {
       start.setUTCHours(0, 0, 0, 0);
 
       const payments = await PaymentModel.aggregate([
-        // 1️⃣ Match payments in range
-        {
-          $match: {
-            createdAt: { $gte: start, $lte: end },
-            status: { $in: ["approved", "generated"] },
-          },
-        },
-
-        // 2️⃣ Group by day (UTC-safe)
-        {
-          $group: {
-            _id: {
-              $dateToString: {
-                format: "%Y-%m-%d",
-                date: "$createdAt",
-                timezone: "UTC",
-              },
-            },
-            total: { $sum: "$amount" },
-          },
-        },
-
-        // 3️⃣ Convert to lookup-friendly format
+        { $limit: 1 },
+        /**
+         * 1️⃣ Generate 7-day UTC date buckets starting from startDate
+         */
         {
           $project: {
-            _id: 0,
-            date: "$_id",
-            total: 1,
-          },
-        },
-
-        // 4️⃣ Build full 7-day range
-        {
-          $facet: {
-            data: [{ $sort: { date: 1 } }],
-            days: [
-              {
-                $project: {
-                  dates: {
-                    $map: {
-                      input: { $range: [0, 7] },
-                      as: "i",
-                      in: {
-                        $dateToString: {
-                          format: "%Y-%m-%d",
-                          timezone: "UTC",
-                          date: {
-                            $dateSubtract: {
-                              startDate: end,
-                              unit: "day",
-                              amount: "$$i",
-                            },
-                          },
-                        },
-                      },
+            days: {
+              $map: {
+                input: { $range: [0, 7] },
+                as: "i",
+                in: {
+                  date: {
+                    $dateAdd: {
+                      startDate: start,
+                      unit: "day",
+                      amount: "$$i",
                     },
                   },
                 },
               },
-            ],
-          },
-        },
-
-        // 5️⃣ Merge real data with zero-filled days
-        {
-          $project: {
-            merged: {
-              $map: {
-                input: { $arrayElemAt: ["$days.dates", 0] },
-                as: "date",
-                in: {
-                  date: "$$date",
-                  total: {
-                    $ifNull: [
-                      {
-                        $first: {
-                          $map: {
-                            input: {
-                              $filter: {
-                                input: "$data",
-                                cond: { $eq: ["$$this.date", "$$date"] },
-                              },
-                            },
-                            as: "d",
-                            in: "$$d.total",
-                          },
-                        },
-                      },
-                      0,
-                    ],
-                  },
-                },
-              },
             },
           },
         },
 
-        // 6️⃣ Final shape
-        { $unwind: "$merged" },
-        { $replaceRoot: { newRoot: "$merged" } },
+        { $unwind: "$days" },
+
+        /**
+         * 2️⃣ Lookup payments for each day
+         */
+        {
+          $lookup: {
+            from: "payments",
+            let: {
+              dayStart: "$days.date",
+              dayEnd: {
+                $dateAdd: {
+                  startDate: "$days.date",
+                  unit: "day",
+                  amount: 1,
+                },
+              },
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $gte: ["$createdAt", "$$dayStart"] },
+                      { $lt: ["$createdAt", "$$dayEnd"] },
+                      { $in: ["$status", ["approved", "generated"]] },
+                    ],
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  total: { $sum: "$amount" },
+                },
+              },
+            ],
+            as: "payments",
+          },
+        },
+
+        /**
+         * 3️⃣ Normalize output (zero-fill)
+         */
+        {
+          $project: {
+            _id: 0,
+            date: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$days.date",
+                timezone: "UTC",
+              },
+            },
+            total: {
+              $ifNull: [{ $arrayElemAt: ["$payments.total", 0] }, 0],
+            },
+          },
+        },
+
         { $sort: { date: 1 } },
       ]);
 
