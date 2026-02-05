@@ -14,7 +14,7 @@ export class RoleController {
   private roleInteractor: IRoleInteractor;
 
   constructor(
-    @inject(INTERFACE_TYPE.RoleInteractorImpl) roleInteractor: IRoleInteractor
+    @inject(INTERFACE_TYPE.RoleInteractorImpl) roleInteractor: IRoleInteractor,
   ) {
     this.roleInteractor = roleInteractor;
   }
@@ -22,13 +22,12 @@ export class RoleController {
   async addRole(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       const data = {
         ...req.body,
       };
-      if (!data.companyId) throw new BadRequestError("CompanyId is required");
 
       const role = await this.roleInteractor.addRole(data);
       if (!role) throw new BadRequestError("Error while adding role");
@@ -42,7 +41,7 @@ export class RoleController {
   async getARole(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       const { id } = req.params;
@@ -59,7 +58,7 @@ export class RoleController {
   async getAllRoles(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       const query: RequestQuery = {
@@ -79,7 +78,7 @@ export class RoleController {
   async updateRole(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       const { id } = req.params;
@@ -103,7 +102,7 @@ export class RoleController {
   async deleteRole(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       const { id } = req.params;
