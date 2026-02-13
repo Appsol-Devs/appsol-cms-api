@@ -52,11 +52,13 @@ export class LeadRepositoryImpl extends BaseRepoistoryImpl<ILead> {
       this.model
         .find(filter)
         //.populate("leadStage", "name")
-        .populate("nextStep", "name")
+        .populate("nextStep", "name description colorCode")
         .populate("loggedBy", "firstName lastName email")
         .populate("software", "name description colorCode")
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .sort({ createdAt: -1 }),
+
       this.model.countDocuments(filter),
     ]);
 
@@ -75,8 +77,9 @@ export class LeadRepositoryImpl extends BaseRepoistoryImpl<ILead> {
     const lead = await this.model
       .findById(id)
       // .populate("leadStage", "name")
-      .populate("nextStep", "name")
-      .populate("loggedBy", "firstName lastName email");
+      .populate("nextStep", "name description colorCode")
+      .populate("loggedBy", "firstName lastName email")
+      .populate("software", "name description colorCode");
     if (!lead) throw new NotFoundError("Lead not found");
     return this.mapper.toEntity(lead);
   }
@@ -88,6 +91,8 @@ export class LeadRepositoryImpl extends BaseRepoistoryImpl<ILead> {
     const created = await this.model.create({ ...data, ...dataWithReferences });
     const populated = await created.populate([
       { path: "software", select: "name description colorCode" },
+      { path: "nextStep", select: "name description colorCode" },
+      { path: "loggedBy", select: "firstName lastName email" },
     ]);
 
     return this.mapper.toEntity(populated);
@@ -98,6 +103,8 @@ export class LeadRepositoryImpl extends BaseRepoistoryImpl<ILead> {
     const dataWithReferences = this.assignReferences(data);
     const updated = await this.model
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
+      .populate("nextStep", "name description colorCode")
+      .populate("loggedBy", "firstName lastName email")
       .populate("software", "name description colorCode");
     if (!updated) throw new BadRequestError("Lead not found");
     return this.mapper.toEntity(updated);
@@ -105,9 +112,7 @@ export class LeadRepositoryImpl extends BaseRepoistoryImpl<ILead> {
 
   private assignReferences(data: Partial<ILead>): ILead {
     const refs: Partial<ILead> = {};
-
     if (data.softwareId) refs.software = data.softwareId;
-
     return refs;
   }
 }

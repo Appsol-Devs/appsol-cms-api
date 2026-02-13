@@ -62,17 +62,16 @@ import type {
   IVisitor,
   ITicket,
 } from "../../entities/index.js";
+import type { ILeadInteractor } from "../../application/interactors/lead/ILeadInteractor.js";
 
 export const bindAllInteractors = (container: Container) => {
   container
     .bind<IDashboardInteractor>(INTERFACE_TYPE.DashboardInteractorImpl)
     .to(DashboardInteractorImpl);
 
-
   container
     .bind<ITicketInteractor>(INTERFACE_TYPE.TicketInteractorImpl)
     .to(TicketInteractorImpl);
-
 
   container
     .bind<IBaseInteractor<IVisitor>>(INTERFACE_TYPE.VisitorInteractorImpl)
@@ -147,7 +146,7 @@ export const bindAllInteractors = (container: Container) => {
     .to(OutreachTypeInteractorImpl);
 
   container
-    .bind<IBaseLookupInteractor<ILead>>(INTERFACE_TYPE.LeadInteractorImpl)
+    .bind<ILeadInteractor>(INTERFACE_TYPE.LeadInteractorImpl)
     .to(LeadInteractorImpl);
 
   container
