@@ -24,7 +24,8 @@ export class ILead {
     public readonly nextStep?: ILeadNextStep | string,
     public readonly location?: string,
     public readonly notes?: string,
-    public readonly geolocation?: IGeolocation
+    public readonly geolocation?: IGeolocation,
+    public readonly isConverted?: boolean,
   ) {}
 }
 
@@ -60,4 +61,5 @@ enum LeadStatus {
   CLOSED = "closed",
   REJECTED = "rejected",
   NEGOTIATION = "negotiation",
+  NEW = "new",
 }

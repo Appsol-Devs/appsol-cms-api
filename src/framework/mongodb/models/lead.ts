@@ -16,6 +16,7 @@ const leadSchema: SchemaDefinition = {
     type: String,
     required: true,
     enum: [
+      "new",
       "evaluating",
       "buildingProposal",
       "qualified",
@@ -24,6 +25,7 @@ const leadSchema: SchemaDefinition = {
       "closed",
       "rejected",
     ],
+    default: "new",
   },
   loggedBy: { type: Schema.Types.ObjectId, required: true, ref: "User" },
   createdAt: { type: String, required: true },
@@ -35,6 +37,7 @@ const leadSchema: SchemaDefinition = {
     required: true,
     ref: "LeadNextStep",
   },
+  isConverted: { type: Boolean, required: true, default: false },
   location: { type: String, required: false },
   notes: { type: String, required: false },
   geolocation: {
@@ -48,5 +51,5 @@ export const { Model: LeadModel, Mapper: LeadModelMapper } = createModel<ILead>(
   "Lead",
   leadSchema,
   "LDC",
-  "leadCode"
+  "leadCode",
 );

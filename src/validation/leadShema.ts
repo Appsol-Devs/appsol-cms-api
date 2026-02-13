@@ -14,8 +14,8 @@ export const leadQuerySchema = baseQuerySchema.extend({
     "evaluating",
     "buildingProposal",
     "qualified",
-    "won",
     "negotiation",
+    "new",
   ]),
   priority: z.enum(["low", "medium", "high"]),
   leadStage: z.string().optional(),
@@ -30,3 +30,5 @@ export const leadQuerySchema = baseQuerySchema.extend({
     .optional(),
   notes: z.string().optional(),
 });
+
+export const updateLeadSchema = leadQuerySchema.partial();

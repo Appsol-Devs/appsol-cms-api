@@ -40,5 +40,5 @@ export const {
   "CustomerOutreach",
   customerOutreachSchema,
   "COC",
-  "OutreachCode"
+  "outreachCode",
 );

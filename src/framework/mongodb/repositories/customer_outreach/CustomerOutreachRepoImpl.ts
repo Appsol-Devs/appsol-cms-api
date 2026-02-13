@@ -20,7 +20,7 @@ export class CustomerOutreachRepositoryImpl extends BaseRepoistoryImpl<ICustomer
 
   // ✅ Paginated & Filtered fetch
   async getAll(
-    query: ICustomerOutreachRequestQuery
+    query: ICustomerOutreachRequestQuery,
   ): Promise<PaginatedResponse<ICustomerOutreach>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
@@ -80,8 +80,8 @@ export class CustomerOutreachRepositoryImpl extends BaseRepoistoryImpl<ICustomer
   async getById(id: string): Promise<ICustomerOutreach> {
     const complaint = await this.model
       .findById(id)
-      .populate("customer", "name email phone")
-      .populate("callStatus", "name")
+      .populate("customer", "name email phone companyName")
+      .populate("callStatus", "name colorCode")
       .populate("loggedBy", "firstName lastName email")
       .populate("outreachType", "name colorCode");
 
@@ -91,7 +91,7 @@ export class CustomerOutreachRepositoryImpl extends BaseRepoistoryImpl<ICustomer
 
   // ✅ Assign all references directly from IDs
   private assignReferences(
-    data: Partial<ICustomerOutreach>
+    data: Partial<ICustomerOutreach>,
   ): ICustomerOutreach {
     if (data.customerId) data.customer = data.customerId;
     if (data.callStatusId) data.callStatus = data.callStatusId;
@@ -115,7 +115,7 @@ export class CustomerOutreachRepositoryImpl extends BaseRepoistoryImpl<ICustomer
   // ✅ Override update
   async update(
     id: string,
-    data: Partial<ICustomerOutreach>
+    data: Partial<ICustomerOutreach>,
   ): Promise<ICustomerOutreach> {
     const dataWithReferences = this.assignReferences(data);
 

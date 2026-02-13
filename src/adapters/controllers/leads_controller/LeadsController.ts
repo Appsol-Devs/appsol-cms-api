@@ -1,29 +1,41 @@
 import { inject, injectable } from "inversify";
-import type { LeadInteractorImpl } from "../../../application/interactors/index.js";
 
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
-import { BaseController } from "../base/BaseController.js";
-import type { ILead, ILeadRequestQuery } from "../../../entities/Lead.js";
+import type { ILeadRequestQuery } from "../../../entities/Lead.js";
 import type { Request, Response, NextFunction } from "express";
 import type { TGenericPromise } from "../../../utils/constants/genTypes.js";
-import type { RequestQuery } from "../../../entities/User.js";
 import { HttpStatusCode } from "../../../utils/constants/enums.js";
 import type { IControllerUserRequest } from "../auth_controller/IController.js";
 import { BadRequestError } from "../../../error_handler/BadRequestError.js";
+import type { ILeadInteractor } from "../../../application/interactors/lead/ILeadInteractor.js";
 
 @injectable()
-export class LeadsController extends BaseController<ILead> {
+export class LeadsController {
   constructor(
     @inject(INTERFACE_TYPE.LeadInteractorImpl)
-    interactor: LeadInteractorImpl
+    private interactor: ILeadInteractor,
   ) {
-    super(interactor);
+    this.interactor = interactor;
   }
 
+  async convertLead(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): TGenericPromise {
+    try {
+      const leadId = req.params.id;
+      if (!leadId) throw new BadRequestError("ID is required");
+      const response = await this.interactor.convertLead(leadId);
+      return res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: ILeadRequestQuery = {
@@ -49,7 +61,7 @@ export class LeadsController extends BaseController<ILead> {
           totalPages: response.totalPages,
           pageCount: response.pageCount,
           totalCount: response.totalCount,
-        })
+        }),
       );
 
       return res.status(HttpStatusCode.OK).json(response.data);
@@ -61,7 +73,7 @@ export class LeadsController extends BaseController<ILead> {
   async create(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
@@ -73,6 +85,57 @@ export class LeadsController extends BaseController<ILead> {
       });
 
       return res.status(HttpStatusCode.CREATED).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getOne(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): TGenericPromise {
+    try {
+      const { id } = req.params;
+      if (!id) throw new BadRequestError("ID is required");
+
+      const response = await this.interactor.getById(id);
+      return res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async update(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): TGenericPromise {
+    try {
+      const { id } = req.params;
+      if (!id) throw new BadRequestError("ID is required");
+      if (!req.body) throw new BadRequestError("Update data is required");
+
+      const response = await this.interactor.update(id, req.body);
+      return res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): TGenericPromise {
+    try {
+      const { id } = req.params;
+      if (!id) throw new BadRequestError("ID is required");
+
+      const response = await this.interactor.delete(id);
+      if (!response) throw new BadRequestError("Error deleting entity");
+
+      return res.status(HttpStatusCode.NO_CONTENT).json();
     } catch (error) {
       next(error);
     }
