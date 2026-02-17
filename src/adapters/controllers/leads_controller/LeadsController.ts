@@ -51,6 +51,8 @@ export class LeadsController {
         location: req.query.location?.toString(),
         name: req.query.name?.toString(),
         email: req.query.email?.toString(),
+        startDate: req.query.startDate?.toString(),
+        endDate: req.query.endDate?.toString(),
       };
 
       const response = await this.interactor.getAll(query);

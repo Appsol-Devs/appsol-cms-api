@@ -56,12 +56,13 @@ export class CustomerOutreachRepositoryImpl extends BaseRepoistoryImpl<ICustomer
     const [items, total] = await Promise.all([
       this.model
         .find(filter)
-        .populate("customer", "name email phone")
+        .populate("customer", "name email phone companyName")
         .populate("callStatus", "name colorCode")
         .populate("loggedBy", "firstName lastName email")
         .populate("outreachType", "name colorCode")
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .sort({ createdAt: -1 }),
       this.model.countDocuments(filter),
     ]);
 
@@ -105,8 +106,10 @@ export class CustomerOutreachRepositoryImpl extends BaseRepoistoryImpl<ICustomer
 
     const created = await this.model.create({ ...data, ...dataWithReferences });
     const populated = await created.populate([
-      { path: "customer", select: "name email" },
+      { path: "customer", select: "name email companyName" },
       { path: "callStatus", select: "name colorCode" },
+      { path: "loggedBy", select: "firstName lastName email" },
+      { path: "outreachType", select: "name colorCode" },
     ]);
 
     return this.mapper.toEntity(populated);

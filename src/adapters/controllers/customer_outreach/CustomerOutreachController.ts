@@ -18,7 +18,7 @@ import type {
 export class CustomerOutreachController extends BaseController<ICustomerOutreach> {
   constructor(
     @inject(INTERFACE_TYPE.CustomerOutreachInteractorImpl)
-    interactor: CustomerOutreachInteractorImpl
+    interactor: CustomerOutreachInteractorImpl,
   ) {
     super(interactor);
   }
@@ -26,7 +26,7 @@ export class CustomerOutreachController extends BaseController<ICustomerOutreach
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: ICustomerOutreachRequestQuery = {
@@ -36,8 +36,11 @@ export class CustomerOutreachController extends BaseController<ICustomerOutreach
         status: req.query.status?.toString() as ICustomerOutreachStatus,
         customerId: req.query.customerId?.toString() ?? undefined,
         callStatusId: req.query.callStatusId?.toString() ?? undefined,
+        outreachTypeId: req.query.outreachTypeId?.toString() ?? undefined,
         loggedBy: req.query.loggedBy?.toString() ?? undefined,
         resolvedBy: req.query.resolvedBy?.toString() ?? undefined,
+        startDate: req.query.startDate?.toString() ?? undefined,
+        endDate: req.query.endDate?.toString() ?? undefined,
       };
 
       const response = await this.interactor.getAll(query);
@@ -48,7 +51,7 @@ export class CustomerOutreachController extends BaseController<ICustomerOutreach
           totalPages: response.totalPages,
           pageCount: response.pageCount,
           totalCount: response.totalCount,
-        })
+        }),
       );
 
       return res.status(HttpStatusCode.OK).json(response.data);
@@ -60,7 +63,7 @@ export class CustomerOutreachController extends BaseController<ICustomerOutreach
   async create(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
