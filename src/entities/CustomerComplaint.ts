@@ -38,10 +38,10 @@ export const COMPLAINT_STATUSES = [
 export type TCustomerComplaintStatus = (typeof COMPLAINT_STATUSES)[number];
 
 export interface ICustomerComplaintRequestQuery extends RequestQuery {
-  customerId?: string;
-  complaintTypeId?: string;
+  customerId?: string | undefined;
+  complaintTypeId?: string | undefined;
   complaintCategoryId?: string | undefined;
-  relatedSoftwareId?: string;
+  relatedSoftwareId?: string | undefined;
   status?: TCustomerComplaintStatus;
   loggedBy?: string;
   resolvedBy?: string;

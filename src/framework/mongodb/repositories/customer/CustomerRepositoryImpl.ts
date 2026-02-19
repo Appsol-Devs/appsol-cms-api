@@ -58,7 +58,9 @@ export class CustomerRepositoryImpl extends BaseRepoistoryImpl<ICustomer> {
         .populate("loggedBy", "firstName lastName email")
         .populate("software", "name description colorCode")
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        //sort by name ascending
+        .sort({ name: 1 }),
       this.model.countDocuments(filter),
     ]);
 

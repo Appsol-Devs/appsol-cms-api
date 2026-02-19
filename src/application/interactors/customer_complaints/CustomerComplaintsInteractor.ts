@@ -24,7 +24,7 @@ export class CustomerComplaintInteractorImpl extends BaseInteractorImpl<ICustome
     const res = await super.create(data);
     if (res) {
       await this.notificationService.create({
-        userId: res.loggedBy?.toString(),
+        userId: (res.loggedBy as IUser)._id,
         message: `A new complaint has been logged (${
           (res.complaintType as IComplaintType).name || res._id
         })`,
@@ -47,7 +47,7 @@ export class CustomerComplaintInteractorImpl extends BaseInteractorImpl<ICustome
     if (!item) throw new Error("CustomerComplaint not found");
     const res = await this.repository.update(id, data);
     if (!res) throw new Error("Error updating item");
-    //send updated notification
+
     await this.notificationService.create({
       userId: (res.loggedBy as IUser)._id,
       message: `Complaint ${res.complaintCode} has been updated (${

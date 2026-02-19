@@ -23,7 +23,7 @@ import type {
 export class CustomerComplaintController extends BaseController<ICustomerComplaint> {
   constructor(
     @inject(INTERFACE_TYPE.CustomerComplaintInteractorImpl)
-    interactor: CustomerComplaintInteractorImpl
+    interactor: CustomerComplaintInteractorImpl,
   ) {
     super(interactor);
   }
@@ -31,7 +31,7 @@ export class CustomerComplaintController extends BaseController<ICustomerComplai
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: ICustomerComplaintRequestQuery = {
@@ -41,6 +41,9 @@ export class CustomerComplaintController extends BaseController<ICustomerComplai
         status: req.query.status?.toString() as TCustomerComplaintStatus,
         complaintCategoryId:
           req.query.complaintCategoryId?.toString() ?? undefined,
+        customerId: req.query.customerId?.toString() ?? undefined,
+        complaintTypeId: req.query.complaintTypeId?.toString() ?? undefined,
+        relatedSoftwareId: req.query.relatedSoftwareId?.toString() ?? undefined,
       };
 
       const response = await this.interactor.getAll(query);
@@ -51,7 +54,7 @@ export class CustomerComplaintController extends BaseController<ICustomerComplai
           totalPages: response.totalPages,
           pageCount: response.pageCount,
           totalCount: response.totalCount,
-        })
+        }),
       );
 
       return res.status(HttpStatusCode.OK).json(response.data);
@@ -63,7 +66,7 @@ export class CustomerComplaintController extends BaseController<ICustomerComplai
   async create(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
