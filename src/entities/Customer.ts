@@ -27,9 +27,6 @@ export class ICustomer {
 export type CustomerStatus = "active" | "inactive";
 
 export interface ICustomerRequestQuery extends RequestQuery {
-  status?: CustomerStatus;
-  name?: string;
-  email?: string;
-  companyName?: string;
-  softwareId?: string;
+  status?: CustomerStatus | undefined;
+  softwareId?: string | undefined;
 }

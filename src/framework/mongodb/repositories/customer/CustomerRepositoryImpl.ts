@@ -16,7 +16,7 @@ export class CustomerRepositoryImpl extends BaseRepoistoryImpl<ICustomer> {
   }
 
   async getAll(
-    query: ICustomerRequestQuery
+    query: ICustomerRequestQuery,
   ): Promise<PaginatedResponse<ICustomer>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
@@ -91,6 +91,7 @@ export class CustomerRepositoryImpl extends BaseRepoistoryImpl<ICustomer> {
     const created = await this.model.create({ ...data, ...dataWithReferences });
     const populated = await created.populate([
       { path: "software", select: "name description colorCode" },
+      { path: "loggedBy", select: "firstName lastName email" },
     ]);
 
     return this.mapper.toEntity(populated);
@@ -101,6 +102,7 @@ export class CustomerRepositoryImpl extends BaseRepoistoryImpl<ICustomer> {
     const dataWithReferences = this.assignReferences(data);
     const updated = await this.model
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
+      .populate("loggedBy", "firstName lastName email")
       .populate("software", "name description colorCode");
     if (!updated) throw new BadRequestError("Customer not found");
     return this.mapper.toEntity(updated);
@@ -108,7 +110,6 @@ export class CustomerRepositoryImpl extends BaseRepoistoryImpl<ICustomer> {
 
   private assignReferences(data: Partial<ICustomer>): ICustomer {
     const refs: Partial<ICustomer> = {};
-
     if (data.softwareId) refs.software = data.softwareId;
 
     return refs;
