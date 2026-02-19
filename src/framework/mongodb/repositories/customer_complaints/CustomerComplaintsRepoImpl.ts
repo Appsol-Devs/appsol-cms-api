@@ -58,14 +58,15 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
     const [items, total] = await Promise.all([
       this.model
         .find(filter)
-        .populate("customer", "name email phone")
-        .populate("complaintType", "name")
-        .populate("complaintCategory", "name")
+        .populate("customer", "name email phone companyName")
+        .populate("complaintType", "name colorCode")
+        .populate("complaintCategory", "name colorCode")
         .populate("relatedSoftware", "name version")
         .populate("status", "name colorCode")
         .populate("loggedBy", "firstName lastName email")
         .populate("resolvedBy", "firstName lastName email")
         .skip(skip)
+        .sort({ createdAt: -1 })
         .limit(limit),
       this.model.countDocuments(filter),
     ]);
@@ -86,9 +87,9 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
   async getById(id: string): Promise<ICustomerComplaint> {
     const complaint = await this.model
       .findById(id)
-      .populate("customer", "name email phone")
-      .populate("complaintType", "name")
-      .populate("complaintCategory", "name")
+      .populate("customer", "name email phone companyName")
+      .populate("complaintType", "name colorCode ")
+      .populate("complaintCategory", "name colorCode")
       .populate("relatedSoftware", "name version")
       .populate("loggedBy", "firstName lastName email")
       .populate("resolvedBy", "firstName lastName email");
@@ -115,10 +116,11 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
 
     const created = await this.model.create({ ...data, ...dataWithReferences });
     const populated = await created.populate([
-      { path: "customer", select: "name email" },
-      { path: "complaintType", select: "name" },
-      { path: "complaintCategory", select: "name" },
-      { path: "relatedSoftware", select: "name" },
+      { path: "customer", select: "name email phone companyName" },
+      { path: "complaintType", select: "name colorCode" },
+      { path: "complaintCategory", select: "name colorCode" },
+      { path: "relatedSoftware", select: "name version" },
+      { path: "loggedBy", select: "firstName lastName email" },
     ]);
 
     return this.mapper.toEntity(populated);
