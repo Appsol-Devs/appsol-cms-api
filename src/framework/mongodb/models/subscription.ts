@@ -9,11 +9,13 @@ const subscriptionSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Customer",
     required: true,
+unique: true
   },
   customerId: {
     type: String,
     required: true,
     index: true,
+unique: true
   },
   software: {
     type: Schema.Types.ObjectId,
