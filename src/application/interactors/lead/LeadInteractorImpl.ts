@@ -55,7 +55,7 @@ export class LeadInteractorImpl
       const startDate = new Date();
       const currentPeriodStart = new Date(startDate);
       const currentPeriodEnd = new Date(startDate);
-      currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
+      currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 12);
       await this.subscriptionRepository.create({
         customerId: newCustomer._id,
         softwareId: customer.softwareId,

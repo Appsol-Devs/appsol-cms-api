@@ -21,81 +21,89 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
   async getAll(
     query: ICustomerComplaintRequestQuery,
   ): Promise<PaginatedResponse<ICustomerComplaint>> {
-    const search = query.search || "";
-    const limit = query.pageSize || 10;
-    const pageIndex = query.pageIndex || 1;
-    const skip = (pageIndex - 1) * limit;
+    try {
+      const search = query.search || "";
+      const limit = query.pageSize || 10;
+      const pageIndex = query.pageIndex || 1;
+      const skip = (pageIndex - 1) * limit;
 
-    const filter: Record<string, any> = {};
+      const filter: Record<string, any> = {};
 
-    // ✅ Text search
-    if (search) {
-      filter.$or = [
-        { complaintCode: { $regex: new RegExp(search, "i") } },
-        { description: { $regex: new RegExp(search, "i") } },
-      ];
-    }
+      // ✅ Text search
+      if (search) {
+        filter.$or = [
+          { complaintCode: { $regex: new RegExp(search, "i") } },
+          { description: { $regex: new RegExp(search, "i") } },
+        ];
+      }
 
-    // ✅ Simple filters
-    if (query.customerId) filter.customerId = query.customerId;
-    if (query.complaintTypeId) filter.complaintTypeId = query.complaintTypeId;
-    if (query.complaintCategoryId)
-      filter.complaintCategoryId = query.complaintCategoryId;
-    if (query.relatedSoftwareId)
-      filter.relatedSoftwareId = query.relatedSoftwareId;
-    if (query.status) filter.status = query.status;
-    if (query.loggedBy) filter.loggedBy = query.loggedBy;
-    if (query.resolvedBy) filter.resolvedBy = query.resolvedBy;
+      // ✅ Simple filters
+      if (query.customerId) filter.customerId = query.customerId;
+      if (query.complaintTypeId) filter.complaintTypeId = query.complaintTypeId;
+      if (query.complaintCategoryId)
+        filter.complaintCategoryId = query.complaintCategoryId;
+      if (query.relatedSoftwareId)
+        filter.relatedSoftwareId = query.relatedSoftwareId;
+      if (query.status) filter.status = query.status;
+      if (query.loggedBy) filter.loggedBy = query.loggedBy;
+      if (query.resolvedBy) filter.resolvedBy = query.resolvedBy;
 
-    // ✅ Date range
-    if (query.startDate && query.endDate) {
-      filter.createdAt = {
-        $gte: query.startDate,
-        $lte: query.endDate,
+      // ✅ Date range
+      if (query.startDate && query.endDate) {
+        filter.createdAt = {
+          $gte: query.startDate,
+          $lte: query.endDate,
+        };
+      }
+
+      const [items, total] = await Promise.all([
+        this.model
+          .find(filter)
+          .populate("customer", "name email phone companyName")
+          .populate("complaintType", "name colorCode")
+          .populate("complaintCategory", "name colorCode")
+          .populate("relatedSoftware", "name version")
+          .populate("status", "name colorCode")
+          .populate("loggedBy", "firstName lastName email")
+          .populate("resolvedBy", "firstName lastName email")
+          .skip(skip)
+          .sort({ createdAt: -1 })
+          .limit(limit),
+        this.model.countDocuments(filter),
+      ]);
+
+      const data = items.map(this.mapper.toEntity);
+
+      const totalPages = Math.ceil(total / limit);
+
+      return {
+        data,
+        totalPages,
+        totalCount: total,
+        pageCount: pageIndex,
       };
+    } catch (error) {
+      throw error;
     }
-
-    const [items, total] = await Promise.all([
-      this.model
-        .find(filter)
-        .populate("customer", "name email phone companyName")
-        .populate("complaintType", "name colorCode")
-        .populate("complaintCategory", "name colorCode")
-        .populate("relatedSoftware", "name version")
-        .populate("status", "name colorCode")
-        .populate("loggedBy", "firstName lastName email")
-        .populate("resolvedBy", "firstName lastName email")
-        .skip(skip)
-        .sort({ createdAt: -1 })
-        .limit(limit),
-      this.model.countDocuments(filter),
-    ]);
-
-    const data = items.map(this.mapper.toEntity);
-
-    const totalPages = Math.ceil(total / limit);
-
-    return {
-      data,
-      totalPages,
-      totalCount: total,
-      pageCount: pageIndex,
-    };
   }
 
   // ✅ Fetch single complaint
   async getById(id: string): Promise<ICustomerComplaint> {
-    const complaint = await this.model
-      .findById(id)
-      .populate("customer", "name email phone companyName")
-      .populate("complaintType", "name colorCode ")
-      .populate("complaintCategory", "name colorCode")
-      .populate("relatedSoftware", "name version")
-      .populate("loggedBy", "firstName lastName email")
-      .populate("resolvedBy", "firstName lastName email");
+    try {
+      const complaint = await this.model
+        .findById(id)
+        .populate("customer", "name email phone companyName")
+        .populate("complaintType", "name colorCode ")
+        .populate("complaintCategory", "name colorCode")
+        .populate("relatedSoftware", "name version")
+        .populate("loggedBy", "firstName lastName email")
+        .populate("resolvedBy", "firstName lastName email");
 
-    if (!complaint) throw new NotFoundError("Customer complaint not found");
-    return this.mapper.toEntity(complaint);
+      if (!complaint) throw new NotFoundError("Customer complaint not found");
+      return this.mapper.toEntity(complaint);
+    } catch (error) {
+      throw error;
+    }
   }
 
   // ✅ Assign all references directly from IDs
@@ -112,18 +120,25 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
 
   // ✅ Override create
   async create(data: Partial<ICustomerComplaint>): Promise<ICustomerComplaint> {
-    const dataWithReferences = this.assignReferences(data);
+    try {
+      const dataWithReferences = this.assignReferences(data);
 
-    const created = await this.model.create({ ...data, ...dataWithReferences });
-    const populated = await created.populate([
-      { path: "customer", select: "name email phone companyName" },
-      { path: "complaintType", select: "name colorCode" },
-      { path: "complaintCategory", select: "name colorCode" },
-      { path: "relatedSoftware", select: "name version" },
-      { path: "loggedBy", select: "firstName lastName email" },
-    ]);
+      const created = await this.model.create({
+        ...data,
+        ...dataWithReferences,
+      });
+      const populated = await created.populate([
+        { path: "customer", select: "name email phone companyName" },
+        { path: "complaintType", select: "name colorCode" },
+        { path: "complaintCategory", select: "name colorCode" },
+        { path: "relatedSoftware", select: "name version" },
+        { path: "loggedBy", select: "firstName lastName email" },
+      ]);
 
-    return this.mapper.toEntity(populated);
+      return this.mapper.toEntity(populated);
+    } catch (error) {
+      throw error;
+    }
   }
 
   // ✅ Override update
@@ -131,18 +146,26 @@ export class CustomerComplaintRepositoryImpl extends BaseRepoistoryImpl<ICustome
     id: string,
     data: Partial<ICustomerComplaint>,
   ): Promise<ICustomerComplaint> {
-    const dataWithReferences = this.assignReferences(data);
+    try {
+      const dataWithReferences = this.assignReferences(data);
 
-    const updated = await this.model
-      .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
-      .populate("customer", "name email")
-      .populate("complaintType", "name")
-      .populate("complaintCategory", "name")
-      .populate("relatedSoftware", "name")
-      .populate("loggedBy", "firstName lastName email")
-      .populate("resolvedBy", "firstName lastName email");
+      const updated = await this.model
+        .findByIdAndUpdate(
+          id,
+          { ...data, ...dataWithReferences },
+          { new: true },
+        )
+        .populate("customer", "name email")
+        .populate("complaintType", "name")
+        .populate("complaintCategory", "name")
+        .populate("relatedSoftware", "name")
+        .populate("loggedBy", "firstName lastName email")
+        .populate("resolvedBy", "firstName lastName email");
 
-    if (!updated) throw new NotFoundError("Customer complaint not found");
-    return this.mapper.toEntity(updated);
+      if (!updated) throw new NotFoundError("Customer complaint not found");
+      return this.mapper.toEntity(updated);
+    } catch (error) {
+      throw error;
+    }
   }
 }

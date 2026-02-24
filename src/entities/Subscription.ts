@@ -29,7 +29,7 @@ export class ISubscription {
     public readonly cancelledBy?: string,
     public readonly cancellationReason?: string,
     public readonly notes?: string,
-    public readonly loggedBy?: string
+    public readonly loggedBy?: string,
   ) {}
 }
 
@@ -43,7 +43,7 @@ export interface ISubscriptionRequestQuery extends RequestQuery {
   customerId?: string | undefined;
   softwareId?: string | undefined;
   subscriptionTypeId?: string | undefined;
-  status?: TSubscriptionStatus;
+  status?: TSubscriptionStatus | undefined;
   startDate?: string | undefined;
   currentPeriodStart?: string | undefined;
   currentPeriodEnd?: string | undefined;
