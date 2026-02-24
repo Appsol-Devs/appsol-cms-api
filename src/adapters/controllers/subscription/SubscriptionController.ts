@@ -22,7 +22,7 @@ import type { IReminderService } from "../../../framework/services/reminder/IRem
 export class SubscriptionController extends BaseController<ISubscription> {
   constructor(
     @inject(INTERFACE_TYPE.SubscriptionInteractorImpl)
-    interactor: SubscriptionInteractorImpl
+    interactor: SubscriptionInteractorImpl,
   ) {
     super(interactor);
   }
@@ -30,7 +30,7 @@ export class SubscriptionController extends BaseController<ISubscription> {
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const autoRenew: boolean | undefined =
@@ -43,7 +43,11 @@ export class SubscriptionController extends BaseController<ISubscription> {
         pageSize: req.query.pageSize ? Number(req.query.pageSize) : 10,
         customerId: req.query.customerId?.toString() ?? undefined,
         loggedBy: req.query.loggedBy?.toString() ?? undefined,
-        subscriptionTypeId: req.query.reminderTypeId?.toString() ?? undefined,
+        subscriptionTypeId:
+          req.query.subscriptionTypeId?.toString() ?? undefined,
+        status:
+          (req.query.status?.toString() as ISubscriptionRequestQuery["status"]) ??
+          undefined,
         softwareId: req.query.softwareId?.toString() ?? undefined,
         startDate: req.query.startDate?.toString() ?? undefined,
         endDate: req.query.endDate?.toString() ?? undefined,
@@ -73,7 +77,7 @@ export class SubscriptionController extends BaseController<ISubscription> {
   async create(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");

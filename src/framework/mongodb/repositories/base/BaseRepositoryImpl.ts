@@ -58,52 +58,56 @@ export abstract class BaseRepoistoryImpl<
     }
   }
   async getAll(query: RequestQuery): Promise<PaginatedResponse<TDomain>> {
-    const search = query.search || "";
-    const limit = query.pageSize || 10;
-    const pageIndex = query.pageIndex || 1;
-    const skip = (pageIndex - 1) * limit;
+    try {
+      const search = query.search || "";
+      const limit = query.pageSize || 10;
+      const pageIndex = query.pageIndex || 1;
+      const skip = (pageIndex - 1) * limit;
 
-    const filter: Record<string, any> = search
-      ? {
-          $or: [
-            { name: { $regex: new RegExp(`^${search}.*`, "i") } },
-            { description: { $regex: new RegExp(`^${search}.*`, "i") } },
-          ],
-        }
-      : {};
+      const filter: Record<string, any> = search
+        ? {
+            $or: [
+              { name: { $regex: new RegExp(`^${search}.*`, "i") } },
+              { description: { $regex: new RegExp(`^${search}.*`, "i") } },
+            ],
+          }
+        : {};
 
-    if (query.status) filter.status = query.status;
+      if (query.status) filter.status = query.status;
 
-    if (query.startDate && query.endDate) {
-      filter.createdAt = {
-        $gte: query.startDate,
-        $lte: query.endDate,
+      if (query.startDate && query.endDate) {
+        filter.createdAt = {
+          $gte: query.startDate,
+          $lte: query.endDate,
+        };
+      }
+
+      if (query.createdBy) filter.createdBy = query.createdBy;
+      if (query.loggedBy) filter.loggedBy = query.loggedBy;
+
+      const [items, total] = await Promise.all([
+        this.model
+          .find(filter)
+          .skip(skip)
+          .limit(limit)
+          // .populate("createdBy", "firstName lastName email")
+          .populate("loggedBy", "firstName lastName email"),
+        this.model.countDocuments(filter),
+      ]);
+
+      const data = items.map(this.mapper.toEntity);
+      const totalPages = Math.ceil(total / limit);
+      const totalCount = total;
+
+      return {
+        data,
+        totalPages,
+        totalCount,
+        pageCount: pageIndex,
       };
+    } catch (error) {
+      throw error;
     }
-
-    if (query.createdBy) filter.createdBy = query.createdBy;
-    if (query.loggedBy) filter.loggedBy = query.loggedBy;
-
-    const [items, total] = await Promise.all([
-      this.model
-        .find(filter)
-        .skip(skip)
-        .limit(limit)
-        // .populate("createdBy", "firstName lastName email")
-        .populate("loggedBy", "firstName lastName email"),
-      this.model.countDocuments(filter),
-    ]);
-
-    const data = items.map(this.mapper.toEntity);
-    const totalPages = Math.ceil(total / limit);
-    const totalCount = total;
-
-    return {
-      data,
-      totalPages,
-      totalCount,
-      pageCount: pageIndex,
-    };
   }
   async getById(id: string): Promise<TDomain | null | undefined> {
     try {
@@ -128,15 +132,19 @@ export abstract class BaseRepoistoryImpl<
     id: string,
     data: Partial<TDomain>,
   ): Promise<TDomain | null | undefined> {
-    const updated = await this.model.findOneAndUpdate(
-      { _id: id },
-      data as any,
-      {
-        new: true,
-      },
-    );
-    if (!updated) throw new NotFoundError("Item not found");
-    return this.mapper.toEntity(updated);
+    try {
+      const updated = await this.model.findOneAndUpdate(
+        { _id: id },
+        data as any,
+        {
+          new: true,
+        },
+      );
+      if (!updated) throw new NotFoundError("Item not found");
+      return this.mapper.toEntity(updated);
+    } catch (error) {
+      throw error;
+    }
   }
   async delete(id: string): Promise<TDomain | null | undefined> {
     try {

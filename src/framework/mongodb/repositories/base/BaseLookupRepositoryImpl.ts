@@ -9,46 +9,50 @@ import {
 import { injectable } from "inversify";
 
 @injectable()
-export abstract class BaseLookupRepoistoryImpl<TDomain>
-  implements IBaseLookupRepository<TDomain>
-{
+export abstract class BaseLookupRepoistoryImpl<
+  TDomain,
+> implements IBaseLookupRepository<TDomain> {
   protected constructor(
     protected readonly model: Model<any>,
     protected readonly mapper: {
       toEntity: (doc: any) => TDomain;
       toDtoCreation: (payload: TDomain) => any;
-    }
+    },
   ) {}
   async getAll(query: RequestQuery): Promise<PaginatedResponse<TDomain>> {
-    const search = query.search || "";
-    const limit = query.pageSize || 10;
-    const pageIndex = query.pageIndex || 1;
-    const skip = (pageIndex - 1) * limit;
+    try {
+      const search = query.search || "";
+      const limit = query.pageSize || 10;
+      const pageIndex = query.pageIndex || 1;
+      const skip = (pageIndex - 1) * limit;
 
-    const filter = search
-      ? {
-          $or: [
-            { name: { $regex: new RegExp(`^${search}.*`, "i") } },
-            { description: { $regex: new RegExp(`^${search}.*`, "i") } },
-          ],
-        }
-      : {};
+      const filter = search
+        ? {
+            $or: [
+              { name: { $regex: new RegExp(`^${search}.*`, "i") } },
+              { description: { $regex: new RegExp(`^${search}.*`, "i") } },
+            ],
+          }
+        : {};
 
-    const [items, total] = await Promise.all([
-      this.model.find(filter).skip(skip).limit(limit),
-      this.model.countDocuments(filter),
-    ]);
+      const [items, total] = await Promise.all([
+        this.model.find(filter).skip(skip).limit(limit),
+        this.model.countDocuments(filter),
+      ]);
 
-    const data = items.map(this.mapper.toEntity);
-    const totalPages = Math.ceil(total / limit);
-    const totalCount = total;
+      const data = items.map(this.mapper.toEntity);
+      const totalPages = Math.ceil(total / limit);
+      const totalCount = total;
 
-    return {
-      data,
-      totalPages,
-      totalCount,
-      pageCount: pageIndex,
-    };
+      return {
+        data,
+        totalPages,
+        totalCount,
+        pageCount: pageIndex,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
   async getById(id: string): Promise<TDomain | null | undefined> {
     try {
@@ -70,17 +74,21 @@ export abstract class BaseLookupRepoistoryImpl<TDomain>
   }
   async update(
     id: string,
-    data: Partial<TDomain>
+    data: Partial<TDomain>,
   ): Promise<TDomain | null | undefined> {
-    const updated = await this.model.findOneAndUpdate(
-      { _id: id },
-      data as any,
-      {
-        new: true,
-      }
-    );
-    if (!updated) throw new NotFoundError("Item not found");
-    return this.mapper.toEntity(updated);
+    try {
+      const updated = await this.model.findOneAndUpdate(
+        { _id: id },
+        data as any,
+        {
+          new: true,
+        },
+      );
+      if (!updated) throw new NotFoundError("Item not found");
+      return this.mapper.toEntity(updated);
+    } catch (error) {
+      throw error;
+    }
   }
   async delete(id: string): Promise<TDomain | null | undefined> {
     try {
@@ -95,7 +103,7 @@ export abstract class BaseLookupRepoistoryImpl<TDomain>
         },
         {
           new: true,
-        }
+        },
       );
       return this.mapper.toEntity(user);
     } catch (error) {
