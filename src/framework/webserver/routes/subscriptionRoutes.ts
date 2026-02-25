@@ -7,13 +7,14 @@ import { BaseRouter } from "./BaseRoutes.js";
 import type { SubscriptionController } from "../../../adapters/controllers/index.js";
 import { baseQuerySchema } from "../../../validation/baseSchema.js";
 import type { Router } from "express";
+import { subscriptionSchema } from "../../../validation/subscriptionSchema.js";
 
 export const createSubscriptionRoutes = (container: Container): Router => {
   const controller = container.get<SubscriptionController>(
-    INTERFACE_TYPE.SubscriptionController
+    INTERFACE_TYPE.SubscriptionController,
   );
   const authMiddleware = container.get<AuthMiddleware>(
-    INTERFACE_TYPE.AuthMiddleware
+    INTERFACE_TYPE.AuthMiddleware,
   );
 
   const permissionMap = {
@@ -29,7 +30,7 @@ export const createSubscriptionRoutes = (container: Container): Router => {
     authMiddleware,
     "/api/subscriptions",
     permissionMap,
-    baseQuerySchema
+    subscriptionSchema,
   ).register();
 
   return router;
