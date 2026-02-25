@@ -80,8 +80,6 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
         }
       }
 
-      
-
       const [items, total] = await Promise.all([
         this.model
           .find(filter)
@@ -100,7 +98,10 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
               },
             ],
           })
-          .populate("subscriptionType", "name description colorCode")
+          .populate(
+            "subscriptionType",
+            "name description colorCode durationInMonths",
+          )
           .skip(skip)
           .limit(limit),
         this.model.countDocuments(filter),
@@ -127,7 +128,7 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
         .populate("customer", "name email phone companyName")
 
         .populate("loggedBy", "firstName lastName email phone ")
-        .populate(  {
+        .populate({
           path: "lastPayment",
           select: "amount paymentDate paymentCode status",
           populate: [
@@ -137,7 +138,10 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
           ],
         })
         .populate("software", "name description colorCode")
-        .populate("subscriptionType", "name description colorCode");
+        .populate(
+          "subscriptionType",
+          "name description colorCode durationInMonths",
+        );
 
       if (!reminder) throw new NotFoundError("Subscription Reminder not found");
       return this.mapper.toEntity(reminder);
@@ -169,6 +173,7 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
       const populated = await created.populate([
         { path: "customer", select: "name email phone companyName" },
         { path: "software", select: "name description colorCode" },
+        { path: "loggedBy", select: "firstName lastName email phone " },
         {
           path: "lastPayment",
           populate: [
@@ -177,7 +182,10 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
             { path: "subscriptionType", select: "name description colorCode" },
           ],
         },
-        { path: "subscriptionType", select: "name description colorCode" },
+        {
+          path: "subscriptionType",
+          select: "name description colorCode durationInMonths",
+        },
       ]);
 
       return this.mapper.toEntity(populated);
@@ -211,7 +219,10 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
             { path: "subscriptionType", select: "name description colorCode" },
           ],
         })
-        .populate("subscriptionType", "name description colorCode");
+        .populate(
+          "subscriptionType",
+          "name description colorCode durationInMonths",
+        );
 
       if (!updated) throw new NotFoundError("Subscription Reminder not found");
       return this.mapper.toEntity(updated);

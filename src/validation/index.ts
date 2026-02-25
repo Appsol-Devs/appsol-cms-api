@@ -6,3 +6,4 @@ export * from "./rescheduleSchema.js";
 export * from "./paymentSchema.js";
 export * from "./featureRequestSchema.js";
 export * from "./ticketSchema.js";
+export * from "./subscriptionSchema.js";
