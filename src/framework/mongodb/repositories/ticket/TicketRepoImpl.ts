@@ -136,6 +136,7 @@ export class TicketRepositoryImpl
           },
         })
         .skip(skip)
+        .sort({ createdAt: -1 })
         .limit(limit),
       this.model.countDocuments(filter),
     ]);

@@ -5,23 +5,31 @@ import type { IReschedule } from "../../../entities/Reschedule.js";
 
 const rescheduleSchema: SchemaDefinition = {
   rescheduleCode: { type: String, unique: true },
-  customerId: { type: String, required: true },
-  customer: { type: Schema.Types.ObjectId, required: true, ref: "Customer" },
+  customerId: { type: String, required: false },
+  customer: { type: Schema.Types.ObjectId, required: false, ref: "Customer" },
   reason: { type: String, required: true },
+  title: { type: String, required: false },
   colorCode: { type: String, required: false },
   targetEntityType: {
     type: String,
     required: true,
-    enum: ["CustomerOutreach", "CustomerComplaint"],
+    enum: [
+      "CustomerOutreach",
+      "CustomerComplaint",
+      "SubscriptionReminder",
+      "Ticket",
+      "CustomerSetup",
+      "Generic",
+    ],
   },
-  targetEntityId: { type: String, required: true },
-  targetEntity: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    refPath: "targetEntityType",
-  },
-  originalDateTime: { type: Date, required: true },
-  newDateTime: { type: Date, required: true },
+  targetEntityId: { type: String, required: false },
+  // targetEntity: {
+  //   type: Schema.Types.ObjectId,
+  //   required: true,
+  //   refPath: "targetEntityType",
+  // },
+  originalDateTime: { type: Date, required: true, unique: true },
+  newDateTime: { type: Date, required: true, unique: true },
   loggedBy: { type: Schema.Types.ObjectId, required: true, ref: "User" },
   status: {
     type: String,
@@ -36,5 +44,5 @@ export const { Model: RescheduleModel, Mapper: RescheduleModelMapper } =
     "Reschedule",
     rescheduleSchema,
     "RSC",
-    "rescheduleCode"
+    "rescheduleCode",
   );

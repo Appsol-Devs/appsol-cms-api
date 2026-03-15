@@ -30,7 +30,7 @@ const ticketSchema: SchemaDefinition = {
   priority: {
     type: String,
     required: true,
-    enum: ["low", "medium", "high", "critical"],
+    enum: ["low", "medium", "high", "urgent"],
     default: "low",
   },
   closedAt: { type: Date, required: false },

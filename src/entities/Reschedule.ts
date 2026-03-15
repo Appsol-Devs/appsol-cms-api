@@ -9,6 +9,7 @@ export class IReschedule {
     public readonly rescheduleCode?: string,
     public readonly colorCode?: string,
     public readonly reason?: string,
+    public readonly title?: string,
     public readonly targetEntityId?: string,
     public targetEntity?: ICustomerOutreach | ICustomerComplaint | string,
     public customer?: ICustomer | string,
@@ -19,11 +20,14 @@ export class IReschedule {
     public readonly status?: "pending" | "approved" | "rejected",
     public readonly loggedBy?: IUser | string,
     public readonly createdAt?: string,
-    public readonly updatedAt?: string
+    public readonly updatedAt?: string,
   ) {}
 }
 
 export type TargetEntityType =
+  | "CustomerSetup"
+  | "Generic"
+  | "Ticket"
   | "CustomerOutreach"
   | "CustomerComplaint"
   | "SubscriptionReminder";

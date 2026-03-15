@@ -21,6 +21,9 @@ export class MailerImpl implements IMailer {
         user: config.mailerEmail,
         pass: config.mailerAppPassword,
       },
+      tls: {
+        rejectUnauthorized: false,
+      },
     });
 
     const mailOptions = {
