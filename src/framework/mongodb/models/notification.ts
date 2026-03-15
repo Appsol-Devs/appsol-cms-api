@@ -9,7 +9,12 @@ const notificationSchema: SchemaDefinition = {
   targetEntityType: {
     type: String,
     required: true,
-    enum: ["CustomerOutreach", "CustomerComplaint", "SubscriptionReminder"],
+    enum: [
+      "CustomerOutreach",
+      "CustomerComplaint",
+      "SubscriptionReminder",
+      "Ticket",
+    ],
   },
   userId: { type: String, required: true },
   user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
@@ -30,5 +35,5 @@ export const { Model: NotificationModel, Mapper: NotificationModelMapper } =
     "Notification",
     notificationSchema,
     "NTC",
-    "notificationCode"
+    "notificationCode",
   );

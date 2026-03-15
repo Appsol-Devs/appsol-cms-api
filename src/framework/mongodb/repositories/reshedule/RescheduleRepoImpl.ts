@@ -20,7 +20,7 @@ export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
 
   // ✅ Paginated & Filtered fetch
   async getAll(
-    query: IRescheduleRequestQuery
+    query: IRescheduleRequestQuery,
   ): Promise<PaginatedResponse<IReschedule>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
@@ -61,9 +61,10 @@ export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
         .find(filter)
         .populate("customer", "name email phone")
         .populate("loggedBy", "firstName lastName email")
-        .populate("targetEntityId")
+        //  .populate("targetEntityId")
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .sort({ createdAt: -1 }),
       this.model.countDocuments(filter),
     ]);
 
@@ -83,10 +84,10 @@ export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
     const complaint = await this.model
       .findById(id)
       .populate("customer", "name email phone")
-      .populate("loggedBy", "firstName lastName email")
-      .populate("targetEntityId");
+      .populate("loggedBy", "firstName lastName email");
+    //.populate("targetEntityId");
 
-    if (!complaint) throw new NotFoundError("Reschedule not found");
+    if (!complaint) throw new NotFoundError("Schedule not found");
     return this.mapper.toEntity(complaint);
   }
 
@@ -105,7 +106,7 @@ export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
     const populated = await created.populate([
       { path: "customer", select: "name email" },
       { path: "loggedBy", select: "firstName lastName email" },
-      { path: "targetEntity" },
+      // { path: "targetEntity" },
     ]);
 
     return this.mapper.toEntity(populated);
@@ -118,10 +119,10 @@ export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
     const updated = await this.model
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
       .populate("customer", "name email")
-      .populate("loggedBy", "firstName lastName email")
-      .populate("targetEntity");
+      .populate("loggedBy", "firstName lastName email");
+    // .populate("targetEntity");
 
-    if (!updated) throw new NotFoundError("Customer complaint not found");
+    if (!updated) throw new NotFoundError("Schedule not found");
     return this.mapper.toEntity(updated);
   }
 }

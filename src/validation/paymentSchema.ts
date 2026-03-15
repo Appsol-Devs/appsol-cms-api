@@ -6,7 +6,7 @@ export const paymentSchema = baseQuerySchema.extend({
   subscriptionTypeId: z.string(),
   softwareId: z.string().optional(),
   paymentDate: z.string(),
-  renewalDate: z.string(),
+  // renewalDate: z.string(),
   notes: z.string().optional(),
   amount: z.number().min(0),
   paymentReference: z.string().optional(),

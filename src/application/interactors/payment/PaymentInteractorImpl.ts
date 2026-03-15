@@ -17,7 +17,7 @@ export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
     @inject(INTERFACE_TYPE.PaymentRepositoryImpl)
     paymentRepositoryImpl: PaymentRepositoryImpl,
     @inject(INTERFACE_TYPE.SubscriptionRepositoryImpl)
-    private subscriptionRepository: IBaseRepository<ISubscription>
+    private subscriptionRepository: IBaseRepository<ISubscription>,
   ) {
     super(paymentRepositoryImpl);
     this.subscriptionRepository = subscriptionRepository;
@@ -38,7 +38,7 @@ export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
   }
 
   private async extendSubscription(
-    payment: IPayment
+    payment: IPayment,
   ): Promise<ISubscription | null | undefined> {
     try {
       let subscription: ISubscription | null | undefined;
@@ -78,7 +78,7 @@ export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
         // Renewal payment - extend subscription
         // Calculate new period
         const newPeriodStart = new Date(
-          existingSubscription.currentPeriodEnd ?? now
+          existingSubscription.currentPeriodEnd ?? now,
         );
         const newPeriodEnd = new Date(newPeriodStart);
         newPeriodEnd.setMonth(newPeriodEnd.getMonth() + duration);
@@ -95,7 +95,7 @@ export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
         };
         subscription = await this.subscriptionRepository.update(
           existingSubscription._id!,
-          data
+          data,
         );
       }
 
