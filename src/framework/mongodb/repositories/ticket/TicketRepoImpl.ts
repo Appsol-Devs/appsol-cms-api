@@ -126,7 +126,14 @@ export class TicketRepositoryImpl
       this.model
         .find(filter)
         .populate("assignedEngineer", "firstName lastName email phone ")
-        .populate("complaint", "title description complaintCode")
+        .populate({
+          path: "complaint",
+          select: "title description complaintCode",
+          populate: {
+            path: "customer",
+            select: "name email phone companyName",
+          },
+        })
         .populate("loggedBy", "name email phone companyName")
         .populate({
           path: "history",
