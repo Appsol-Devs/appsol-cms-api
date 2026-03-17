@@ -4,7 +4,7 @@ import { baseQuerySchema } from "./baseSchema.js";
 export const featureRequestSchema = baseQuerySchema.extend({
   title: z.string(),
   description: z.string(),
-  priority: z.enum(["P1", "P2", "P3", "P4"]),
+  priority: z.enum(["low", "medium", "high", "critical"]),
   softwareId: z.string(),
   customerId: z.string(),
   assignedTo: z.array(z.string()).optional(),
