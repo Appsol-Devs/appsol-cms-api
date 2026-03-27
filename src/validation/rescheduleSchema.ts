@@ -17,6 +17,8 @@ export const rescheduleSchema = baseQuerySchema.extend({
   status: z.enum(["pending", "approved", "rejected"]).optional(),
   originalDateTime: z.string(),
   newDateTime: z.string(),
+  from: z.string(),
+  to: z.string(),
   colorCode: z.string().optional(),
   reason: z.string(),
 });

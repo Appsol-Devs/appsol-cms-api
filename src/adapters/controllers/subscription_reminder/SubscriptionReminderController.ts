@@ -81,6 +81,7 @@ export class SubscriptionReminderController extends BaseController<ISubscription
         softwareId: req.query.softwareId?.toString() ?? undefined,
         startDate: req.query.startDate?.toString() ?? undefined,
         endDate: req.query.endDate?.toString() ?? undefined,
+        dueDate: req.query.dueDate?.toString() ?? undefined,
         isSent: req.query.isSent
           ? req.query.isSent.toString().toLowerCase() === "true"
           : undefined,

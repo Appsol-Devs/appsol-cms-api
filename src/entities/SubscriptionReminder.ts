@@ -24,7 +24,7 @@ export class ISubscriptionReminder {
     public readonly sentVia?: "email" | "notification" | "sms",
     public readonly loggedBy?: IUser | string,
     public readonly createdAt?: string,
-    public readonly updatedAt?: string
+    public readonly updatedAt?: string,
   ) {}
 }
 
@@ -39,6 +39,7 @@ export interface ISubscriptionReminderRequestQuery extends RequestQuery {
   customerId?: string | undefined;
   softwareId?: string | undefined;
   subscriptionId?: string | undefined;
+  dueDate?: string | undefined;
   reminderType?: TSubscriptionReminderType | undefined;
   isSent?: boolean | undefined;
   sentVia?: "email" | "notification" | "sms" | undefined;

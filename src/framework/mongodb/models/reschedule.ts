@@ -28,8 +28,10 @@ const rescheduleSchema: SchemaDefinition = {
   //   required: true,
   //   refPath: "targetEntityType",
   // },
-  originalDateTime: { type: Date, required: true, unique: true },
-  newDateTime: { type: Date, required: true, unique: true },
+  originalDateTime: { type: Date, required: true, unique: false },
+  newDateTime: { type: Date, required: true, unique: false },
+  from: { type: Date, required: true, unique: false },
+  to: { type: Date, required: true, unique: false },
   loggedBy: { type: Schema.Types.ObjectId, required: true, ref: "User" },
   status: {
     type: String,
