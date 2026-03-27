@@ -21,7 +21,7 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
 
   // ✅ Paginated & Filtered fetch
   async getAll(
-    query: ISubscriptionReminderRequestQuery
+    query: ISubscriptionReminderRequestQuery,
   ): Promise<PaginatedResponse<ISubscriptionReminder>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
@@ -47,6 +47,8 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
 
     if (query.subscriptionId)
       filter.subscription = new mongoose.Types.ObjectId(query.subscriptionId);
+
+    if (query.dueDate) filter.dueDate = query.dueDate;
 
     // ✅ Date range
     if (query.startDate && query.endDate) {
@@ -93,7 +95,7 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
 
   // ✅ Assign all references directly from IDs
   private assignReferences(
-    data: Partial<ISubscriptionReminder>
+    data: Partial<ISubscriptionReminder>,
   ): ISubscriptionReminder {
     const refs: Partial<ISubscriptionReminder> = {};
     if (data.customerId) refs.customer = data.customerId;
@@ -105,7 +107,7 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
 
   // ✅ Override create
   async create(
-    data: Partial<ISubscriptionReminder>
+    data: Partial<ISubscriptionReminder>,
   ): Promise<ISubscriptionReminder> {
     const dataWithReferences = this.assignReferences(data);
 
@@ -123,7 +125,7 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
   // ✅ Override update
   async update(
     id: string,
-    data: Partial<ISubscriptionReminder>
+    data: Partial<ISubscriptionReminder>,
   ): Promise<ISubscriptionReminder> {
     const dataWithReferences = this.assignReferences(data);
 

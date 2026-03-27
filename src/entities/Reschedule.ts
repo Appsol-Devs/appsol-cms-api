@@ -16,6 +16,8 @@ export class IReschedule {
     public readonly customerId?: string,
     public readonly originalDateTime?: string,
     public readonly newDateTime?: string,
+    public readonly from?: string,
+    public readonly to?: string,
     public readonly targetEntityType?: TargetEntityType,
     public readonly status?: "pending" | "approved" | "rejected",
     public readonly loggedBy?: IUser | string,
@@ -40,4 +42,5 @@ export interface IRescheduleRequestQuery extends RequestQuery {
   loggedBy?: string | undefined;
   originalDateTime?: string | undefined;
   newDateTime?: string | undefined;
+  dueDate?: string | undefined;
 }
