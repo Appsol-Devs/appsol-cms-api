@@ -4,7 +4,7 @@ import { createModel } from "../utils/modelFactory.js";
 import type { ICustomerSetup } from "../../../entities/CustomerSetup.js";
 
 const customerSetupSchema: SchemaDefinition = {
-  requestCode: { type: String, unique: true },
+  setupCode: { type: String, unique: true },
   customerId: { type: String, required: true },
   title: { type: String, required: true },
   customer: { type: Schema.Types.ObjectId, required: true, ref: "Customer" },
