@@ -16,6 +16,7 @@ const customerSetupSchema: SchemaDefinition = {
     required: true,
     ref: "SetupStatus",
   },
+  addToCalendar: { type: Boolean, required: false, default: false },
   scheduledStart: { type: Date, required: true },
   scheduledEnd: { type: Date, required: true },
   actualCompletionDate: { type: Date, required: false },

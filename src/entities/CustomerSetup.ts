@@ -24,7 +24,8 @@ export class ICustomerSetup {
     public readonly loggedBy?: IUser | string,
     public readonly assignedTo?: Array<IUser> | Array<string>,
     public readonly createdAt?: string,
-    public readonly updatedAt?: string
+    public readonly updatedAt?: string,
+    public readonly addToCalendar?: boolean,
   ) {}
 }
 

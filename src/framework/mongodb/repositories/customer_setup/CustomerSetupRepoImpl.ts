@@ -21,7 +21,7 @@ export class CustomerSetupRepositoryImpl extends BaseRepoistoryImpl<ICustomerSet
 
   // ✅ Paginated & Filtered fetch
   async getAll(
-    query: ICustomerSetupRequestQuery
+    query: ICustomerSetupRequestQuery,
   ): Promise<PaginatedResponse<ICustomerSetup>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
@@ -129,7 +129,7 @@ export class CustomerSetupRepositoryImpl extends BaseRepoistoryImpl<ICustomerSet
   // ✅ Override update
   async update(
     id: string,
-    data: Partial<ICustomerSetup>
+    data: Partial<ICustomerSetup>,
   ): Promise<ICustomerSetup> {
     const dataWithReferences = this.assignReferences(data);
 
