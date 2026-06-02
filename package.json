@@ -21,9 +21,13 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/inversify": "^2.0.33",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.8.1",
+    "@types/nodemailer": "^7.0.2",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
@@ -36,15 +40,12 @@
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.9",
     "reflect-metadata": "^0.2.2",
-    "socket.io": "^4.8.1",
-    "winston": "^3.18.3",
-    "zod": "^4.1.12",
     "rimraf": "^6.0.1",
+    "socket.io": "^4.8.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
-    "@types/bcrypt": "^6.0.0",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^24.8.1",
-    "@types/nodemailer": "^7.0.2"
-  }
+    "winston": "^3.18.3",
+    "zod": "^4.1.12"
+  },
+  "packageManager": "yarn@4.15.0+sha512.07ec708ac11e2eaa4ea2b04cfbb272812f7e74a753f1595eaef4486c663a98306a30cca3e6fc40f7a0b168dcfb3a2490b6a5e0501e20fb69cc36f563dd161c53"
 }
