@@ -69,6 +69,9 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       }
     }
 
+    console.log(filter);
+    console.log(query);
+
     const [items, total] = await Promise.all([
       this.model
         .find(filter)
@@ -81,7 +84,8 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
         .populate("approvedOrRejectedBy", "firstName lastName email")
         .populate("software", "name description")
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .sort({ createdAt: -1 }),
       this.model.countDocuments(filter),
     ]);
 
@@ -178,6 +182,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       .populate("customer", "name email companyName")
       .populate("loggedBy", "firstName lastName email")
       .populate("approvedOrRejectedBy", "firstName lastName email")
+      .populate("software", "name description ")
       .populate(
         "subscriptionType",
         "name description colorCode durationInMonths",

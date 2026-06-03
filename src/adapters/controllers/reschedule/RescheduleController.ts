@@ -18,7 +18,7 @@ import type { RescheduleInteractorImpl } from "../../../application/interactors/
 export class RescheduleController extends BaseController<IReschedule> {
   constructor(
     @inject(INTERFACE_TYPE.RescheduleInteractorImpl)
-    interactor: RescheduleInteractorImpl
+    interactor: RescheduleInteractorImpl,
   ) {
     super(interactor);
   }
@@ -26,14 +26,14 @@ export class RescheduleController extends BaseController<IReschedule> {
   async getAllReschedulesForEntity(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.params) throw new BadRequestError("Request params are required");
       if (!req.params.type || !req.params.id)
         throw new BadRequestError("Both entity type and id are required");
       const entityType = req.params.type as TargetEntityType;
-      const entityId = req.params.id;
+      const entityId = req.params.id as string;
       const query: IRescheduleRequestQuery = {
         targetEntityType: entityType,
         targetEntityId: entityId,
@@ -48,7 +48,7 @@ export class RescheduleController extends BaseController<IReschedule> {
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: IRescheduleRequestQuery = {
@@ -74,7 +74,7 @@ export class RescheduleController extends BaseController<IReschedule> {
           totalPages: response.totalPages,
           pageCount: response.pageCount,
           totalCount: response.totalCount,
-        })
+        }),
       );
 
       return res.status(HttpStatusCode.OK).json(response.data);
@@ -86,7 +86,7 @@ export class RescheduleController extends BaseController<IReschedule> {
   async create(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");

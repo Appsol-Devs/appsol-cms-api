@@ -46,7 +46,7 @@ export class RoleController {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("Role id is required");
-      const response = await this.roleInteractor.getARole(id);
+      const response = await this.roleInteractor.getARole(id as string);
       if (!response) throw new BadRequestError("Error while getting role");
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
@@ -90,7 +90,7 @@ export class RoleController {
         description: req.body.description,
         permissions: req.body.permissions,
       };
-      const response = await this.roleInteractor.updateRole(id, data);
+      const response = await this.roleInteractor.updateRole(id as string, data);
       if (!response) throw new BadRequestError("Error while updating role");
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
@@ -107,7 +107,7 @@ export class RoleController {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("Role id is required");
-      const response = await this.roleInteractor.deleteRole(id);
+      const response = await this.roleInteractor.deleteRole(id as string);
       if (!response) throw new BadRequestError("Error while deleting role");
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {

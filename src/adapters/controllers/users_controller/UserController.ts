@@ -14,7 +14,7 @@ import type { TGenericPromise } from "../../../utils/constants/genTypes.js";
 export class UserController {
   private userInteractor: IUserInteractor;
   constructor(
-    @inject(INTERFACE_TYPE.UserInteractor) userInteractor: IUserInteractor
+    @inject(INTERFACE_TYPE.UserInteractor) userInteractor: IUserInteractor,
   ) {
     this.userInteractor = userInteractor;
   }
@@ -22,12 +22,12 @@ export class UserController {
   async getAUser(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("User id is required");
-      const response = await this.userInteractor.getAUser(id);
+      const response = await this.userInteractor.getAUser(id as string);
       return res.status(200).json(response);
     } catch (error) {
       next(error);
@@ -38,12 +38,12 @@ export class UserController {
   async deleteUser(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("User id is required");
-      const response = await this.userInteractor.deleteUser(id);
+      const response = await this.userInteractor.deleteUser(id as string);
       if (!response) throw new BadRequestError("Error deleting user");
       return res.status(HttpStatusCode.NO_CONTENT).json();
     } catch (error) {
@@ -55,7 +55,7 @@ export class UserController {
   async addUser(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       //TODO add validation
@@ -74,7 +74,7 @@ export class UserController {
   async getAllUsers(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: RequestQuery = {
@@ -95,7 +95,7 @@ export class UserController {
           totalPages: response.totalPages,
           pageCount: response.pageCount,
           totalCount: response.totalCount,
-        })
+        }),
       );
       return res.status(200).json(response.data);
     } catch (error) {
@@ -107,14 +107,17 @@ export class UserController {
   async updateUser(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("User id is required");
       if (!req.body) throw new BadRequestError("User data is required");
       //TODO validate data
-      const response = await this.userInteractor.updateUser(id, req.body);
+      const response = await this.userInteractor.updateUser(
+        id as string,
+        req.body,
+      );
       return res.status(200).json(response);
     } catch (error) {
       next(error);

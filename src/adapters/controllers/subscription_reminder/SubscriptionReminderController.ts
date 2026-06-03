@@ -55,7 +55,7 @@ export class SubscriptionReminderController extends BaseController<ISubscription
         throw new BadRequestError("Customer ID is required");
       }
       const query: ISubscriptionReminderRequestQuery = {
-        customerId: customerId,
+        customerId: customerId as string,
       };
       const response = await this.interactor.getAll(query);
       return res.status(HttpStatusCode.OK).json(response);

@@ -47,7 +47,7 @@ export class PaymentController extends BaseController<IPayment> {
         approvedOrRejectedBy: req.user?._id,
       };
 
-      const response = await this.interactor.update(paymentId, data);
+      const response = await this.interactor.update(paymentId as string, data);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -64,6 +64,12 @@ export class PaymentController extends BaseController<IPayment> {
         pageIndex: req.query.pageIndex ? Number(req.query.pageIndex) : 1,
         pageSize: req.query.pageSize ? Number(req.query.pageSize) : 10,
         status: req.query.status?.toString() as unknown as IPayment["status"],
+        startDate: req.query.startDate
+          ? new Date(req.query.startDate.toString())
+          : undefined,
+        endDate: req.query.endDate
+          ? new Date(req.query.endDate.toString())
+          : undefined,
         customerId: req.query.customerId?.toString() ?? undefined,
         loggedBy: req.query.loggedBy?.toString() ?? undefined,
         subscriptionTypeId:
@@ -106,6 +112,7 @@ export class PaymentController extends BaseController<IPayment> {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
       const createdBy = req.user?._id;
+
       const response = await this.interactor.create({
         ...req.body,
         createdBy,
