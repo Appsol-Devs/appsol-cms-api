@@ -18,7 +18,7 @@ import type { TargetEntityType } from "../../../entities/index.js";
 export class NotificationController extends BaseController<INotification> {
   constructor(
     @inject(INTERFACE_TYPE.NotificationInteractorImpl)
-    interactor: NotificationInteractorImpl
+    interactor: NotificationInteractorImpl,
   ) {
     super(interactor);
   }
@@ -26,7 +26,7 @@ export class NotificationController extends BaseController<INotification> {
   async markAllNotificationsAsRead(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const response = await this.interactor.updateMany();
@@ -38,7 +38,7 @@ export class NotificationController extends BaseController<INotification> {
   async markSingleMessageAsRead(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.params) throw new BadRequestError("Request params are required");
@@ -48,7 +48,10 @@ export class NotificationController extends BaseController<INotification> {
         isRead: true,
         readAt: new Date(),
       };
-      const response = await this.interactor.update(req.params.id, data);
+      const response = await this.interactor.update(
+        req.params.id as string,
+        data,
+      );
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -57,7 +60,7 @@ export class NotificationController extends BaseController<INotification> {
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: INotificationRequestQuery = {
@@ -78,7 +81,7 @@ export class NotificationController extends BaseController<INotification> {
           totalPages: response.totalPages,
           pageCount: response.pageCount,
           totalCount: response.totalCount,
-        })
+        }),
       );
 
       return res.status(HttpStatusCode.OK).json(response.data);
@@ -90,7 +93,7 @@ export class NotificationController extends BaseController<INotification> {
   async create(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");

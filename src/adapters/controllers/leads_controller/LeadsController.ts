@@ -26,7 +26,7 @@ export class LeadsController {
     try {
       const leadId = req.params.id;
       if (!leadId) throw new BadRequestError("ID is required");
-      const response = await this.interactor.convertLead(leadId);
+      const response = await this.interactor.convertLead(leadId as string);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -101,7 +101,7 @@ export class LeadsController {
       const { id } = req.params;
       if (!id) throw new BadRequestError("ID is required");
 
-      const response = await this.interactor.getById(id);
+      const response = await this.interactor.getById(id as string);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -118,7 +118,7 @@ export class LeadsController {
       if (!id) throw new BadRequestError("ID is required");
       if (!req.body) throw new BadRequestError("Update data is required");
 
-      const response = await this.interactor.update(id, req.body);
+      const response = await this.interactor.update(id as string, req.body);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -134,7 +134,7 @@ export class LeadsController {
       const { id } = req.params;
       if (!id) throw new BadRequestError("ID is required");
 
-      const response = await this.interactor.delete(id);
+      const response = await this.interactor.delete(id as string);
       if (!response) throw new BadRequestError("Error deleting entity");
 
       return res.status(HttpStatusCode.NO_CONTENT).json();

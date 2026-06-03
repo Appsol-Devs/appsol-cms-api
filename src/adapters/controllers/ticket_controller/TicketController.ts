@@ -38,7 +38,7 @@ export class TicketController {
     try {
       const ticketId = req.params.id;
       if (!ticketId) throw new BadRequestError("Ticket id is required");
-      const response = await this.interactor.closeTicket(ticketId);
+      const response = await this.interactor.closeTicket(ticketId as string);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -58,7 +58,7 @@ export class TicketController {
         {
           ...req.body,
         },
-        ticketId,
+        ticketId as string,
       );
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
@@ -73,7 +73,9 @@ export class TicketController {
     try {
       const complaintId = req.params.id;
       if (!complaintId) throw new BadRequestError("Complaint id is required");
-      const response = await this.interactor.getOne({ complaintId });
+      const response = await this.interactor.getOne({
+        complaintId: complaintId as string,
+      });
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -128,7 +130,7 @@ export class TicketController {
       const { id } = req.params;
       if (!id) throw new BadRequestError("ID is required");
 
-      const response = await this.interactor.getById(id);
+      const response = await this.interactor.getById(id as string);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -165,7 +167,7 @@ export class TicketController {
       if (!id) throw new BadRequestError("ID is required");
       if (!req.body) throw new BadRequestError("Update data is required");
 
-      const response = await this.interactor.update(id, req.body);
+      const response = await this.interactor.update(id as string, req.body);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -185,7 +187,7 @@ export class TicketController {
       const { id } = req.params;
       if (!id) throw new BadRequestError("ID is required");
 
-      const response = await this.interactor.delete(id);
+      const response = await this.interactor.delete(id as string);
       if (!response) throw new BadRequestError("Error deleting entity");
 
       return res.status(HttpStatusCode.NO_CONTENT).json();

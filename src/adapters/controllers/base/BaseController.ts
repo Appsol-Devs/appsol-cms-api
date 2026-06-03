@@ -10,7 +10,7 @@ import type { IBaseInteractor } from "../../../application/interactors/base/inde
 @injectable()
 export abstract class BaseController<TDomain> {
   protected constructor(
-    protected readonly interactor: IBaseInteractor<TDomain>
+    protected readonly interactor: IBaseInteractor<TDomain>,
   ) {}
 
   /**
@@ -20,13 +20,13 @@ export abstract class BaseController<TDomain> {
   async getOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("ID is required");
 
-      const response = await this.interactor.getById(id);
+      const response = await this.interactor.getById(id as string);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -40,7 +40,7 @@ export abstract class BaseController<TDomain> {
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: RequestQuery = {
@@ -57,7 +57,7 @@ export abstract class BaseController<TDomain> {
           totalPages: response.totalPages,
           pageCount: response.pageCount,
           totalCount: response.totalCount,
-        })
+        }),
       );
 
       return res.status(HttpStatusCode.OK).json(response.data);
@@ -73,7 +73,7 @@ export abstract class BaseController<TDomain> {
   async create(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
@@ -98,14 +98,14 @@ export abstract class BaseController<TDomain> {
   async update(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("ID is required");
       if (!req.body) throw new BadRequestError("Update data is required");
 
-      const response = await this.interactor.update(id, req.body);
+      const response = await this.interactor.update(id as string, req.body);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -119,13 +119,13 @@ export abstract class BaseController<TDomain> {
   async delete(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("ID is required");
 
-      const response = await this.interactor.delete(id);
+      const response = await this.interactor.delete(id as string);
       if (!response) throw new BadRequestError("Error deleting entity");
 
       return res.status(HttpStatusCode.NO_CONTENT).json();

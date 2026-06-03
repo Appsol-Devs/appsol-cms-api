@@ -13,7 +13,7 @@ import type { NextFunction, Request, Response } from "express";
 export class ComplaintTypeController {
   constructor(
     @inject(INTERFACE_TYPE.ComplaintTypeInteractor)
-    private readonly complaintInteractor: IComplaintTypeInteractor
+    private readonly complaintInteractor: IComplaintTypeInteractor,
   ) {
     this.complaintInteractor = complaintInteractor;
   }
@@ -25,13 +25,15 @@ export class ComplaintTypeController {
   async getAComplaint(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("Complaint ID is required");
 
-      const response = await this.complaintInteractor.getAComplaintType(id);
+      const response = await this.complaintInteractor.getAComplaintType(
+        id as string,
+      );
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -46,13 +48,15 @@ export class ComplaintTypeController {
   async deleteComplaint(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("Complaint ID is required");
 
-      const response = await this.complaintInteractor.deleteComplaintType(id);
+      const response = await this.complaintInteractor.deleteComplaintType(
+        id as string,
+      );
       if (!response) throw new BadRequestError("Error deleting complaint");
 
       return res.status(HttpStatusCode.NO_CONTENT).json();
@@ -69,7 +73,7 @@ export class ComplaintTypeController {
   async addComplaint(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const createdBy = (req as any).user?._id;
@@ -94,7 +98,7 @@ export class ComplaintTypeController {
   async getAllComplaints(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: RequestQuery = {
@@ -105,9 +109,8 @@ export class ComplaintTypeController {
         pageSize: req.query["pageSize"] ? Number(req.query["pageSize"]) : 10,
       };
 
-      const response = await this.complaintInteractor.getAllComplaintTypes(
-        query
-      );
+      const response =
+        await this.complaintInteractor.getAllComplaintTypes(query);
 
       res.set(
         "x-pagination",
@@ -115,7 +118,7 @@ export class ComplaintTypeController {
           totalPages: response.totalPages,
           pageCount: response.pageCount,
           totalCount: response.totalCount,
-        })
+        }),
       );
 
       return res.status(HttpStatusCode.OK).json(response.data);
@@ -132,7 +135,7 @@ export class ComplaintTypeController {
   async updateComplaint(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
@@ -140,8 +143,8 @@ export class ComplaintTypeController {
       if (!req.body) throw new BadRequestError("Complaint data is required");
 
       const response = await this.complaintInteractor.updateComplaintType(
-        id,
-        req.body
+        id as string,
+        req.body,
       );
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {

@@ -9,7 +9,7 @@ import { injectable } from "inversify";
 @injectable()
 export abstract class BaseLookupController<TDomain> {
   protected constructor(
-    protected readonly lookupInteractor: IBaseLookupInteractor<TDomain>
+    protected readonly lookupInteractor: IBaseLookupInteractor<TDomain>,
   ) {}
 
   /**
@@ -19,13 +19,13 @@ export abstract class BaseLookupController<TDomain> {
   async getOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("ID is required");
 
-      const response = await this.lookupInteractor.getById(id);
+      const response = await this.lookupInteractor.getById(id as string);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -39,7 +39,7 @@ export abstract class BaseLookupController<TDomain> {
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: RequestQuery = {
@@ -56,7 +56,7 @@ export abstract class BaseLookupController<TDomain> {
           totalPages: response.totalPages,
           pageCount: response.pageCount,
           totalCount: response.totalCount,
-        })
+        }),
       );
 
       return res.status(HttpStatusCode.OK).json(response.data);
@@ -72,7 +72,7 @@ export abstract class BaseLookupController<TDomain> {
   async create(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
@@ -96,14 +96,17 @@ export abstract class BaseLookupController<TDomain> {
   async update(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("ID is required");
       if (!req.body) throw new BadRequestError("Update data is required");
 
-      const response = await this.lookupInteractor.update(id, req.body);
+      const response = await this.lookupInteractor.update(
+        id as string,
+        req.body,
+      );
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -117,13 +120,13 @@ export abstract class BaseLookupController<TDomain> {
   async delete(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
       if (!id) throw new BadRequestError("ID is required");
 
-      const response = await this.lookupInteractor.delete(id);
+      const response = await this.lookupInteractor.delete(id as string);
       if (!response) throw new BadRequestError("Error deleting entity");
 
       return res.status(HttpStatusCode.NO_CONTENT).json();

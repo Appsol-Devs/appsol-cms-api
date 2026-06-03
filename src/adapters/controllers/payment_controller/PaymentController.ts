@@ -47,7 +47,7 @@ export class PaymentController extends BaseController<IPayment> {
         approvedOrRejectedBy: req.user?._id,
       };
 
-      const response = await this.interactor.update(paymentId, data);
+      const response = await this.interactor.update(paymentId as string, data);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);

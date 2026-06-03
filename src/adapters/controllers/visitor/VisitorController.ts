@@ -18,7 +18,7 @@ import type {
 export class VisitorController extends BaseController<IVisitor> {
   constructor(
     @inject(INTERFACE_TYPE.VisitorInteractorImpl)
-    interactor: VisitorInteractorImpl
+    interactor: VisitorInteractorImpl,
   ) {
     super(interactor);
   }
@@ -27,7 +27,7 @@ export class VisitorController extends BaseController<IVisitor> {
   async checkIn(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
@@ -37,7 +37,7 @@ export class VisitorController extends BaseController<IVisitor> {
         checkInTime: new Date(),
         status: "checked_in",
       };
-      const response = await this.interactor.update(id, data);
+      const response = await this.interactor.update(id as string, data);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -48,7 +48,7 @@ export class VisitorController extends BaseController<IVisitor> {
   async checkOut(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const { id } = req.params;
@@ -58,7 +58,7 @@ export class VisitorController extends BaseController<IVisitor> {
         checkOutTime: new Date(),
         status: "checked_out",
       };
-      const response = await this.interactor.update(id, data);
+      const response = await this.interactor.update(id as string, data);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -68,7 +68,7 @@ export class VisitorController extends BaseController<IVisitor> {
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: IVisitorRequestQuery = {
@@ -103,7 +103,7 @@ export class VisitorController extends BaseController<IVisitor> {
   async create(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
@@ -123,14 +123,17 @@ export class VisitorController extends BaseController<IVisitor> {
   async update(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.params.id) throw new BadRequestError("Visitor id is required");
       if (!req.body) throw new BadRequestError("Update data is required");
       const { checkInTime, checkOutTime, ...rest }: Partial<IVisitor> =
         req.body;
-      const response = await this.interactor.update(req.params.id, rest);
+      const response = await this.interactor.update(
+        req.params.id as string,
+        rest,
+      );
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
