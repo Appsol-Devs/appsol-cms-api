@@ -27,7 +27,7 @@ export abstract class BaseRepoistoryImpl<
       }
 
       const doc = await this.model.findOne(filter as any);
-      if (!doc) return {} as TDomain;
+      if (!doc) return null;
       return this.mapper.toEntity(doc);
     } catch (error) {
       throw error;

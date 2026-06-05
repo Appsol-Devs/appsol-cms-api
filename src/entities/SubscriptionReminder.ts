@@ -19,6 +19,8 @@ export class ISubscriptionReminder {
     public software?: ISoftware | string,
     public readonly dueDate?: string,
     public readonly reminderType?: TSubscriptionReminderType,
+    public readonly lastNotifiedType?: TSubscriptionReminderType | null,
+    public nextBillingDate?: Date | null,
     public readonly sentDate?: string,
     public readonly isSent?: boolean,
     public readonly sentVia?: "email" | "notification" | "sms",
@@ -41,6 +43,7 @@ export interface ISubscriptionReminderRequestQuery extends RequestQuery {
   subscriptionId?: string | undefined;
   dueDate?: string | undefined;
   reminderType?: TSubscriptionReminderType | undefined;
+  filter?: TSubscriptionReminderType | undefined;
   isSent?: boolean | undefined;
   sentVia?: "email" | "notification" | "sms" | undefined;
 }

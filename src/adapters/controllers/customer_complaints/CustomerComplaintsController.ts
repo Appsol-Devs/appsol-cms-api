@@ -38,6 +38,12 @@ export class CustomerComplaintController extends BaseController<ICustomerComplai
         search: req.query.search?.toString(),
         pageIndex: req.query.pageIndex ? Number(req.query.pageIndex) : 1,
         pageSize: req.query.pageSize ? Number(req.query.pageSize) : 10,
+        startDate: req.query.startDate
+          ? new Date(req.query.startDate.toString())
+          : undefined,
+        endDate: req.query.endDate
+          ? new Date(req.query.endDate.toString())
+          : undefined,
         status: req.query.status?.toString() as TCustomerComplaintStatus,
         complaintCategoryId:
           req.query.complaintCategoryId?.toString() ?? undefined,

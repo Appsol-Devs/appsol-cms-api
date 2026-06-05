@@ -78,6 +78,9 @@ export class SubscriptionReminderController extends BaseController<ISubscription
         reminderType: req.query.reminderType?.toString() as unknown as
           | TSubscriptionReminderType
           | undefined,
+        filter: req.query.filter?.toString() as unknown as
+          | TSubscriptionReminderType
+          | undefined,
         softwareId: req.query.softwareId?.toString() ?? undefined,
         startDate: req.query.startDate?.toString() ?? undefined,
         endDate: req.query.endDate?.toString() ?? undefined,

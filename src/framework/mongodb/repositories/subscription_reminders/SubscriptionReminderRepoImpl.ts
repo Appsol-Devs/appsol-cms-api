@@ -6,6 +6,7 @@ import { BaseRepoistoryImpl } from "../base/BaseRepositoryImpl.js";
 import type {
   ISubscriptionReminder,
   ISubscriptionReminderRequestQuery,
+  TSubscriptionReminderType,
 } from "../../../../entities/SubscriptionReminder.js";
 import {
   SubscriptionReminderModel,
@@ -30,27 +31,59 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
 
     const filter: Record<string, any> = {};
 
-    // ✅ Text search
+    // Text search
     if (search) {
       filter.$or = [{ reminderCode: { $regex: new RegExp(search, "i") } }];
     }
 
-    // ✅ Simple filters
+    // Simple filters
     if (query.customerId)
       filter.customer = new mongoose.Types.ObjectId(query.customerId);
-    if (query.status) filter.status = query.status;
     if (query.softwareId)
       filter.software = new mongoose.Types.ObjectId(query.softwareId);
-    if (query.reminderType) filter.reminderType = query.reminderType;
+    if (query.subscriptionId)
+      filter.subscription = new mongoose.Types.ObjectId(query.subscriptionId);
     if (query.isSent !== undefined) filter.isSent = query.isSent;
     if (query.sentVia) filter.sentVia = query.sentVia;
 
-    if (query.subscriptionId)
-      filter.subscription = new mongoose.Types.ObjectId(query.subscriptionId);
+    // Date range filter on nextBillingDate — drives the tab filtering on the frontend
+    if (query.filter) {
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
 
-    if (query.dueDate) filter.dueDate = query.dueDate;
+      const endOfToday = new Date();
+      endOfToday.setHours(23, 59, 59, 999);
 
-    // ✅ Date range
+      const ranges: Record<
+        TSubscriptionReminderType,
+        { $gte: Date; $lte: Date }
+      > = {
+        overdue: {
+          $gte: new Date(0), // any past date
+          $lte: new Date(now.getTime() - 1), // before today
+        },
+        due_today: {
+          $gte: now,
+          $lte: endOfToday,
+        },
+        "7_days": {
+          $gte: new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000), // tomorrow
+          $lte: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // 7 days ahead
+        },
+        "14_days": {
+          $gte: new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000), // 8 days ahead
+          $lte: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000),
+        },
+        "30_days": {
+          $gte: new Date(now.getTime() + 15 * 24 * 60 * 60 * 1000),
+          $lte: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
+        },
+      };
+
+      filter.nextBillingDate = ranges[query.filter];
+    }
+
+    // Created-at date range (for separate date-based search, unrelated to filter tabs)
     if (query.startDate && query.endDate) {
       filter.createdAt = {
         $gte: query.startDate,
