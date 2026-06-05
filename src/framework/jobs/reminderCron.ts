@@ -8,7 +8,7 @@ import { container } from "../webserver/index.js";
 export const startReminderCron = () => {
   const logger = container.get<ILogger>(INTERFACE_TYPE.Logger);
   const reminderService = container.get<IReminderService>(
-    INTERFACE_TYPE.ReminderServiceImpl
+    INTERFACE_TYPE.ReminderServiceImpl,
   );
 
   // Run every day at 8:00 AM
@@ -17,7 +17,7 @@ export const startReminderCron = () => {
     try {
       const result = await reminderService.triggerReminders();
       logger.info(
-        `Reminder job completed: ${result.remindersCreated} reminders created`
+        `Reminder job completed: ${result.remindersProcessed} reminders created`,
       );
     } catch (error) {
       logger.error("Error in scheduled reminder job:", error);

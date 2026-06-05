@@ -71,6 +71,7 @@ export class NotificationController extends BaseController<INotification> {
         targetEntityType:
           req.query.targetEntityType?.toString() as TargetEntityType,
         targetEntityId: req.query.targetEntityId?.toString() ?? undefined,
+        isRead: false,
       };
 
       const response = await this.interactor.getAll(query);

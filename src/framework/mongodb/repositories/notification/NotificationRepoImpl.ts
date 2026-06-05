@@ -21,7 +21,7 @@ export class NotificationRepositoryImpl extends BaseRepoistoryImpl<INotification
 
   // ✅ Paginated & Filtered fetch
   async getAll(
-    query: INotificationRequestQuery
+    query: INotificationRequestQuery,
   ): Promise<PaginatedResponse<INotification>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
@@ -45,7 +45,8 @@ export class NotificationRepositoryImpl extends BaseRepoistoryImpl<INotification
     if (query.targetEntityId)
       filter.targetEntityId = new mongoose.Types.ObjectId(query.targetEntityId);
     if (query.status) filter.status = query.status;
-    if (query.isRead) filter.isRead = query.isRead;
+    if (query.isRead !== undefined) filter.isRead = query.isRead;
+    else filter.isRead = false;
 
     // ✅ Date range
     if (query.startDate && query.endDate) {
@@ -109,7 +110,7 @@ export class NotificationRepositoryImpl extends BaseRepoistoryImpl<INotification
   // ✅ Override update
   async update(
     id: string,
-    data: Partial<INotification>
+    data: Partial<INotification>,
   ): Promise<INotification> {
     const dataWithReferences = this.assignReferences(data);
 

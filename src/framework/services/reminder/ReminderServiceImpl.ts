@@ -1,15 +1,12 @@
-import type mongoose from "mongoose";
 import type { IReminderService } from "./IReminderService.js";
 import { injectable, inject } from "inversify";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import type { ILogger } from "../../logging/ILogger.js";
 import type {
-  IBaseRepository,
   PaymentRepositoryImpl,
   SubscriptionReminderRepositoryImpl,
   SubscriptionRepositoryImpl,
 } from "../../mongodb/index.js";
-import type { IPayment } from "../../../entities/Payment.js";
 import type {
   ISubscriptionReminder,
   TSubscriptionReminderType,
@@ -33,7 +30,7 @@ export class ReminderService implements IReminderService {
     @inject(INTERFACE_TYPE.NotificationService)
     private notificationService: INotificationService,
     @inject(INTERFACE_TYPE.PaymentRepositoryImpl)
-    private paymentRepository: PaymentRepositoryImpl
+    private paymentRepository: PaymentRepositoryImpl,
   ) {
     this.subscriptionRepository = subscriptionRepository;
     this.reminderRepository = reminderRepository;
@@ -44,103 +41,123 @@ export class ReminderService implements IReminderService {
 
   async triggerReminders(): Promise<{
     success: boolean;
-    remindersCreated: number;
+    remindersProcessed: number;
     details: any[];
   }> {
     try {
       this.logger.info("Starting reminder trigger process...");
 
-      const remindersCreated: ISubscriptionReminder[] = [];
+      const processedReminders: ISubscriptionReminder[] = [];
+
       const now = new Date();
-      const endOfDay = new Date();
       now.setHours(0, 0, 0, 0); // Start of today
+
+      const endOfDay = new Date();
       endOfDay.setHours(23, 59, 59, 999); // End of today
+
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1); // For overdue check
+
       const date30DaysAhead = new Date(endOfDay);
       date30DaysAhead.setDate(date30DaysAhead.getDate() + 30);
 
-      // Get the current date and time
-      const dateOverdue = new Date(now);
-      dateOverdue.setDate(dateOverdue.getDate() - 1);
-
+      // Fetch all active subscriptions within the reminder window
       const paginatedResponse = await this.subscriptionRepository.getAll({
         status: "active",
         nextBillingDate: {
-          gte: dateOverdue,
+          gte: yesterday,
           lte: date30DaysAhead,
         },
       });
       const subscriptions = paginatedResponse.data;
 
       this.logger.info(
-        `Found ${subscriptions.length} active subscriptions in reminder window`
+        `Found ${subscriptions.length} active subscriptions in reminder window`,
       );
 
       for (const subscription of subscriptions) {
         try {
           const nextBillingDate = new Date(
-            subscription.nextBillingDate ?? new Date()
+            subscription.nextBillingDate ?? new Date(),
           );
           nextBillingDate.setHours(0, 0, 0, 0);
 
-          // Calculate days until renewal
           const daysUntilRenewal = Math.ceil(
-            (nextBillingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+            (nextBillingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
           );
 
           this.logger.info(
-            `Subscription ${subscription.subscriptionCode}: ${daysUntilRenewal} days until renewal`
+            `Subscription ${subscription.subscriptionCode}: ${daysUntilRenewal} days until renewal`,
           );
 
-          // Determine which reminder type to create based on days remaining
-          let reminderType: TSubscriptionReminderType | null = null;
+          const reminderType = this.getReminderType(daysUntilRenewal);
 
-          reminderType = this.getReminderType(daysUntilRenewal);
-          // Skip if no reminder type matched (not at a threshold)
           if (!reminderType) {
             this.logger.info(
-              `Subscription ${subscription.subscriptionCode}: No reminder needed (${daysUntilRenewal} days remaining)`
+              `Subscription ${subscription.subscriptionCode}: No reminder threshold matched (${daysUntilRenewal} days remaining)`,
             );
             continue;
           }
 
-          // Check if reminder already exists for this type
-          const existingReminder = await this.reminderRepository.findOne({
+          // --- UPSERT: ensure one reminder document per subscription ---
+          // Find existing reminder for this subscription (regardless of type)
+          let reminder = await this.reminderRepository.findOne({
             subscriptionId: subscription._id,
-            reminderType: reminderType,
-          });
-
-          if (existingReminder) {
-            this.logger.info(
-              `Reminder already exists for subscription ${subscription.subscriptionCode} (${reminderType})`
-            );
-            continue;
-          }
-
-          // Create new reminder
-          const reminder = await this.reminderRepository.create({
-            title: this.generateReminderTitle(
-              subscription,
-              reminderType,
-              daysUntilRenewal
-            ),
-            customerId: subscription.customerId,
-            subscriptionId: subscription._id, // Link to subscription
-            paymentId: subscription.lastPaymentId, // Optional: reference to last payment
-            dueDate: subscription.nextBillingDate?.toISOString(),
-            softwareId: subscription.softwareId,
-            reminderType: reminderType,
-            isSent: false,
           });
 
           if (!reminder) {
-            this.logger.error(
-              `Error creating reminder for subscription ${subscription.subscriptionCode} (${reminderType})`
+            // First time we've seen this subscription — create the record
+            reminder = await this.reminderRepository.create({
+              title: this.generateReminderTitle(
+                subscription,
+                reminderType,
+                daysUntilRenewal,
+              ),
+              customerId: subscription.customerId,
+              subscriptionId: subscription._id,
+              softwareId: subscription.softwareId,
+              dueDate: subscription.nextBillingDate?.toISOString(), // Set dueDate to next billing date for easier querying
+              nextBillingDate: subscription.nextBillingDate, // <-- store for frontend filtering
+              reminderType: reminderType, // <-- tracks current threshold
+              lastNotifiedType: null,
+              isSent: false,
+            });
+
+            if (!reminder) {
+              this.logger.error(
+                `Failed to create reminder for subscription ${subscription.subscriptionCode}`,
+              );
+              continue;
+            }
+
+            this.logger.info(
+              `Created new reminder record for subscription ${subscription.subscriptionCode}`,
+            );
+          } else {
+            // Record exists — update nextBillingDate and current reminderType
+            // in case the subscription was renewed and has a new billing date
+
+            reminder = await this.reminderRepository.update(reminder._id!, {
+              title: this.generateReminderTitle(
+                subscription,
+                reminderType,
+                daysUntilRenewal,
+              ),
+              nextBillingDate: subscription.nextBillingDate,
+              reminderType: reminderType,
+            });
+          }
+
+          // --- NOTIFICATION DEDUP: only notify if this threshold hasn't been sent yet ---
+          if (reminder.lastNotifiedType === reminderType) {
+            this.logger.info(
+              `Notification already sent for subscription ${subscription.subscriptionCode} at threshold (${reminderType}) — skipping`,
             );
             continue;
           }
 
-          if (reminder.reminderType === "due_today") {
-            //create payment for reminder
+          // Generate a payment record when the subscription is due today
+          if (reminderType === "due_today") {
             await this.paymentRepository.create({
               subscriptionTypeId: subscription.subscriptionTypeId,
               customerId: subscription.customerId,
@@ -153,16 +170,7 @@ export class ReminderService implements IReminderService {
             });
           }
 
-          remindersCreated.push({
-            _id: reminder._id,
-            subscriptionId: subscription._id,
-            customerId: subscription.customerId,
-            reminderType: reminderType,
-          });
-
-          this.logger.info(
-            `✅ Created ${reminderType} reminder for subscription ${subscription.subscriptionCode}`
-          );
+          // Send notification and mark this threshold as notified
           await this.notificationService.create({
             userId: subscription.loggedBy,
             message: reminder.title,
@@ -170,29 +178,44 @@ export class ReminderService implements IReminderService {
             targetEntityId: reminder._id,
             targetEntityType: "SubscriptionReminder",
           });
+
+          await this.reminderRepository.update(reminder._id!, {
+            lastNotifiedType: reminderType,
+            isSent: true,
+          });
+
+          this.logger.info(
+            `✅ Notified (${reminderType}) for subscription ${subscription.subscriptionCode}`,
+          );
+
+          processedReminders.push({
+            _id: reminder._id,
+            subscriptionId: subscription._id,
+            customerId: subscription.customerId,
+            reminderType: reminderType,
+          });
         } catch (error: any) {
-          // Handle duplicate key errors gracefully
           if (error.code === 11000) {
             this.logger.info(
-              `Duplicate reminder skipped for subscription ${subscription.subscriptionCode}`
+              `Duplicate key skipped for subscription ${subscription.subscriptionCode}`,
             );
           } else {
             this.logger.error(
               `Error processing subscription ${subscription.subscriptionCode}:`,
-              error
+              error,
             );
           }
         }
       }
 
       this.logger.info(
-        `Reminder trigger completed. Created ${remindersCreated.length} reminders`
+        `Reminder trigger completed. Processed ${processedReminders.length} reminders`,
       );
 
       return {
         success: true,
-        remindersCreated: remindersCreated.length,
-        details: remindersCreated,
+        remindersProcessed: processedReminders.length,
+        details: processedReminders,
       };
     } catch (error) {
       this.logger.error("Error in triggerReminders:", error);
@@ -206,7 +229,7 @@ export class ReminderService implements IReminderService {
   private generateReminderTitle(
     subscription: ISubscription,
     reminderType: TSubscriptionReminderType,
-    daysUntilRenewal: number
+    daysUntilRenewal: number,
   ): string {
     const softwareName =
       (subscription.software as ISoftware)?.name || "Software";
@@ -238,27 +261,13 @@ export class ReminderService implements IReminderService {
   }
 
   private getReminderType(
-    daysUntilRenewal: number
+    daysUntilRenewal: number,
   ): TSubscriptionReminderType | null {
-    let reminderType: TSubscriptionReminderType | null = null;
-    switch (daysUntilRenewal) {
-      case 0:
-        reminderType = "due_today";
-        break;
-      case 7:
-        reminderType = "7_days";
-        break;
-      case 14:
-        reminderType = "14_days";
-        break;
-      case 30:
-        reminderType = "30_days";
-        break;
-      case -1:
-        reminderType = "overdue";
-      default:
-        break;
-    }
-    return reminderType;
+    if (daysUntilRenewal < 0) return "overdue";
+    if (daysUntilRenewal === 0) return "due_today";
+    if (daysUntilRenewal <= 7) return "7_days";
+    if (daysUntilRenewal <= 14) return "14_days";
+    if (daysUntilRenewal <= 30) return "30_days";
+    return null;
   }
 }

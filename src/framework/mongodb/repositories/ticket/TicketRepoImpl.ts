@@ -131,10 +131,10 @@ export class TicketRepositoryImpl
           select: "title description complaintCode",
           populate: {
             path: "customer",
-            select: "name email phone companyName",
+            select: "name email phone companyName status",
           },
         })
-        .populate("loggedBy", "name email phone companyName")
+        .populate("loggedBy", "firstName lastName email phone companyName")
         .populate({
           path: "history",
           populate: {
@@ -171,15 +171,15 @@ export class TicketRepositoryImpl
         select: "title description complaintCode",
         populate: {
           path: "customer",
-          select: "name email phone companyName",
+          select: "name email phone companyName status",
         },
       })
-      .populate("loggedBy", "name email phone companyName")
+      .populate("loggedBy", "firstName lastName email phone companyName status")
       .populate({
         path: "history",
         populate: {
           path: "from to",
-          select: "firstName lastName email phone companyName",
+          select: "firstName lastName email phone companyName ",
         },
       });
 
@@ -274,7 +274,7 @@ export class TicketRepositoryImpl
           select: "name email phone companyName",
         },
       })
-      .populate("loggedBy", "name email phone companyName")
+      .populate("loggedBy", "firstName lastName email phone companyName")
       .populate({
         path: "history",
         populate: {

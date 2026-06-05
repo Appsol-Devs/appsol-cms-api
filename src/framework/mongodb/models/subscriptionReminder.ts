@@ -20,6 +20,11 @@ const subscriptionReminderSchema: SchemaDefinition = {
     ref: "Subscription",
   },
   dueDate: { type: Date, required: true },
+  nextBillingDate: { type: Date, required: false },
+  lastNotifiedType: {
+    type: String,
+    enum: ["30_days", "14_days", "7_days", "due_today", "overdue"],
+  },
   isSent: { type: Boolean, required: true, default: false },
   reminderType: {
     type: String,
@@ -42,5 +47,5 @@ export const {
   "SubscriptionReminder",
   subscriptionReminderSchema,
   "SRMC",
-  "reminderCode"
+  "reminderCode",
 );

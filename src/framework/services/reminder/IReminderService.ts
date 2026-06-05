@@ -1,7 +1,7 @@
 export interface IReminderService {
   triggerReminders(): Promise<{
     success: boolean;
-    remindersCreated: number;
+    remindersProcessed: number;
     details: any[];
   }>;
 }

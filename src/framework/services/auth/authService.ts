@@ -24,6 +24,7 @@ export class AuthServiceImpl implements IAuthService {
     return new Promise((resolve, reject) => {
       jwt.verify(token, config.jwtSecret as string, (err, decoded) => {
         if (err) {
+          console.log("Error verifying token:", err);
           reject(err);
         } else {
           resolve(decoded as T); // Cast decoded value to generic type T
