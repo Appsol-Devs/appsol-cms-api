@@ -30,8 +30,8 @@ export class RescheduleController extends BaseController<IReschedule> {
   ): TGenericPromise {
     try {
       if (!req.params) throw new BadRequestError("Request params are required");
-      if (!req.params.type || !req.params.id)
-        throw new BadRequestError("Both entity type and id are required");
+      if (!req.params.type)
+        throw new BadRequestError("Entity type is required");
       const entityType = req.params.type as TargetEntityType;
       const entityId = req.params.id as string;
       const query: IRescheduleRequestQuery = {

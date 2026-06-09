@@ -60,7 +60,7 @@ export class NotificationRepositoryImpl extends BaseRepoistoryImpl<INotification
       this.model
         .find(filter)
         .populate("user", "firstName lastName email phone")
-        .populate("targetEntityId")
+        .populate("targetEntity")
         .skip(skip)
         .limit(limit),
       this.model.countDocuments(filter),

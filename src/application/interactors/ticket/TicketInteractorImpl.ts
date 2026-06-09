@@ -31,10 +31,13 @@ export class TicketInteractorImpl
     @inject(INTERFACE_TYPE.Mailer) private mailer: IMailer,
     @inject(INTERFACE_TYPE.TicketRepositoryImpl)
     private readonly ticketRepo: ITicketRepo,
+    @inject(INTERFACE_TYPE.CustomerComplaintRepositoryImpl)
+    private customerComplaintRepo: IBaseRepository<ICustomerComplaint>,
   ) {
     super(ticketRepo);
     this.mailer = mailer;
     this.ticketRepo = ticketRepo;
+    this.customerComplaintRepo = customerComplaintRepo;
   }
   async closeTicket(id: string): Promise<ITicket> {
     const ticket = await this.repository.getById(id);
@@ -83,10 +86,15 @@ export class TicketInteractorImpl
     });
     if (ticket)
       throw new BadRequestError("Ticket already exists for complaint");
+    const complaint = await this.customerComplaintRepo.getById(
+      data.complaintId!,
+    );
+    if (!complaint) throw new BadRequestError("Complaint not found");
     let status: TTicketStatus = "open";
     if (data.assignedEngineerId) status = "assigned";
     const ticketData: ITicket = {
       ...data,
+      customerId: complaint.customerId,
       status: status,
     };
     const res = await this.repository.create(ticketData);

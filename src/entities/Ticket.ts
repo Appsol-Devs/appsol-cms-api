@@ -10,6 +10,8 @@ export class ITicket {
     public readonly complaintId?: string,
     public complaint?: ICustomerComplaint | string,
     public readonly assignedEngineerId?: string,
+    public customerId?: string,
+    public customer?: IUser | string,
     public assignedEngineer?: IUser | string,
     public readonly requestedDate?: string,
     public readonly notes?: string,
@@ -46,5 +48,6 @@ export interface ITicketRequestQuery extends RequestQuery {
   priority?: TPriority | undefined;
   assignedEngineerId?: string | undefined;
   complaintId?: string | undefined;
+  customerId?: string | undefined;
   loggedById?: string | undefined;
 }

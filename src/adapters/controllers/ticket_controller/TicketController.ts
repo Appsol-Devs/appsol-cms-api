@@ -1,7 +1,6 @@
 import { inject, injectable } from "inversify";
 
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
-import { BaseController } from "../base/BaseController.js";
 import type { Request, Response, NextFunction } from "express";
 import type {
   TGenericPromise,
@@ -12,14 +11,10 @@ import type { IControllerUserRequest } from "../auth_controller/IController.js";
 import { BadRequestError } from "../../../error_handler/BadRequestError.js";
 
 import type {
-  ITicket,
   ITicketRequestQuery,
   TTicketStatus,
 } from "../../../entities/Ticket.js";
-import type {
-  ITicketInteractor,
-  TicketInteractorImpl,
-} from "../../../application/interactors/index.js";
+import type { ITicketInteractor } from "../../../application/interactors/index.js";
 
 @injectable()
 export class TicketController {
@@ -91,6 +86,7 @@ export class TicketController {
         search: req.query.search?.toString(),
         pageIndex: req.query.pageIndex ? Number(req.query.pageIndex) : 1,
         pageSize: req.query.pageSize ? Number(req.query.pageSize) : 10,
+        customerId: req.query.customerId?.toString() ?? undefined,
         assignedEngineerId:
           req.query.assignedEngineerId?.toString() ?? undefined,
         loggedBy: req.query.loggedBy?.toString() ?? undefined,
