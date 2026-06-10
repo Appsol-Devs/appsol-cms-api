@@ -133,13 +133,11 @@ export abstract class BaseRepoistoryImpl<
     data: Partial<TDomain>,
   ): Promise<TDomain | null | undefined> {
     try {
-      const updated = await this.model.findOneAndUpdate(
-        { _id: id },
-        data as any,
-        {
+      const updated = await this.model
+        .findOneAndUpdate({ _id: id }, data as any, {
           new: true,
-        },
-      );
+        })
+        .populate("loggedBy", "firstName lastName email");
       if (!updated) throw new NotFoundError("Item not found");
       return this.mapper.toEntity(updated);
     } catch (error) {

@@ -69,9 +69,6 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       }
     }
 
-    console.log(filter);
-    console.log(query);
-
     const [items, total] = await Promise.all([
       this.model
         .find(filter)

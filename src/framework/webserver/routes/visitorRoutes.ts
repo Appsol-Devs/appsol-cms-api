@@ -11,10 +11,10 @@ import { visitorsSchema } from "../../../validation/vistorSchema.js";
 
 export const createVisitorRoutes = (container: Container): Router => {
   const controller = container.get<VisitorController>(
-    INTERFACE_TYPE.VisitorController
+    INTERFACE_TYPE.VisitorController,
   );
   const authMiddleware = container.get<AuthMiddleware>(
-    INTERFACE_TYPE.AuthMiddleware
+    INTERFACE_TYPE.AuthMiddleware,
   );
 
   const permissionMap = {
@@ -28,29 +28,29 @@ export const createVisitorRoutes = (container: Container): Router => {
   const router = new BaseRouter(
     controller,
     authMiddleware,
-    "/api/visitors_log",
+    "/api/visitor_logs",
     permissionMap,
-    visitorsSchema
+    visitorsSchema,
   ).register();
 
   //check-in
   router.put(
-    "/api/visitors_log/:id/check_in",
+    "/api/visitor_logs/:id/check_in",
     authMiddleware.authenticateToken.bind(authMiddleware),
     authMiddleware
       .checkPermission(Permissions.CHECK_IN_VISITOR)
       .bind(authMiddleware),
-    controller.checkIn.bind(controller)
+    controller.checkIn.bind(controller),
   );
 
   //check-out
   router.put(
-    "/api/visitors_log/:id/check_out",
+    "/api/visitor_logs/:id/check_out",
     authMiddleware.authenticateToken.bind(authMiddleware),
     authMiddleware
       .checkPermission(Permissions.CHECK_OUT_VISITOR)
       .bind(authMiddleware),
-    controller.checkOut.bind(controller)
+    controller.checkOut.bind(controller),
   );
   return router;
 };

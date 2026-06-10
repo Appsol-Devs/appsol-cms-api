@@ -192,6 +192,7 @@ export class TicketRepositoryImpl
     const refs: Partial<ITicket> = {};
     if (data.assignedEngineerId)
       refs.assignedEngineer = data.assignedEngineerId;
+    if (data.customerId) refs.customer = data.customerId;
     if (data.complaintId) refs.complaint = data.complaintId;
     if (data.loggedBy) refs.loggedBy = data.loggedBy;
     return refs;
@@ -246,7 +247,7 @@ export class TicketRepositoryImpl
           select: "name email phone companyName",
         },
       })
-      .populate("loggedBy", "name email phone companyName")
+      .populate("loggedBy", "firstName lastName email phone companyName")
       .populate({
         path: "history",
         populate: {

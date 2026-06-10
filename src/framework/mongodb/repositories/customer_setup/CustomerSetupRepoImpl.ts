@@ -56,7 +56,7 @@ export class CustomerSetupRepositoryImpl extends BaseRepoistoryImpl<ICustomerSet
 
     // ✅ Date range
     if (query.startDate && query.endDate) {
-      filter.createdAt = {
+      filter.scheduledStart = {
         $gte: query.startDate,
         $lte: query.endDate,
       };
@@ -71,7 +71,8 @@ export class CustomerSetupRepositoryImpl extends BaseRepoistoryImpl<ICustomerSet
         .populate("assignedTo", "firstName lastName email")
         .populate("setupStatus", "name description colorCode")
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .sort({ createdAt: -1 }),
       this.model.countDocuments(filter),
     ]);
 

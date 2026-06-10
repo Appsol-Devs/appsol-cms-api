@@ -1,7 +1,6 @@
 import { injectable } from "inversify";
 
 import type { PaginatedResponse } from "../../../../entities/UserResponse.js";
-import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
 import { BaseRepoistoryImpl } from "../base/BaseRepositoryImpl.js";
 
 import { VisitorModel, VisitorModelMapper } from "../../models/index.js";
@@ -10,7 +9,6 @@ import type {
   IVisitor,
   IVisitorRequestQuery,
 } from "../../../../entities/index.js";
-import { email } from "zod";
 
 @injectable()
 export class VisitorRepositoryImpl extends BaseRepoistoryImpl<IVisitor> {
@@ -20,7 +18,7 @@ export class VisitorRepositoryImpl extends BaseRepoistoryImpl<IVisitor> {
 
   // ✅ Paginated & Filtered fetch
   async getAll(
-    query: IVisitorRequestQuery
+    query: IVisitorRequestQuery,
   ): Promise<PaginatedResponse<IVisitor>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
@@ -70,5 +68,37 @@ export class VisitorRepositoryImpl extends BaseRepoistoryImpl<IVisitor> {
       totalCount: total,
       pageCount: pageIndex,
     };
+  }
+
+  // override getById to populate loggedBy
+  async getById(id: string): Promise<IVisitor> {
+    const item = await this.model
+      .findById(id)
+      .populate("loggedBy", "firstName lastName email phone");
+    if (!item) throw new Error("Visitor not found");
+    return this.mapper.toEntity(item);
+  }
+
+  // override update to populate loggedBy
+  async update(id: string, data: Partial<IVisitor>): Promise<IVisitor> {
+    console.log("Updating Visitor:", id, data);
+    const updated = await this.model
+      .findOneAndUpdate({ _id: id }, data, {
+        new: true,
+      })
+      .populate("loggedBy", "firstName lastName email phone");
+    if (!updated) throw new Error("Visitor not found");
+    console.log("Updated Visitor:", updated);
+    return this.mapper.toEntity(updated);
+  }
+
+  // override create to populate loggedBy
+  async create(data: Partial<IVisitor>): Promise<IVisitor> {
+    const created = await this.model
+      .create(data)
+      .then((doc) =>
+        doc.populate("loggedBy", "firstName lastName email phone"),
+      );
+    return this.mapper.toEntity(created);
   }
 }

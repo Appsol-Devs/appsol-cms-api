@@ -21,7 +21,7 @@ import type { FeatureRequestInteractorImpl } from "../../../application/interact
 export class FeatureRequestController extends BaseController<IFeatureRequest> {
   constructor(
     @inject(INTERFACE_TYPE.FeatureRequestInteractorImpl)
-    interactor: FeatureRequestInteractorImpl
+    interactor: FeatureRequestInteractorImpl,
   ) {
     super(interactor);
   }
@@ -29,7 +29,7 @@ export class FeatureRequestController extends BaseController<IFeatureRequest> {
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: IFeatureRequestRequestQuery = {
@@ -68,7 +68,7 @@ export class FeatureRequestController extends BaseController<IFeatureRequest> {
   async create(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");

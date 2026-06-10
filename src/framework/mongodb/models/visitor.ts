@@ -5,17 +5,12 @@ import type { IVisitor } from "../../../entities/Vistor.js";
 const visitorSchema: SchemaDefinition = {
   visitorCode: { type: String, unique: true },
   fullName: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String, required: false },
   phone: { type: String, required: true },
   company: { type: String, required: false },
   idType: { type: String, required: false },
   idNumber: { type: String, required: false },
-
-  visitingWhom: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: false,
-  },
+  visitingWhom: { type: String, required: false },
   purpose: { type: String, required: true },
   checkInTime: {
     type: Date,

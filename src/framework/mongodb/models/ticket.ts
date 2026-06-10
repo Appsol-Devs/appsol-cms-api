@@ -6,7 +6,8 @@ const ticketSchema: SchemaDefinition = {
   ticketCode: { type: String, unique: true },
   title: { type: String, required: false },
   complaintId: { type: String, required: true },
-
+  customerId: { type: String, required: false },
+  customer: { type: Schema.Types.ObjectId, required: false, ref: "Customer" },
   complaint: {
     type: Schema.Types.ObjectId,
     required: true,
