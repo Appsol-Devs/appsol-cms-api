@@ -9,7 +9,6 @@ import { BaseInteractorImpl } from "../base/BaseInteractorImpl.js";
 import type {
   IBaseRepository,
   ITicketRepo,
-  TicketRepositoryImpl,
 } from "../../../framework/mongodb/index.js";
 import {
   BadRequestError,

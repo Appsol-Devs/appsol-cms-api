@@ -91,6 +91,8 @@ export class SubscriptionReminderRepositoryImpl extends BaseRepoistoryImpl<ISubs
       };
     }
 
+    console.log(filter);
+
     const [items, total] = await Promise.all([
       this.model
         .find(filter)

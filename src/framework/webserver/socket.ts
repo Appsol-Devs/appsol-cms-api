@@ -26,7 +26,7 @@ export function initSocket(
             const user: IUser = await authService.verifyToken<IUser>(
               payload.token,
             );
-            console.log("Authenticated user:", user);
+
             if (!user || !user._id) {
               logger.error("Invalid token for socket authentication");
               socket.emit("authenticated", {

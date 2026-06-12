@@ -143,6 +143,7 @@ export class ReminderService implements IReminderService {
                 reminderType,
                 daysUntilRenewal,
               ),
+              dueDate: subscription.nextBillingDate?.toISOString(),
               nextBillingDate: subscription.nextBillingDate,
               reminderType: reminderType,
             });

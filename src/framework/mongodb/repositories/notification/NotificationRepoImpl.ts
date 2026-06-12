@@ -62,7 +62,8 @@ export class NotificationRepositoryImpl extends BaseRepoistoryImpl<INotification
         .populate("user", "firstName lastName email phone")
         .populate("targetEntity")
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .sort({ createdAt: -1 }),
       this.model.countDocuments(filter),
     ]);
 
