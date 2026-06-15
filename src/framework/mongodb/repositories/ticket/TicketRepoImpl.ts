@@ -216,7 +216,10 @@ export class TicketRepositoryImpl
           select: "name email phone companyName",
         },
       },
-      { path: "loggedBy", select: "name email phone companyName" },
+      {
+        path: "loggedBy",
+        select: "firstName lastName email phone companyName",
+      },
       {
         path: "history",
         populate: {
