@@ -15,6 +15,7 @@ import {
   CloudinaryImpl,
   type IMailer,
   MailerImpl,
+  ResendImpl,
   type INotificationService,
   NotificationServiceImpl,
 } from "../framework/services/index.js";
@@ -46,6 +47,8 @@ container.bind<IConfig>(INTERFACE_TYPE.IConfig).toConstantValue(config);
 
 // Bind Mongoose instance
 container.bind<Mongoose>(INTERFACE_TYPE.Mongoose).toConstantValue(mongoose);
+
+// Bind resend
 
 // Core services
 container
@@ -79,7 +82,7 @@ container
   .inSingletonScope();
 container
   .bind<IMailer>(INTERFACE_TYPE.Mailer)
-  .to(MailerImpl)
+  .to(ResendImpl)
   .inSingletonScope();
 container
   .bind<IReminderService>(INTERFACE_TYPE.ReminderServiceImpl)
