@@ -14,7 +14,7 @@ const config: IConfig = {
   permissionKey: process.env["PERMISSION_KEY"] || "",
   jwtSecret: process.env["JWT_SECRET"] || "secret",
   mailerAppPassword: process.env["GMAIL_APP_PASSWORD"] || "",
-  mailerEmail: process.env["GMAIL_EMAIL"] || "",
+  mailerEmail: process.env["RESEND_FROM_EMAIL"] || "",
   mailerService: process.env["MAIL_HOST"] || "smtp.gmail.com",
   mailerHost: process.env["MAIL_HOST"] || "smtp.gmail.com",
   mailerPort: Number(process.env["MAIL_PORT"]),
@@ -22,6 +22,7 @@ const config: IConfig = {
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || "",
   cloudinaryApiSecrete: process.env.CLOUDINARY_API_SECRETE || "",
   internalApiKey: process.env.INTERNAL_API_KEY || "",
+  resendApiKey: process.env.RESEND_API_KEY || "",
 };
 
 export default config;
