@@ -10,10 +10,10 @@ import type { Router } from "express";
 
 export const createRescheduleRoutes = (container: Container): Router => {
   const controller = container.get<RescheduleController>(
-    INTERFACE_TYPE.RescheduleController
+    INTERFACE_TYPE.RescheduleController,
   );
   const authMiddleware = container.get<AuthMiddleware>(
-    INTERFACE_TYPE.AuthMiddleware
+    INTERFACE_TYPE.AuthMiddleware,
   );
 
   const permissionMap = {
@@ -29,16 +29,16 @@ export const createRescheduleRoutes = (container: Container): Router => {
     authMiddleware,
     "/api/reschedules",
     permissionMap,
-    rescheduleSchema
+    rescheduleSchema,
   ).register();
 
   router.get(
-    "/api/reschedules/by-entity/:type/:id",
+    "/api/reschedules/by-entity/:type",
     authMiddleware.authenticateToken.bind(authMiddleware),
     authMiddleware
       .checkPermission(Permissions.VIEW_RESCHEDULES)
       .bind(authMiddleware),
-    controller.getAllReschedulesForEntity.bind(controller)
+    controller.getAllReschedulesForEntity.bind(controller),
   );
 
   return router;
