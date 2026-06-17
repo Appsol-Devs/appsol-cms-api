@@ -111,6 +111,7 @@ export class VisitorController extends BaseController<IVisitor> {
       const response = await this.interactor.create({
         ...req.body,
         createdBy,
+        checkInTime: new Date(),
         loggedBy: createdBy,
       });
 
