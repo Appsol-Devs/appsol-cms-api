@@ -33,14 +33,23 @@ export class RescheduleController extends BaseController<IReschedule> {
       if (!req.params.type)
         throw new BadRequestError("Entity type is required");
       const entityType = req.params.type as TargetEntityType;
-      const entityId = req.params.id as string;
+      //const entityId = req.params.id as string;
       const query: IRescheduleRequestQuery = {
         targetEntityType: entityType,
-        targetEntityId: entityId,
+        // targetEntityId: entityId,
       };
 
       const response = await this.interactor.getAll(query);
-      return res.status(HttpStatusCode.OK).json(response);
+      res.set(
+        "x-pagination",
+        JSON.stringify({
+          totalPages: response.totalPages,
+          pageCount: response.pageCount,
+          totalCount: response.totalCount,
+        }),
+      );
+
+      return res.status(HttpStatusCode.OK).json(response.data);
     } catch (error) {
       next(error);
     }

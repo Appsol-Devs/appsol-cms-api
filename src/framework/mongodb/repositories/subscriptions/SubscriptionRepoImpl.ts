@@ -12,6 +12,7 @@ import {
   SubscriptionModelMapper,
 } from "../../models/index.js";
 import mongoose from "mongoose";
+import { BadRequestError } from "../../../../error_handler/index.js";
 
 @injectable()
 export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription> {
@@ -164,6 +165,15 @@ export class SubscriptionRepositoryImpl extends BaseRepoistoryImpl<ISubscription
   // ✅ Override create
   async create(data: Partial<ISubscription>): Promise<ISubscription> {
     try {
+      //check whether subscription exist for customer
+
+      const existingSubscription = await this.model.findOne({
+        customer: data.customerId,
+      });
+      if (existingSubscription) {
+        throw new BadRequestError("Subscription already exist for customer");
+      }
+
       const dataWithReferences = this.assignReferences(data);
 
       const created = await this.model.create({
