@@ -35,6 +35,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
     }
 
     // ✅ Simple filters
+    if (query.softwareId) filter.software = query.softwareId;
     if (query.customerId) filter.customerId = query.customerId;
     if (query.subscriptionTypeId)
       filter.subscriptionTypeId = query.subscriptionTypeId;
@@ -79,7 +80,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
           "name description colorCode durationInMonths",
         )
         .populate("approvedOrRejectedBy", "firstName lastName email")
-        .populate("software", "name description")
+        .populate("software", "name description colorCode")
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 }),
@@ -135,7 +136,7 @@ export class PaymentRepositoryImpl extends BaseRepoistoryImpl<IPayment> {
       .populate("customer", "name email phone companyName")
       .populate("loggedBy", "firstName lastName email")
       .populate("approvedOrRejectedBy", "firstName lastName email")
-      .populate("software", "name description ")
+      .populate("software", "name description colorCode")
       .populate(
         "subscriptionType",
         "name description colorCode durationInMonths",

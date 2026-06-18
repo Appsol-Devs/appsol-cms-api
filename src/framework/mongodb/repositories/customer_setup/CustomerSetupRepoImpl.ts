@@ -65,7 +65,7 @@ export class CustomerSetupRepositoryImpl extends BaseRepoistoryImpl<ICustomerSet
     const [items, total] = await Promise.all([
       this.model
         .find(filter)
-        .populate("customer", "name email phone")
+        .populate("customer", "name email phone companyName")
         .populate("loggedBy", "firstName lastName email")
         .populate("software", "name description colorCode")
         .populate("assignedTo", "firstName lastName email")

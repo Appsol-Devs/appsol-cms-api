@@ -32,6 +32,7 @@ export class IPayment {
 export interface IPaymentRequestQuery extends RequestQuery {
   customerId?: string | undefined;
   subscriptionTypeId?: string | undefined;
+  softwareId?: string | undefined;
   status?: "pending" | "approved" | "rejected" | "generated" | undefined;
   loggedBy?: string | undefined;
   paymentDate?: string | undefined;
