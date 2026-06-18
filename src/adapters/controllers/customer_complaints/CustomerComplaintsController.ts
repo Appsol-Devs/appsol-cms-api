@@ -1,15 +1,10 @@
 import { inject, injectable } from "inversify";
-import type {
-  CustomerComplaintInteractorImpl,
-  LeadInteractorImpl,
-} from "../../../application/interactors/index.js";
+import type { CustomerComplaintInteractorImpl } from "../../../application/interactors/index.js";
 
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseController } from "../base/BaseController.js";
-import type { ILead, ILeadRequestQuery } from "../../../entities/Lead.js";
 import type { Request, Response, NextFunction } from "express";
 import type { TGenericPromise } from "../../../utils/constants/genTypes.js";
-import type { RequestQuery } from "../../../entities/User.js";
 import { HttpStatusCode } from "../../../utils/constants/enums.js";
 import type { IControllerUserRequest } from "../auth_controller/IController.js";
 import { BadRequestError } from "../../../error_handler/BadRequestError.js";

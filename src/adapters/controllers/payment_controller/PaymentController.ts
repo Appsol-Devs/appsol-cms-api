@@ -74,6 +74,7 @@ export class PaymentController extends BaseController<IPayment> {
         loggedBy: req.query.loggedBy?.toString() ?? undefined,
         subscriptionTypeId:
           req.query.subscriptionTypeId?.toString() ?? undefined,
+        softwareId: req.query.softwareId?.toString() ?? undefined,
         paymentDate: req.query.paymentDate?.toString() ?? undefined,
         renewalDate: {
           gte: req.query.renewalStartDate
