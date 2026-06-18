@@ -82,7 +82,7 @@ container
   .inSingletonScope();
 container
   .bind<IMailer>(INTERFACE_TYPE.Mailer)
-  .to(ResendImpl)
+  .to(MailerImpl)
   .inSingletonScope();
 container
   .bind<IReminderService>(INTERFACE_TYPE.ReminderServiceImpl)

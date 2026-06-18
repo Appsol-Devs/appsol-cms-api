@@ -14,7 +14,7 @@ const config: IConfig = {
   permissionKey: process.env["PERMISSION_KEY"] || "",
   jwtSecret: process.env["JWT_SECRET"] || "secret",
   mailerAppPassword: process.env["GMAIL_APP_PASSWORD"] || "",
-  mailerEmail: process.env["RESEND_FROM_EMAIL"] || "",
+  mailerEmail: process.env["GMAIL_EMAIL"] || "",
   mailerService: process.env["MAIL_HOST"] || "smtp.gmail.com",
   mailerHost: process.env["MAIL_HOST"] || "smtp.gmail.com",
   mailerPort: Number(process.env["MAIL_PORT"]),

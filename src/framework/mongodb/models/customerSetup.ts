@@ -26,7 +26,7 @@ const customerSetupSchema: SchemaDefinition = {
   loggedBy: { type: Schema.Types.ObjectId, required: true, ref: "User" },
   status: {
     type: String,
-    required: true,
+   // required: true,
     default: "scheduled",
     enum: ["scheduled", "inProgress", "completed", "cancelled"],
   },

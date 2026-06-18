@@ -12,6 +12,8 @@ export const customerSetupSchema = baseQuerySchema.extend({
   notes: z.string().optional(),
   scheduledStart: z.string(),
   scheduledEnd: z.string(),
-  status: z.enum(["scheduled", "inProgress", "completed", "cancelled"]),
+  status: z
+    .enum(["scheduled", "inProgress", "completed", "cancelled"])
+    .optional(),
   addToCalendar: z.boolean().optional(),
 });
