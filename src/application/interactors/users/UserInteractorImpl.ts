@@ -20,7 +20,7 @@ export class UserInteractorImpl implements IUserInteractor {
 
   constructor(
     @inject(INTERFACE_TYPE.UserRepositoryImpl) userRepository: IUserRepository,
-    @inject(INTERFACE_TYPE.AuthServiceImpl) authService: IAuthService
+    @inject(INTERFACE_TYPE.AuthServiceImpl) authService: IAuthService,
   ) {
     this.userRepository = userRepository;
     this.authService = authService;
@@ -44,14 +44,14 @@ export class UserInteractorImpl implements IUserInteractor {
 
     const existingUser = await this.userRepository.findUserByEmail(data.email!);
     if (existingUser) throw new BadRequestError("The email already exists");
-    let userData = { ...data };
+    const { password, imageUrl, ...restData } = data;
 
     const hashedPassword = await this.authService.encriptPassword(
-      data.password!
+      data.password!,
     );
 
-    userData = {
-      ...data,
+    const userData = {
+      ...restData,
       password: hashedPassword,
     };
 
@@ -67,10 +67,9 @@ export class UserInteractorImpl implements IUserInteractor {
     if (!id) throw new UnprocessableEntityError("User id is required");
     if (!data) throw new UnprocessableEntityError("User data is required");
 
-    let body = { ...data };
+    const { password, imageUrl, ...body } = data;
     const user = await this.userRepository.findUserById(id);
     if (!user) throw new NotFoundError("User not found");
-    body = { ...body };
 
     const updatedUser = await this.userRepository.updateUser(id, body);
 

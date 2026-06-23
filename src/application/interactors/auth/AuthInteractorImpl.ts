@@ -1,4 +1,5 @@
 import {
+  IRole,
   IUser,
   UserPasswordChangeRequest,
   type Geolocation,
@@ -29,6 +30,7 @@ import type {
 } from "../../../framework/services/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { otpTemplateDark } from "../../../utils/mail_templates/otpTemplate.js";
+import { Server as IOServer } from "socket.io";
 
 @injectable()
 export class AuthInteractorImpl implements IAuthInteractor {
@@ -214,9 +216,16 @@ export class AuthInteractorImpl implements IAuthInteractor {
     const userObj = {
       ...user,
     };
-
-    const { password: pass, ...rest } = userObj;
-    const token = await this.authService.generateToken({ ...rest });
+    const userRole: IRole = {
+      _id: (user.role as IRole)._id,
+      name: (user.role as IRole).name,
+      permissions: (user.role as IRole).permissions,
+    };
+    const { password: pass, role, imageUrl, ...rest } = userObj;
+    const token = await this.authService.generateToken({
+      ...rest,
+      role: userRole,
+    });
 
     // update login count and last login
     const loginCount: number =

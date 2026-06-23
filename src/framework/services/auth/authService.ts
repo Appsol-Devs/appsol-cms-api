@@ -33,7 +33,14 @@ export class AuthServiceImpl implements IAuthService {
     });
   }
   async generateToken(user: IUser): Promise<string> {
-    return jwt.sign(user, config.jwtSecret, {
+    // Strip out heavy or sensitive fields before signing
+    const cleanPayload = {
+      _id: user._id,
+      email: user.email,
+      role: user.role, // Keep this since your middleware checks req.user.role
+    };
+
+    return jwt.sign(cleanPayload, config.jwtSecret, {
       expiresIn: "30 days",
     });
   }
