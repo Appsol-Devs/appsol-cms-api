@@ -31,6 +31,7 @@ import createSubscriptionRoutes from "./subscriptionRoutes.js";
 import createVisitorRoutes from "./visitorRoutes.js";
 import createTicketRoutes from "./ticketRoutes.js";
 import createDashboardRoutes from "./dashboardRoutes.js";
+import createStoreRoutes from "./storeRoutes.js";
 
 export const createRoutes = (container: Container): Router => {
   const router = express.Router();
@@ -63,6 +64,7 @@ export const createRoutes = (container: Container): Router => {
   router.use(createVisitorRoutes(container));
   router.use(createTicketRoutes(container));
   router.use(createDashboardRoutes(container));
+  router.use(createStoreRoutes(container));
 
   return router;
 };

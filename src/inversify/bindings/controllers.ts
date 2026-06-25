@@ -27,6 +27,7 @@ import {
   VisitorController,
   TicketController,
   DashboardController,
+  StoreController,
 } from "../../adapters/controllers/index.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
@@ -34,6 +35,10 @@ export const bindAllControllers = (container: Container) => {
   container
     .bind<DashboardController>(INTERFACE_TYPE.DashboardController)
     .to(DashboardController);
+
+  container
+    .bind<StoreController>(INTERFACE_TYPE.StoreController)
+    .to(StoreController);
 
   container
     .bind<TicketController>(INTERFACE_TYPE.TicketController)

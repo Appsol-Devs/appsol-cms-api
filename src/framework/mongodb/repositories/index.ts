@@ -20,3 +20,4 @@ export * from "./subscriptions/index.js";
 export * from "./visitor/index.js";
 export * from "./ticket/index.js";
 export * from "./dashboard/index.js";
+export * from "./store/index.js";

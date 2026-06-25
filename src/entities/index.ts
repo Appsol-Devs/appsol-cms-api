@@ -17,3 +17,4 @@ export * from "./Subscription.js";
 export * from "./Vistor.js";
 export * from "./Ticket.js";
 export * from "./Dashboard.js";
+export * from "./Store.js";

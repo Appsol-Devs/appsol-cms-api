@@ -7,3 +7,4 @@ export * from "./paymentSchema.js";
 export * from "./featureRequestSchema.js";
 export * from "./ticketSchema.js";
 export * from "./subscriptionSchema.js";
+export * from "./storeSchema.js";
