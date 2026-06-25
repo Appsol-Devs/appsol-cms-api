@@ -116,4 +116,7 @@ export const INTERFACE_TYPE = {
   DashboardRepoImpl: Symbol.for("DashboardRepoImpl"),
   DashboardInteractorImpl: Symbol.for("DashboardInteractorImpl"),
   DashboardController: Symbol.for("DashboardController"),
+  StoreRepositoryImpl: Symbol.for("StoreRepositoryImpl"),
+  StoreInteractorImpl: Symbol.for("StoreInteractorImpl"),
+  StoreController: Symbol.for("StoreController"),
 };

@@ -3,25 +3,16 @@ import { injectable } from "inversify";
 import type { PaginatedResponse } from "../../../../entities/UserResponse.js";
 import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
 import { BaseRepoistoryImpl } from "../base/BaseRepositoryImpl.js";
-import type {
-  IReschedule,
-  IRescheduleRequestQuery,
-} from "../../../../entities/Reschedule.js";
-import {
-  RescheduleModel,
-  RescheduleModelMapper,
-} from "../../models/reschedule.js";
+import type { IStore, IStoreRequestQuery } from "../../../../entities/Store.js";
+import { StoreModel, StoreModelMapper } from "../../models/store.js";
 
 @injectable()
-export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
+export class StoreRepositoryImpl extends BaseRepoistoryImpl<IStore> {
   constructor() {
-    super(RescheduleModel, RescheduleModelMapper);
+    super(StoreModel, StoreModelMapper);
   }
 
-  // ✅ Paginated & Filtered fetch
-  async getAll(
-    query: IRescheduleRequestQuery,
-  ): Promise<PaginatedResponse<IReschedule>> {
+  async getAll(query: IStoreRequestQuery): Promise<PaginatedResponse<IStore>> {
     const search = query.search || "";
     const limit = query.pageSize || 10;
     const pageIndex = query.pageIndex || 1;
@@ -29,26 +20,18 @@ export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
 
     const filter: Record<string, any> = {};
 
-    // ✅ Text search
     if (search) {
       filter.$or = [
-        { rescheduleCode: { $regex: new RegExp(search, "i") } },
-        { reason: { $regex: new RegExp(search, "i") } },
+        { storeCode: { $regex: new RegExp(search, "i") } },
+        { name: { $regex: new RegExp(search, "i") } },
+        { location: { $regex: new RegExp(search, "i") } },
       ];
     }
 
-    // ✅ Simple filters
     if (query.customerId) filter.customerId = query.customerId;
-    if (query.targetEntityType)
-      filter.targetEntityType = query.targetEntityType;
-    if (query.targetEntityId) filter.targetEntityId = query.targetEntityId;
     if (query.status) filter.status = query.status;
     if (query.loggedBy) filter.loggedBy = query.loggedBy;
-    if (query.originalDateTime)
-      filter.originalDateTime = query.originalDateTime;
-    if (query.newDateTime) filter.newDateTime = query.newDateTime;
 
-    // ✅ Date range
     if (query.startDate && query.endDate) {
       filter.createdAt = {
         $gte: query.startDate,
@@ -61,7 +44,6 @@ export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
         .find(filter)
         .populate("customer", "name email phone companyName")
         .populate("loggedBy", "firstName lastName email")
-        //  .populate("targetEntityId")
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 }),
@@ -79,50 +61,42 @@ export class RescheduleRepositoryImpl extends BaseRepoistoryImpl<IReschedule> {
     };
   }
 
-  // ✅ Fetch single complaint
-  async getById(id: string): Promise<IReschedule> {
-    const complaint = await this.model
+  async getById(id: string): Promise<IStore> {
+    const store = await this.model
       .findById(id)
-      .populate("customer", "name email phone")
+      .populate("customer", "name email phone companyName")
       .populate("loggedBy", "firstName lastName email");
-    //.populate("targetEntityId");
-
-    if (!complaint) throw new NotFoundError("Schedule not found");
-    return this.mapper.toEntity(complaint);
+    if (!store) throw new NotFoundError("Store not found");
+    return this.mapper.toEntity(store);
   }
 
-  // ✅ Assign all references directly from IDs
-  private assignReferences(data: Partial<IReschedule>): IReschedule {
-    if (data.customerId) data.customer = data.customerId;
-    if (data.targetEntityId) data.targetEntity = data.targetEntityId;
-    return data;
+  private assignReferences(data: Partial<IStore>): Partial<IStore> {
+    const refs: Partial<IStore> = {};
+    if (data.customerId) refs.customer = data.customerId;
+    if (data.loggedBy) refs.loggedBy = data.loggedBy;
+    return refs;
   }
 
-  // ✅ Override create
-  async create(data: Partial<IReschedule>): Promise<IReschedule> {
+  async create(data: Partial<IStore>): Promise<IStore> {
     const dataWithReferences = this.assignReferences(data);
 
     const created = await this.model.create({ ...data, ...dataWithReferences });
     const populated = await created.populate([
-      { path: "customer", select: "name email" },
+      { path: "customer", select: "name email phone companyName" },
       { path: "loggedBy", select: "firstName lastName email" },
-      // { path: "targetEntity" },
     ]);
 
     return this.mapper.toEntity(populated);
   }
 
-  // ✅ Override update
-  async update(id: string, data: Partial<IReschedule>): Promise<IReschedule> {
+  async update(id: string, data: Partial<IStore>): Promise<IStore> {
     const dataWithReferences = this.assignReferences(data);
 
     const updated = await this.model
       .findByIdAndUpdate(id, { ...data, ...dataWithReferences }, { new: true })
-      .populate("customer", "name email")
+      .populate("customer", "name email phone companyName")
       .populate("loggedBy", "firstName lastName email");
-    // .populate("targetEntity");
-
-    if (!updated) throw new NotFoundError("Schedule not found");
+    if (!updated) throw new NotFoundError("Store not found");
     return this.mapper.toEntity(updated);
   }
 }

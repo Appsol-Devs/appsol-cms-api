@@ -29,3 +29,4 @@ export * from "./subscription/SubscriptionController.js";
 export * from "./visitor/VisitorController.js";
 export * from "./ticket_controller/TicketController.js";
 export * from "./dashboard_controller/DashboardController.js";
+export * from "./store/StoreController.js";

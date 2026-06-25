@@ -16,3 +16,4 @@ export * from "./notification.js";
 export * from "./subscription.js";
 export * from "./visitor.js";
 export * from "./ticket.js";
+export * from "./store.js";
