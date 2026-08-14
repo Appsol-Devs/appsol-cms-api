@@ -22,6 +22,8 @@ export class ILead {
     public readonly leadStage?: ILeadStatus | string,
     public readonly priority?: LeadPriority,
     public readonly nextStep?: ILeadNextStep | string,
+    public readonly nextStepId?: string,
+    public readonly leadStageId?: string,
     public readonly location?: string,
     public readonly notes?: string,
     public readonly geolocation?: IGeolocation,
@@ -43,6 +45,7 @@ export interface ILeadRequestQuery extends RequestQuery {
   nextStep?: string | undefined;
   location?: string | undefined;
   loggedBy?: string | undefined;
+  softwareId?: string | undefined;
   name?: string | undefined;
   email?: string | undefined;
 }

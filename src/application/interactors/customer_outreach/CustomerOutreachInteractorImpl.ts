@@ -2,19 +2,19 @@ import { inject } from "inversify";
 import type { ICustomerOutreach } from "../../../entities/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseInteractorImpl } from "../base/BaseInteractorImpl.js";
-import type { CustomerOutreachRepositoryImpl } from "../../../framework/mongodb/repositories/index.js";
+import type { IBaseRepository } from "../../../domain/repositories/base/IBaseRepository.js";
 
 export class CustomerOutreachInteractorImpl extends BaseInteractorImpl<ICustomerOutreach> {
   constructor(
     @inject(INTERFACE_TYPE.CustomerOutreachRepositoryImpl)
-    customerOutreachRepositoryImpl: CustomerOutreachRepositoryImpl
+    customerOutreachRepository: IBaseRepository<ICustomerOutreach>,
   ) {
-    super(customerOutreachRepositoryImpl);
+    super(customerOutreachRepository as any);
   }
 
   async update(
     id: string,
-    data: ICustomerOutreach
+    data: ICustomerOutreach,
   ): Promise<ICustomerOutreach> {
     if (!id) throw new Error("Id is required");
     if (!data) throw new Error("Data is required");

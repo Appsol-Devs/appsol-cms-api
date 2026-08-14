@@ -6,17 +6,17 @@ import type {
 } from "../../../entities/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseInteractorImpl } from "../base/BaseInteractorImpl.js";
-import type { CustomerComplaintRepositoryImpl } from "../../../framework/mongodb/repositories/customer_complaints/index.js";
+import type { IBaseRepository } from "../../../domain/repositories/base/IBaseRepository.js";
 import type { INotificationService } from "../../../framework/services/index.js";
 
 export class CustomerComplaintInteractorImpl extends BaseInteractorImpl<ICustomerComplaint> {
   constructor(
     @inject(INTERFACE_TYPE.CustomerComplaintRepositoryImpl)
-    customerComplaintRepositoryImpl: CustomerComplaintRepositoryImpl,
+    customerComplaintRepository: IBaseRepository<ICustomerComplaint>,
     @inject(INTERFACE_TYPE.NotificationService)
     private notificationService: INotificationService,
   ) {
-    super(customerComplaintRepositoryImpl);
+    super(customerComplaintRepository as any);
     this.notificationService = notificationService;
   }
 

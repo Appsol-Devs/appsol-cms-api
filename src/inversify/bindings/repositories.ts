@@ -34,7 +34,6 @@ import {
   SetupStatusRepositoryImpl,
   SoftwareRepositoryImpl,
   SubscriptionTypeRepositoryImpl,
-  CustomerRepositoryImpl,
   LeadRepositoryImpl,
   type IAuthRepository,
   type IRoleRepository,
@@ -54,13 +53,18 @@ import {
   SubscriptionReminderRepositoryImpl,
   CustomerSetupRepositoryImpl,
   NotificationRepositoryImpl,
-  SubscriptionRepositoryImpl,
   VisitorRepositoryImpl,
   TicketRepositoryImpl,
   DashboardRepoImpl,
   type IDashboardRepo,
   StoreRepositoryImpl,
 } from "../../framework/mongodb/index.js";
+import { CustomerRepositoryImpl } from "../../framework/postgresql/repositories/customer/CustomerRepositoryImpl.js";
+import { SubscriptionRepositoryImpl } from "../../framework/postgresql/repositories/subscription/SubscriptionRepositoryImpl.js";
+import { LeadRepositoryImpl as PostgresLeadRepositoryImpl } from "../../framework/postgresql/repositories/lead/LeadRepositoryImpl.js";
+import { VisitorRepositoryImpl as PostgresVisitorRepositoryImpl } from "../../framework/postgresql/repositories/visitor/VisitorRepositoryImpl.js";
+import { PaymentRepositoryImpl as PostgresPaymentRepositoryImpl } from "../../framework/postgresql/repositories/payment/PaymentRepositoryImpl.js";
+import { SubscriptionReminderRepositoryImpl as PostgresSubscriptionReminderRepositoryImpl } from "../../framework/postgresql/repositories/subscription_reminder/SubscriptionReminderRepositoryImpl.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 
 export const bindRepositories = (container: Container) => {
@@ -77,7 +81,7 @@ export const bindRepositories = (container: Container) => {
 
   container
     .bind<IBaseRepository<IVisitor>>(INTERFACE_TYPE.VisitorRepositoryImpl)
-    .to(VisitorRepositoryImpl);
+    .to(PostgresVisitorRepositoryImpl);
 
   container
     .bind<
@@ -101,7 +105,7 @@ export const bindRepositories = (container: Container) => {
     .bind<
       IBaseRepository<ISubscriptionReminder>
     >(INTERFACE_TYPE.SubscriptionReminderRepositoryImpl)
-    .to(SubscriptionReminderRepositoryImpl);
+    .to(PostgresSubscriptionReminderRepositoryImpl);
 
   container
     .bind<
@@ -111,7 +115,7 @@ export const bindRepositories = (container: Container) => {
 
   container
     .bind<IBaseRepository<IPayment>>(INTERFACE_TYPE.PaymentRepositoryImpl)
-    .to(PaymentRepositoryImpl);
+    .to(PostgresPaymentRepositoryImpl);
 
   container
     .bind<IBaseRepository<IReschedule>>(INTERFACE_TYPE.RescheduleRepositoryImpl)
@@ -198,12 +202,10 @@ export const bindRepositories = (container: Container) => {
     .to(SubscriptionTypeRepositoryImpl);
 
   container
-    .bind<
-      IBaseLookupRepository<ICustomer>
-    >(INTERFACE_TYPE.CustomerRepositoryImpl)
+    .bind<IBaseRepository<ICustomer>>(INTERFACE_TYPE.CustomerRepositoryImpl)
     .to(CustomerRepositoryImpl);
 
   container
     .bind<IBaseLookupRepository<ILead>>(INTERFACE_TYPE.LeadRepositoryImpl)
-    .to(LeadRepositoryImpl);
+    .to(PostgresLeadRepositoryImpl);
 };

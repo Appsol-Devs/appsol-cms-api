@@ -23,7 +23,7 @@ import type {
   IAuthRepository,
   IRoleRepository,
   IUserRepository,
-} from "../../../framework/mongodb/index.js";
+} from "../../../domain/repositories/index.js";
 import type {
   IAuthService,
   IMailer,

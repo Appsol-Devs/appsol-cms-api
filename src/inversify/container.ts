@@ -31,7 +31,7 @@ import { Server, type IServer } from "../framework/webserver/server.js";
 import {
   DatabaseConnection,
   type IDatabaseConnection,
-} from "../framework/mongodb/connection.js";
+} from "../framework/postgresql/connection.js";
 import {
   Application,
   type IApplication,

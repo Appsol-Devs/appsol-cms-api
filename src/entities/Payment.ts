@@ -13,6 +13,8 @@ export class IPayment {
     public readonly softwareId?: string,
     public software?: ISoftware | string,
     public readonly subscriptionTypeId?: string,
+    public readonly subscriptionId?: string,
+    public subscription?: ISubscriptionType | string,
     public subscriptionType?: ISubscriptionType | string,
     public readonly notes?: string,
     public readonly amount?: number,

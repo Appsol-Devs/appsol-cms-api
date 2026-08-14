@@ -3,6 +3,14 @@ export interface IConfig {
   mongo: {
     uri: string;
   };
+  postgres: {
+    host: string;
+    port: number;
+    database: string;
+    user: string;
+    password: string;
+    url: string;
+  };
   permissionKey: string;
   jwtSecret: string;
   mailerAppPassword: string;

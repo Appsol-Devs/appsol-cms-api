@@ -4,7 +4,7 @@ import type { PaginatedResponse } from "../../../entities/UserResponse.js";
 import { BadRequestError } from "../../../error_handler/BadRequestError.js";
 import { NotFoundError } from "../../../error_handler/NotFoundError.js";
 import { UnprocessableEntityError } from "../../../error_handler/UnprocessableEntityError.js";
-import type { IBaseRepository } from "../../../framework/mongodb/repositories/base/IBaseRepository.js";
+import type { IBaseRepository } from "../../../domain/repositories/base/IBaseRepository.js";
 import type { IBaseInteractor } from "./IBaseInteractor.js";
 
 @injectable()

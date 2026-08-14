@@ -11,6 +11,14 @@ const config: IConfig = {
         ? process.env["MONGO_DB_URI"] || "" // Use production database URI
         : process.env["MONGO_DB_URI"] || "",
   },
+  postgres: {
+    host: process.env["POSTGRES_HOST"] || "localhost",
+    port: Number(process.env["POSTGRES_PORT"]) || 5432,
+    database: process.env["POSTGRES_DATABASE"] || "appsol_cms",
+    user: process.env["POSTGRES_USER"] || "postgres",
+    password: process.env["POSTGRES_PASSWORD"] || "postgres",
+    url: process.env["POSTGRES_URL"] || "",
+  },
   permissionKey: process.env["PERMISSION_KEY"] || "",
   jwtSecret: process.env["JWT_SECRET"] || "secret",
   mailerAppPassword: process.env["GMAIL_APP_PASSWORD"] || "",

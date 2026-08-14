@@ -1,0 +1,119 @@
+import { injectable } from "inversify";
+import { prisma } from "../../utils/prisma.js";
+
+import type { IUser, RequestQuery } from "../../../../entities/User.js";
+import type { PaginatedResponse } from "../../../../entities/UserResponse.js";
+import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
+import { UnprocessableEntityError } from "../../../../error_handler/UnprocessableEntityError.js";
+import { createMapper } from "../../../utils/mapper.js";
+import type { IUserRepository } from "../../../mongodb/repositories/user/IUserRepository.js";
+
+const UserDelegate = prisma.user;
+
+@injectable()
+export class UserRepositoryImpl implements IUserRepository {
+  async deleteUser(id: string): Promise<IUser> {
+    if (!id) throw new UnprocessableEntityError("User id is required");
+
+    const user = await UserDelegate.findUnique({ where: { id } });
+    if (!user) throw new NotFoundError("User not found");
+
+    await UserDelegate.update({
+      where: { id },
+      data: { isDeleted: true, deletedAt: new Date() },
+    });
+    const UserMapper = createMapper<IUser, typeof user>();
+
+    return UserMapper.toEntity(user) as IUser;
+  }
+
+  async addUser(data: IUser): Promise<IUser> {
+    if (!data) throw new UnprocessableEntityError("User data is required");
+    const created = await UserDelegate.create({ data: data as any });
+    if (!created)
+      throw new UnprocessableEntityError("User could not be created");
+    const UserMapper = createMapper<IUser, typeof created>();
+    return UserMapper.toEntity(created) as IUser;
+  }
+
+  async findAllUsers(query: RequestQuery): Promise<PaginatedResponse<IUser>> {
+    const searchQuery = query.search || "";
+    const limit = query.pageSize || 10;
+    const pageIndex = query.pageIndex || 1;
+    const skip = (pageIndex - 1) * limit;
+
+    const where: any = { isDeleted: false };
+    if (searchQuery) {
+      where.OR = [
+        { firstName: { contains: searchQuery, mode: "insensitive" } },
+        { lastName: { contains: searchQuery, mode: "insensitive" } },
+        { email: { contains: searchQuery, mode: "insensitive" } },
+      ];
+    }
+
+    const [users, totalCount] = await Promise.all([
+      UserDelegate.findMany({
+        where,
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          phone: true,
+          roleId: true,
+          role: true,
+          createdAt: true,
+          updatedAt: true,
+          deletedAt: true,
+          isDeleted: true,
+          password: false,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+      UserDelegate.count({ where }),
+    ]);
+
+    const UserMapper = createMapper<IUser, (typeof users)[0]>();
+    return {
+      data: users.map(UserMapper.toEntity) as IUser[],
+      totalPages: Math.ceil(totalCount / limit),
+      totalCount,
+      pageCount: pageIndex,
+    };
+  }
+
+  async findUserByEmail(email: string): Promise<IUser | null | undefined> {
+    const user = await UserDelegate.findUnique({
+      where: { email },
+      include: { role: true },
+    });
+    return user as IUser | null;
+  }
+
+  async findUserById(id: string): Promise<IUser | null | undefined> {
+    const user = await UserDelegate.findUnique({
+      where: { id },
+      include: { role: true },
+    });
+    return user as IUser | null;
+  }
+
+  async updateUser(id: string, data: IUser): Promise<IUser> {
+    const updatedUser = await UserDelegate.update({
+      where: { id },
+      data: data as any,
+      include: { role: true },
+    });
+
+    if (!updatedUser) {
+      throw new NotFoundError("User not found");
+    }
+
+    const UserMapper = createMapper<IUser, typeof updatedUser>();
+    return UserMapper.toEntity(updatedUser) as IUser;
+  }
+}
