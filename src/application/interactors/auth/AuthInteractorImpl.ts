@@ -270,7 +270,6 @@ export class AuthInteractorImpl implements IAuthInteractor {
 
   async verifyOTP(userId: string, otp: string): Promise<UserOTPResponse> {
     const userOtpRecords = await this.repository.findOtps({ user: userId });
-
     if (userOtpRecords.length === 0) {
       throw new Error(
         "Account record does not exist or has already been verified. Please sign up or login",

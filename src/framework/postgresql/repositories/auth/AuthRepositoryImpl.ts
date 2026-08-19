@@ -21,7 +21,10 @@ export class AuthRepositoryImpl implements IAuthRepository {
     }
 
     await UserOtpDelegate.deleteMany({ where: { userId: id } });
-    return otp as IUserOTP;
+    const OtpMapper = createMapper<IUserOTP, typeof otp>({
+      mapIdToLegacyId: true,
+    });
+    return OtpMapper.toEntity(otp) as IUserOTP;
   }
 
   async deleteOtp(id: string): Promise<IUserOTP> {
@@ -31,15 +34,23 @@ export class AuthRepositoryImpl implements IAuthRepository {
     }
 
     await UserOtpDelegate.delete({ where: { id } });
-    return otp as IUserOTP;
+    const OtpMapper = createMapper<IUserOTP, typeof otp>({
+      mapIdToLegacyId: true,
+    });
+    return OtpMapper.toEntity(otp) as IUserOTP;
   }
 
   async findOtps(query: IUserOTP): Promise<IUserOTP[]> {
+    console.log("findOtps query:", query);
     const where: any = {};
     for (const key of Object.keys(query)) {
       const value = (query as any)[key];
       if (value !== undefined && value !== null) {
-        where[key] = value;
+        if (key === "user") {
+          where["userId"] = value;
+        } else {
+          where[key] = value;
+        }
       }
     }
 
@@ -47,7 +58,10 @@ export class AuthRepositoryImpl implements IAuthRepository {
       where,
       orderBy: { createdAt: "desc" },
     });
-    return otps as IUserOTP[];
+    const OtpMapper = createMapper<IUserOTP, (typeof otps)[0]>({
+      mapIdToLegacyId: true,
+    });
+    return otps.map((otp) => OtpMapper.toEntity(otp) as IUserOTP);
   }
 
   async addUserOTP(data: IUserOTP): Promise<IUserOTP> {
@@ -66,7 +80,10 @@ export class AuthRepositoryImpl implements IAuthRepository {
         createdAt: createdAt ?? new Date(),
       },
     });
-    return created as IUserOTP;
+    const OtpMapper = createMapper<IUserOTP, typeof created>({
+      mapIdToLegacyId: true,
+    });
+    return OtpMapper.toEntity(created) as IUserOTP;
   }
 
   async registerUser(data: IUser): Promise<IUser> {
@@ -108,7 +125,9 @@ export class AuthRepositoryImpl implements IAuthRepository {
         }),
       },
     });
-    const UserMapper = createMapper<IUser, typeof created>();
+    const UserMapper = createMapper<IUser, typeof created>({
+      mapIdToLegacyId: true,
+    });
     return UserMapper.toEntity(created) as IUser;
   }
 }

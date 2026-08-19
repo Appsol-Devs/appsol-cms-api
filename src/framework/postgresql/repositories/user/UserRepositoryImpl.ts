@@ -95,7 +95,7 @@ export class UserRepositoryImpl implements IUserRepository {
   async findUserByEmail(email: string): Promise<IUser | null | undefined> {
     const user = await UserDelegate.findUnique({
       where: { email },
-      include: { role: true },
+      include: { role: true, password: false },
     });
     if (!user) return null;
     const UserMapper = createMapper<IUser, typeof user>({
@@ -107,7 +107,7 @@ export class UserRepositoryImpl implements IUserRepository {
   async findUserById(id: string): Promise<IUser | null | undefined> {
     const user = await UserDelegate.findUnique({
       where: { id },
-      include: { role: true },
+      include: { role: true, password: false },
     });
     if (!user) return null;
     const UserMapper = createMapper<IUser, typeof user>({
@@ -121,7 +121,7 @@ export class UserRepositoryImpl implements IUserRepository {
     const updatedUser = await UserDelegate.update({
       where: { id },
       data: { id: data._id, ...rest } as any,
-      include: { role: true },
+      include: { role: true, password: false },
     });
 
     if (!updatedUser) {
