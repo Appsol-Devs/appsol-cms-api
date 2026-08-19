@@ -2,26 +2,28 @@ import type { IGeolocation } from "./Lead.js";
 
 export class IUser {
   constructor(
+    public readonly id?: string,
     public readonly _id?: string,
-    public readonly firstName?: string,
-    public readonly lastName?: string,
-    public readonly email?: string,
-    public readonly phone?: string,
-    public readonly role?: IRole | string,
+    public readonly firstName?: string | null,
+    public readonly lastName?: string | null,
+    public readonly email?: string | null,
+    public readonly phone?: string | null,
+    public readonly role?: IRole | null,
+    public readonly roleId?: string | null,
     public readonly isActive?: boolean,
     public readonly isVerified?: boolean,
-    public readonly imageUrl?: string,
-    public readonly status?: string,
+    public readonly imageUrl?: string | null,
+    public readonly status?: string | null,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date,
-    public readonly password?: string,
-    public readonly token?: string,
-    public readonly deviceToken?: string,
-    public readonly createdBy?: string,
+    public readonly password?: string | null,
+    public readonly token?: string | null,
+    public readonly deviceToken?: string | null,
+    public readonly createdBy?: string | null,
     public readonly loginCount?: number,
-    public readonly lastLogin?: string,
+    public readonly lastLogin?: string | null,
     public readonly lastLoginLocation?: Geolocation,
-    public readonly loginLocations?: Geolocation[]
+    public readonly loginLocations?: Geolocation[],
   ) {}
 }
 
@@ -32,11 +34,12 @@ export interface Geolocation {
 }
 export class IRole {
   constructor(
-    public readonly _id?: string,
-    public readonly name?: string,
-    public readonly description?: string,
-    public readonly companyId?: string,
-    public readonly permissions?: string[] // Permissions granted to this role
+    public readonly id?: string | null,
+    public readonly _id?: string | null,
+    public readonly name?: string | null,
+    public readonly description?: string | null,
+    public readonly companyId?: string | null,
+    public readonly permissions?: string[] | null, // Permissions granted to this role
   ) {}
 }
 
@@ -44,7 +47,7 @@ export class UserPasswordChangeRequest {
   constructor(
     public readonly currentPassword: string,
     public readonly newPassword: string,
-    public readonly userId: string
+    public readonly userId: string,
   ) {}
 }
 
@@ -53,12 +56,12 @@ export interface UserRequest extends Request {
 }
 
 export interface RequestQuery {
-  search?: string | undefined;
+  search?: string | null | undefined;
   pageSize?: number | undefined;
   pageIndex?: number | undefined;
   startDate?: Date | string | undefined;
   endDate?: Date | string | undefined;
-  status?: string | undefined;
-  loggedBy?: string | undefined;
-  createdBy?: string | undefined;
+  status?: string | null | undefined;
+  loggedBy?: string | null | undefined;
+  createdBy?: string | null | undefined;
 }

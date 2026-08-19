@@ -6,7 +6,7 @@ import type { PaginatedResponse } from "../../../../entities/UserResponse.js";
 import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
 import { UnprocessableEntityError } from "../../../../error_handler/UnprocessableEntityError.js";
 import { createMapper } from "../../../utils/mapper.js";
-import type { IUserRepository } from "../../../mongodb/repositories/user/IUserRepository.js";
+import type { IUserRepository } from "../../../../domain/repositories/user/IUserRepository.js";
 
 const UserDelegate = prisma.user;
 
@@ -22,7 +22,9 @@ export class UserRepositoryImpl implements IUserRepository {
       where: { id },
       data: { isDeleted: true, deletedAt: new Date() },
     });
-    const UserMapper = createMapper<IUser, typeof user>();
+    const UserMapper = createMapper<IUser, typeof user>({
+      mapIdToLegacyId: true,
+    });
 
     return UserMapper.toEntity(user) as IUser;
   }
@@ -32,7 +34,9 @@ export class UserRepositoryImpl implements IUserRepository {
     const created = await UserDelegate.create({ data: data as any });
     if (!created)
       throw new UnprocessableEntityError("User could not be created");
-    const UserMapper = createMapper<IUser, typeof created>();
+    const UserMapper = createMapper<IUser, typeof created>({
+      mapIdToLegacyId: true,
+    });
     return UserMapper.toEntity(created) as IUser;
   }
 
@@ -77,7 +81,9 @@ export class UserRepositoryImpl implements IUserRepository {
       UserDelegate.count({ where }),
     ]);
 
-    const UserMapper = createMapper<IUser, (typeof users)[0]>();
+    const UserMapper = createMapper<IUser, (typeof users)[0]>({
+      mapIdToLegacyId: true,
+    });
     return {
       data: users.map(UserMapper.toEntity) as IUser[],
       totalPages: Math.ceil(totalCount / limit),
@@ -91,7 +97,11 @@ export class UserRepositoryImpl implements IUserRepository {
       where: { email },
       include: { role: true },
     });
-    return user as IUser | null;
+    if (!user) return null;
+    const UserMapper = createMapper<IUser, typeof user>({
+      mapIdToLegacyId: true,
+    });
+    return UserMapper.toEntity(user) as IUser | null;
   }
 
   async findUserById(id: string): Promise<IUser | null | undefined> {
@@ -99,13 +109,18 @@ export class UserRepositoryImpl implements IUserRepository {
       where: { id },
       include: { role: true },
     });
-    return user as IUser | null;
+    if (!user) return null;
+    const UserMapper = createMapper<IUser, typeof user>({
+      mapIdToLegacyId: true,
+    });
+    return UserMapper.toEntity(user) as IUser | null;
   }
 
   async updateUser(id: string, data: IUser): Promise<IUser> {
+    const { _id, ...rest } = data;
     const updatedUser = await UserDelegate.update({
       where: { id },
-      data: data as any,
+      data: { id: data._id, ...rest } as any,
       include: { role: true },
     });
 
@@ -113,7 +128,9 @@ export class UserRepositoryImpl implements IUserRepository {
       throw new NotFoundError("User not found");
     }
 
-    const UserMapper = createMapper<IUser, typeof updatedUser>();
+    const UserMapper = createMapper<IUser, typeof updatedUser>({
+      mapIdToLegacyId: true,
+    });
     return UserMapper.toEntity(updatedUser) as IUser;
   }
 }

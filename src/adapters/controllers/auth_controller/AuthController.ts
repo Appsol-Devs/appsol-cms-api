@@ -14,7 +14,7 @@ export class AuthController {
   private interactor: IAuthInteractor;
 
   constructor(
-    @inject(INTERFACE_TYPE.AuthInteractorImpl) interactor: IAuthInteractor
+    @inject(INTERFACE_TYPE.AuthInteractorImpl) interactor: IAuthInteractor,
   ) {
     this.interactor = interactor;
   }
@@ -22,14 +22,14 @@ export class AuthController {
   async verifyPasswordReset(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       const { userId, otp, newPassword } = req.body;
       const response = await this.interactor.verifyPasswordReset(
         userId,
         otp,
-        newPassword
+        newPassword,
       );
       if (response) {
         return res.status(HttpStatusCode.OK).json(response);
@@ -44,7 +44,7 @@ export class AuthController {
   async resetPassword(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       const response = await this.interactor.resetPassword(req.body.email);
@@ -61,7 +61,7 @@ export class AuthController {
   async changePassword(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       //TODO add validation
@@ -80,7 +80,7 @@ export class AuthController {
   async login(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       //TODO add validation
@@ -88,10 +88,10 @@ export class AuthController {
       const response = await this.interactor.login(
         req.body.email,
         req.body.password,
-        req.body.deviceToken
+        req.body.deviceToken,
       );
       //send token as header
-      res.set("accessToken", response.token);
+      res.set("accessToken", response.token as string);
       return res.status(HttpStatusCode.OK).json(response);
     } catch (error) {
       next(error);
@@ -102,7 +102,7 @@ export class AuthController {
   async verifyOtp(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       const { userId, otp } = req.body;
@@ -117,12 +117,12 @@ export class AuthController {
   async sendEmailOTP(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const response = await this.interactor.sendOtp(
         req.body.userId,
-        req.body.email
+        req.body.email,
       );
       if (response) {
         return res.status(HttpStatusCode.OK).json(response);
@@ -137,7 +137,7 @@ export class AuthController {
   async registerUser(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     if (!req.body)
       throw new UnprocessableEntityError("Request body is required");
@@ -153,7 +153,7 @@ export class AuthController {
   async test(
     _req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       const response = this.interactor.test();

@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import type { IUser } from "../../../../entities/User.js";
+import type { IRole, IUser } from "../../../../entities/User.js";
 import type { IUserOTP } from "../../../../entities/UserOTP.js";
 import { ConflictError } from "../../../../error_handler/ConflictError.js";
 import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
@@ -80,7 +80,34 @@ export class AuthRepositoryImpl implements IAuthRepository {
       throw new ConflictError("The email already exists");
     }
 
-    const created = await UserDelegate.create({ data: data as any });
+    if (!data.password || data.password === "" || data.password === null) {
+      throw new NotFoundError("Password is required to register user");
+    }
+
+    const created = await UserDelegate.create({
+      data: {
+        firstName: data.firstName ?? null,
+        lastName: data.lastName ?? null,
+        email: data.email,
+        phone: data.phone ?? null,
+        roleId: (data.role as IRole)?._id || (data.role as string),
+        isActive: data.isActive ?? true,
+        isVerified: data.isVerified ?? false,
+        imageUrl: data.imageUrl ?? null,
+        status: data.status ?? "active",
+        password: data.password!,
+        token: data.token ?? null,
+        deviceToken: data.deviceToken ?? null,
+        loginCount: data.loginCount ?? 0,
+        lastLogin: data.lastLogin ?? new Date(),
+        ...(data.lastLoginLocation && {
+          lastLoginLocation: {
+            latitude: data.lastLoginLocation.latitude,
+            longitude: data.lastLoginLocation.longitude,
+          },
+        }),
+      },
+    });
     const UserMapper = createMapper<IUser, typeof created>();
     return UserMapper.toEntity(created) as IUser;
   }

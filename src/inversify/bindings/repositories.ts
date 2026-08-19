@@ -38,11 +38,7 @@ import {
   type IAuthRepository,
   type IRoleRepository,
   type IUserRepository,
-  AuthRepositoryImpl,
-  RoleRepositoryImpl,
-  UserRepositoryImpl,
   type IPermissionRepository,
-  PermissionRepositoryImpl,
   CustomerComplaintRepositoryImpl,
   CustomerOutreachRepositoryImpl,
   OutreachTypeRepositoryImpl,
@@ -59,6 +55,10 @@ import {
   type IDashboardRepo,
   StoreRepositoryImpl,
 } from "../../framework/mongodb/index.js";
+import { AuthRepositoryImpl as PostgresAuthRepositoryImpl } from "../../framework/postgresql/repositories/auth/AuthRepositoryImpl.js";
+import { PermissionRepositoryImpl as PostgresPermissionRepositoryImpl } from "../../framework/postgresql/repositories/permission/PermissionRepositoryImpl.js";
+import { RoleRepositoryImpl as PostgresRoleRepositoryImpl } from "../../framework/postgresql/repositories/role/RoleRepositoryImpl.js";
+import { UserRepositoryImpl as PostgresUserRepositoryImpl } from "../../framework/postgresql/repositories/user/UserRepositoryImpl.js";
 import { CustomerRepositoryImpl } from "../../framework/postgresql/repositories/customer/CustomerRepositoryImpl.js";
 import { SubscriptionRepositoryImpl } from "../../framework/postgresql/repositories/subscription/SubscriptionRepositoryImpl.js";
 import { LeadRepositoryImpl as PostgresLeadRepositoryImpl } from "../../framework/postgresql/repositories/lead/LeadRepositoryImpl.js";
@@ -141,19 +141,19 @@ export const bindRepositories = (container: Container) => {
 
   container
     .bind<IPermissionRepository>(INTERFACE_TYPE.PermissionRepositoryImpl)
-    .to(PermissionRepositoryImpl);
+    .to(PostgresPermissionRepositoryImpl);
 
   container
     .bind<IAuthRepository>(INTERFACE_TYPE.AuthRepositoryImpl)
-    .to(AuthRepositoryImpl);
+    .to(PostgresAuthRepositoryImpl);
 
   container
     .bind<IRoleRepository>(INTERFACE_TYPE.RoleRepositoryImpl)
-    .to(RoleRepositoryImpl);
+    .to(PostgresRoleRepositoryImpl);
 
   container
     .bind<IUserRepository>(INTERFACE_TYPE.UserRepositoryImpl)
-    .to(UserRepositoryImpl);
+    .to(PostgresUserRepositoryImpl);
 
   container
     .bind<

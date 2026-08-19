@@ -338,7 +338,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
     const userData: IUser = {
       ...data,
       password: hashedPassword,
-      role: adminRole._id,
+      roleId: adminRole._id,
     };
     const result = await this.repository.registerUser(userData);
 

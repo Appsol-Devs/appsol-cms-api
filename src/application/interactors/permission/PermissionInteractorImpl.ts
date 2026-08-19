@@ -19,7 +19,7 @@ export class PermissionInteractorImpl implements IPermissionInteractor {
     @inject(INTERFACE_TYPE.PermissionRepositoryImpl)
     permissionRepository: IPermissionRepository,
     @inject(INTERFACE_TYPE.Logger) logger: ILogger,
-    @inject(INTERFACE_TYPE.RoleRepositoryImpl) roleRepository: IRoleRepository
+    @inject(INTERFACE_TYPE.RoleRepositoryImpl) roleRepository: IRoleRepository,
   ) {
     this.permissionRepository = permissionRepository;
     this.logger = logger;
@@ -27,7 +27,7 @@ export class PermissionInteractorImpl implements IPermissionInteractor {
   }
   async uploadPermissions(): Promise<IPermission[]> {
     const permissions = Object.values(UserPermissions).map(async (name) => {
-      let permission = await this.permissionRepository.findOne(name);
+      let permission = await this.permissionRepository.findOne({ name });
       if (!permission) {
         permission = await this.permissionRepository.add({ name: name });
         this.logger.info(`Added permission: ${name} ⭐`);
@@ -39,13 +39,13 @@ export class PermissionInteractorImpl implements IPermissionInteractor {
     this.logger.info("Permissions uploaded");
     await this.ensureAdminRole(await Promise.all(permissions));
     return permissions.map((permission) =>
-      PermissionMapper.toEntity(permission)
+      PermissionMapper.toEntity(permission),
     );
   }
   async getAllPermissions(): Promise<IPermission[]> {
     const permissions = await this.permissionRepository.findAll();
     return permissions.map((permission) =>
-      PermissionMapper.toEntity(permission)
+      PermissionMapper.toEntity(permission),
     );
   }
 

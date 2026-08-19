@@ -8,10 +8,21 @@ const nullToUndefined = <T>(value: T | null | undefined): T | undefined => {
   return value ?? undefined;
 };
 
-export const createMapper = <
-  TDomain extends object,
-  TModel extends object,
->(): Mapper<TDomain, TModel> => {
+interface MapperOptions {
+  /**
+   * Maps PostgreSQL/Prisma `id` to the legacy MongoDB `_id`.
+   *
+   * Example:
+   * id: "uuid" → _id: "uuid"
+   */
+  mapIdToLegacyId?: boolean;
+}
+
+export const createMapper = <TDomain extends object, TModel extends object>(
+  options: MapperOptions = {},
+): Mapper<TDomain, TModel> => {
+  const { mapIdToLegacyId = false } = options;
+
   const toEntity = (model: TModel | null | undefined): TDomain | null => {
     if (model == null) {
       return null;
@@ -20,6 +31,13 @@ export const createMapper = <
     const entity: Record<string, unknown> = {};
 
     Object.entries(model).forEach(([key, value]) => {
+      // Backward compatibility:
+      // PostgreSQL `id` → legacy MongoDB `_id`
+      if (mapIdToLegacyId && key === "id") {
+        entity["_id"] = nullToUndefined(value);
+        return;
+      }
+
       entity[key] = nullToUndefined(value);
     });
 

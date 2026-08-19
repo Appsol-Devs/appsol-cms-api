@@ -15,9 +15,11 @@ export class PermissionRepositoryImpl implements IPermissionRepository {
       throw error;
     }
   }
-  async findOne(name: string): Promise<IPermission | null> {
+  async findOne(
+    data: Partial<IPermission>,
+  ): Promise<IPermission | null | undefined> {
     try {
-      const permission = await Permission.findOne({ name: name });
+      const permission = await Permission.findOne({ name: data.name ?? "" });
       if (!permission) return null;
       return PermissionMapper.toEntity(permission);
     } catch (error) {
@@ -28,7 +30,7 @@ export class PermissionRepositoryImpl implements IPermissionRepository {
     try {
       const permissions = await Permission.find({});
       const data: IPermission[] = permissions.map((permission) =>
-        PermissionMapper.toEntity(permission)
+        PermissionMapper.toEntity(permission),
       );
       return data;
     } catch (error) {

@@ -23,7 +23,7 @@ export class Server implements IServer {
     @inject(INTERFACE_TYPE.Express) private app: Express,
     @inject(INTERFACE_TYPE.IConfig) private config: IConfig,
     @inject(INTERFACE_TYPE.Logger) private logger: ILogger,
-    @inject(INTERFACE_TYPE.AuthServiceImpl) private authService: IAuthService
+    @inject(INTERFACE_TYPE.AuthServiceImpl) private authService: IAuthService,
   ) {
     this.httpServer = http.createServer(this.app);
     this.io = this.initializeSocket();
