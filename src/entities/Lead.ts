@@ -10,6 +10,7 @@ export class ILead {
     public readonly name?: string,
     public readonly email?: string,
     public readonly phone?: string,
+    public leadCode?: string,
     public readonly companyName?: string,
     public readonly leadSource?: string,
     public readonly initialEnquiryDate?: string,

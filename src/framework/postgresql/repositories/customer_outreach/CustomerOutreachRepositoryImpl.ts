@@ -5,6 +5,7 @@ import {
   ICustomerOutreach,
   type ICustomerOutreachRequestQuery,
 } from "../../../../entities/CustomerOutreach.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const CustomerOutreachDelegate = prisma.customerOutreach;
 
@@ -132,6 +133,8 @@ export class CustomerOutreachRepositoryImpl extends PrismaBaseRepositoryImpl<ICu
   }
 
   async create(data: Partial<ICustomerOutreach>) {
+    const outreachCode = generateModelCode("OUT");
+    data.outreachCode = outreachCode;
     const dto = { ...data, ...this.assignReferences(data) } as any;
     const created = await this.delegate.create({
       data: dto,

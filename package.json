@@ -28,7 +28,7 @@
     "prisma:migrate:dev": "prisma migrate dev --name init --schema src/framework/postgresql/prisma/schema.prisma --config src/framework/postgresql/prisma.config.ts",
     "prisma:migrate:deploy": "prisma migrate deploy --schema src/framework/postgresql/prisma/schema.prisma --config src/framework/postgresql/prisma.config.ts",
     "prisma:validate": "prisma validate --schema src/framework/postgresql/prisma/schema.prisma --config src/framework/postgresql/prisma.config.ts",
-    "prisma:studio": "prisma studio --schema src/framework/postgresql/prisma/schema.prisma --config src/framework/postgresql/prisma.config.ts",
+    "prisma:studio": "prisma studio --url=\"postgresql://postgres:postgres@localhost:5432/appsol_cms?schema=public\"",
     "prisma:format": "prisma format --schema src/framework/postgresql/prisma/schema.prisma --config src/framework/postgresql/prisma.config.ts"
   },
   "dependencies": {

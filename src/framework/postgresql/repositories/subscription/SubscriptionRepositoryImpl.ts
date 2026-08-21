@@ -1,9 +1,8 @@
 import { PrismaBaseRepositoryImpl } from "../base/PrismaBaseRepositoryImpl.js";
 import { prisma } from "../../utils/prisma.js";
 import { injectable } from "inversify";
-import  {
-  ISubscription,
-} from "../../../../entities/Subscription.js";
+import { ISubscription } from "../../../../entities/Subscription.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const SubscriptionDelegate = prisma.subscription;
 
@@ -62,5 +61,11 @@ export class SubscriptionRepositoryImpl extends PrismaBaseRepositoryImpl<ISubscr
     super(SubscriptionDelegate, subscriptionMapper);
   }
 
-  // additional specialized methods (getAll) can be added here if needed
+  async create(data: Partial<ISubscription>): Promise<ISubscription> {
+    const subscriptionCode = generateModelCode("SUB");
+    data.subscriptionCode = subscriptionCode;
+    const dto = this.mapper.toDtoCreation(data);
+    const created = await this.delegate.create({ data: dto });
+    return this.mapper.toEntity(created);
+  }
 }

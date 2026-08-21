@@ -2,6 +2,7 @@ import { PrismaBaseRepositoryImpl } from "../base/PrismaBaseRepositoryImpl.js";
 import { prisma } from "../../utils/prisma.js";
 import { injectable } from "inversify";
 import { IStore, type IStoreRequestQuery } from "../../../../entities/Store.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const StoreDelegate = prisma.store;
 
@@ -87,6 +88,8 @@ export class StoreRepositoryImpl extends PrismaBaseRepositoryImpl<IStore> {
   }
 
   async create(data: Partial<IStore>) {
+    const storeCode = generateModelCode("STR");
+    data.storeCode = storeCode;
     const created = await this.delegate.create({
       data: data as any,
       include: { customer: true, loggedBy: true },

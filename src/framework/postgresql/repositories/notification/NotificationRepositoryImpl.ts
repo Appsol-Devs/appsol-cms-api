@@ -5,6 +5,7 @@ import {
   INotification,
   type INotificationRequestQuery,
 } from "../../../../entities/Notification.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const NotificationDelegate = prisma.notification;
 
@@ -94,6 +95,8 @@ export class NotificationRepositoryImpl extends PrismaBaseRepositoryImpl<INotifi
   }
 
   async create(data: Partial<INotification>) {
+    const notificationCode = generateModelCode("NT");
+    data.notificationCode = notificationCode;
     const created = await this.delegate.create({
       data: data as any,
       include: { user: true, loggedBy: true },

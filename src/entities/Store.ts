@@ -5,7 +5,7 @@ import type { IUser } from "./User.js";
 export class IStore {
   constructor(
     public readonly _id?: string,
-    public readonly storeCode?: string,
+    public storeCode?: string,
     public readonly customerId?: string,
     public customer?: ICustomer | string,
     public readonly name?: string,

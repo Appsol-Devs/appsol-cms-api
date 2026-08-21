@@ -6,6 +6,7 @@ import {
   type ITicketRequestQuery,
 } from "../../../../entities/Ticket.js";
 import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const TicketDelegate = prisma.ticket;
 
@@ -42,6 +43,14 @@ const ticketMapper = {
 export class TicketRepositoryImpl extends PrismaBaseRepositoryImpl<ITicket> {
   constructor() {
     super(TicketDelegate, ticketMapper);
+  }
+
+  async create(data: Partial<ITicket>): Promise<ITicket> {
+    const ticketCode = generateModelCode("TKT");
+    data.ticketCode = ticketCode;
+    const dto = this.mapper.toDtoCreation(data);
+    const created = await this.delegate.create({ data: dto });
+    return this.mapper.toEntity(created);
   }
 
   async closeTicket(id: string): Promise<ITicket> {

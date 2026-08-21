@@ -5,6 +5,7 @@ import type {
   IPayment,
   IPaymentRequestQuery,
 } from "../../../../entities/Payment.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const PaymentDelegate = prisma.payment;
 
@@ -57,6 +58,14 @@ const paymentMapper = {
 export class PaymentRepositoryImpl extends PrismaBaseRepositoryImpl<IPayment> {
   constructor() {
     super(PaymentDelegate, paymentMapper);
+  }
+
+  async create(data: Partial<IPayment>): Promise<IPayment> {
+    const paymentCode = generateModelCode("PY");
+    data.paymentCode = paymentCode;
+    const dto = this.mapper.toDtoCreation(data);
+    const created = await this.delegate.create({ data: dto });
+    return this.mapper.toEntity(created);
   }
 
   async getAll(query: IPaymentRequestQuery) {

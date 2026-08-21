@@ -64,6 +64,7 @@ export class UserRepositoryImpl implements IUserRepository {
           id: true,
           firstName: true,
           lastName: true,
+          isVerified: true,
           email: true,
           phone: true,
           roleId: true,
@@ -72,6 +73,7 @@ export class UserRepositoryImpl implements IUserRepository {
           updatedAt: true,
           deletedAt: true,
           isDeleted: true,
+          status: true,
           password: false,
         },
         orderBy: {
@@ -107,6 +109,8 @@ export class UserRepositoryImpl implements IUserRepository {
         phone: true,
         roleId: true,
         role: true,
+        status: true,
+        isVerified: true,
       },
     });
     if (!user) return null;
@@ -131,6 +135,8 @@ export class UserRepositoryImpl implements IUserRepository {
         phone: true,
         roleId: true,
         role: true,
+        status: true,
+        isVerified: true,
       },
     });
     if (!user) return null;
@@ -155,6 +161,8 @@ export class UserRepositoryImpl implements IUserRepository {
         phone: true,
         roleId: true,
         role: true,
+        status: true,
+        isVerified: true,
       },
     });
 

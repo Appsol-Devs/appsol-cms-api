@@ -5,6 +5,7 @@ import {
   IFeatureRequest,
   type IFeatureRequestRequestQuery,
 } from "../../../../entities/FeatureRequest.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const FeatureRequestDelegate = prisma.featureRequest;
 
@@ -111,6 +112,8 @@ export class FeatureRequestRepositoryImpl extends PrismaBaseRepositoryImpl<IFeat
   }
 
   async create(data: Partial<IFeatureRequest>) {
+    const requestCode = generateModelCode("FR");
+    data.requestCode = requestCode;
     const dto = this.mapper.toDtoCreation(data);
     const created = await this.delegate.create({
       data: dto,

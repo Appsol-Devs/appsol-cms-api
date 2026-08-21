@@ -2,13 +2,20 @@ import { prisma } from "../../utils/prisma.js";
 import { injectable } from "inversify";
 import type { IComplaintCategory } from "../../../../entities/index.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 import { PrismaBaseRepositoryImpl } from "../base/PrismaBaseRepositoryImpl.js";
 
 const ComplaintCategoryDelegate = prisma.complaintCategory;
 
 const complaintCategoryMapper = {
   toEntity(record: any): IComplaintCategory {
-    return record as IComplaintCategory;
+    const ComplaintCategoryMapper = createMapper<
+      IComplaintCategory,
+      typeof record
+    >({
+      mapIdToLegacyId: true,
+    });
+    return ComplaintCategoryMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<IComplaintCategory>) {
     return payload;

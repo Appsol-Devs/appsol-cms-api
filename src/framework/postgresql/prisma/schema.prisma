@@ -258,7 +258,7 @@ model Customer {
   email          String   @unique
   phone          String
   companyName    String
-  dateConverted  DateTime?
+  dateConverted  String?
   status         String   @default("active")
   loggedById     String
   loggedBy       User     @relation("CustomerLoggedBy", fields: [loggedById], references: [id])

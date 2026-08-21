@@ -2,13 +2,17 @@ import { prisma } from "../../utils/prisma.js";
 import { injectable } from "inversify";
 import type { IOutreachType } from "../../../../entities/index.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 import { PrismaBaseRepositoryImpl } from "../base/PrismaBaseRepositoryImpl.js";
 
 const OutreachTypeDelegate = prisma.outreachType;
 
 const outreachTypeMapper = {
   toEntity(record: any): IOutreachType {
-    return record as IOutreachType;
+    const OutreachTypeMapper = createMapper<IOutreachType, typeof record>({
+      mapIdToLegacyId: true,
+    });
+    return OutreachTypeMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<IOutreachType>) {
     return payload;

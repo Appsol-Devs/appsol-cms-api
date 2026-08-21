@@ -5,6 +5,7 @@ import type {
   IVisitor,
   IVisitorRequestQuery,
 } from "../../../../entities/index.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const VisitorDelegate = prisma.visitor;
 
@@ -60,6 +61,14 @@ const visitorMapper = {
 export class VisitorRepositoryImpl extends PrismaBaseRepositoryImpl<IVisitor> {
   constructor() {
     super(VisitorDelegate, visitorMapper);
+  }
+
+  async create(data: Partial<IVisitor>): Promise<IVisitor> {
+    const visitorCode = generateModelCode("VIS");
+    data.visitorCode = visitorCode;
+    const dto = this.mapper.toDtoCreation(data);
+    const created = await this.delegate.create({ data: dto });
+    return this.mapper.toEntity(created);
   }
 
   async getAll(query: IVisitorRequestQuery) {

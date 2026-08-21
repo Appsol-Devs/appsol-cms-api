@@ -5,6 +5,7 @@ import type {
   ISubscriptionReminder,
   ISubscriptionReminderRequestQuery,
 } from "../../../../entities/SubscriptionReminder.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const ReminderDelegate = prisma.subscriptionReminder;
 
@@ -55,6 +56,16 @@ const reminderMapper = {
 export class SubscriptionReminderRepositoryImpl extends PrismaBaseRepositoryImpl<ISubscriptionReminder> {
   constructor() {
     super(ReminderDelegate, reminderMapper);
+  }
+
+  async create(
+    data: Partial<ISubscriptionReminder>,
+  ): Promise<ISubscriptionReminder> {
+    const reminderCode = generateModelCode("REM");
+    data.reminderCode = reminderCode;
+    const dto = this.mapper.toDtoCreation(data);
+    const created = await this.delegate.create({ data: dto });
+    return this.mapper.toEntity(created);
   }
 
   async getAll(query: ISubscriptionReminderRequestQuery) {

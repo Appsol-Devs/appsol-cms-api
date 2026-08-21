@@ -8,7 +8,7 @@ export class ISubscriptionReminder {
     public readonly _id?: string,
     public readonly title?: string,
     public readonly message?: string,
-    public readonly reminderCode?: string,
+    public reminderCode?: string,
     public readonly customerId?: string,
     public readonly paymentId?: string,
     public payment?: IPayment | string,

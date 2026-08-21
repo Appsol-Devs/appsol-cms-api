@@ -3,12 +3,16 @@ import { prisma } from "../../utils/prisma.js";
 import { injectable } from "inversify";
 import type { ISoftware } from "../../../../entities/lookups/Software.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 
 const SoftwareDelegate = prisma.software;
 
 const softwareMapper = {
   toEntity(record: any): ISoftware {
-    return record as ISoftware;
+    const SoftwareMapper = createMapper<ISoftware, typeof record>({
+      mapIdToLegacyId: true,
+    });
+    return SoftwareMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<ISoftware>) {
     return payload;

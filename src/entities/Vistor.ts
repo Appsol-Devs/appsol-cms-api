@@ -3,7 +3,7 @@ import type { IUser, RequestQuery } from "./User.js";
 export class IVisitor {
   constructor(
     public readonly _id: string, // ObjectId as string
-    public readonly visitorCode?: string,
+    public visitorCode?: string,
     public readonly fullName?: string,
     public readonly phone?: string,
     public readonly email?: string,
@@ -22,7 +22,7 @@ export class IVisitor {
     public readonly photoUrl?: string,
     public readonly notes?: string,
     public readonly createdAt?: string,
-    public readonly updatedAt?: string
+    public readonly updatedAt?: string,
   ) {}
 }
 

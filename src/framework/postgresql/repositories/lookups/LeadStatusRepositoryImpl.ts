@@ -2,13 +2,17 @@ import { prisma } from "../../utils/prisma.js";
 import { injectable } from "inversify";
 import type { ILeadStatus } from "../../../../entities/index.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 import { PrismaBaseRepositoryImpl } from "../base/PrismaBaseRepositoryImpl.js";
 
 const LeadStatusDelegate = prisma.leadStatus;
 
 const leadStatusMapper = {
   toEntity(record: any): ILeadStatus {
-    return record as ILeadStatus;
+    const LeadStatusMapper = createMapper<ILeadStatus, typeof record>({
+      mapIdToLegacyId: true,
+    });
+    return LeadStatusMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<ILeadStatus>) {
     return payload;

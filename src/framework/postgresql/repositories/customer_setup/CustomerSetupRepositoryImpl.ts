@@ -5,6 +5,7 @@ import {
   ICustomerSetup,
   type ICustomerSetupRequestQuery,
 } from "../../../../entities/CustomerSetup.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const CustomerSetupDelegate = prisma.customerSetup;
 
@@ -126,6 +127,8 @@ export class CustomerSetupRepositoryImpl extends PrismaBaseRepositoryImpl<ICusto
   }
 
   async create(data: Partial<ICustomerSetup>) {
+    const setupCode = generateModelCode("SET");
+    data.setupCode = setupCode;
     const dto = this.mapper.toDtoCreation(data);
     const created = await this.delegate.create({
       data: dto,

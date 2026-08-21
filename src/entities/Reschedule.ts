@@ -6,7 +6,7 @@ import type { IUser, RequestQuery } from "./User.js";
 export class IReschedule {
   constructor(
     public readonly _id?: string,
-    public readonly rescheduleCode?: string,
+    public rescheduleCode?: string,
     public readonly colorCode?: string,
     public readonly reason?: string,
     public readonly title?: string,

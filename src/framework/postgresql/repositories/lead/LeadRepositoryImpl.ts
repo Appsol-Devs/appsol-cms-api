@@ -2,6 +2,7 @@ import { PrismaBaseRepositoryImpl } from "../base/PrismaBaseRepositoryImpl.js";
 import { prisma } from "../../utils/prisma.js";
 import { injectable } from "inversify";
 import type { ILead, ILeadRequestQuery } from "../../../../entities/Lead.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const LeadDelegate = prisma.lead;
 
@@ -60,6 +61,14 @@ const leadMapper = {
 export class LeadRepositoryImpl extends PrismaBaseRepositoryImpl<ILead> {
   constructor() {
     super(LeadDelegate, leadMapper);
+  }
+
+  async create(data: Partial<ILead>): Promise<ILead> {
+    const leadCode = generateModelCode("LD");
+    data.leadCode = leadCode;
+    const dto = this.mapper.toDtoCreation(data);
+    const created = await this.delegate.create({ data: dto });
+    return this.mapper.toEntity(created);
   }
 
   async getAll(query: ILeadRequestQuery) {

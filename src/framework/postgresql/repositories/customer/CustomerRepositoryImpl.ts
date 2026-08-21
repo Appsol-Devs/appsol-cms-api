@@ -5,30 +5,17 @@ import { injectable } from "inversify";
 import { prisma } from "../../utils/prisma.js";
 import { BadRequestError } from "../../../../error_handler/BadRequestError.js";
 import type { PaginatedResponse } from "../../../../entities/index.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 
 const CustomerDelegate = prisma.customer;
 
 const customerMapper = {
   toEntity(record: any): ICustomer {
-    return new ICustomer(
-      record.id,
-      record.name,
-      record.email,
-      record.phone,
-      record.companyName,
-      record.dateConverted?.toISOString(),
-      record.notes,
-      record.geolocation,
-      record.softwareId,
-      record.software,
-      record.location,
-      record.status,
-      record.loggedById,
-      record.createdAt?.toISOString(),
-      record.updatedAt?.toISOString(),
-      record.image,
-      record.leadId,
-    );
+    const CustomerMapper = createMapper<ICustomer, typeof record>({
+      mapIdToLegacyId: true,
+    });
+    return CustomerMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<ICustomer>) {
     const payloadAny = payload as any;
@@ -97,9 +84,15 @@ export class CustomerRepositoryImpl extends PrismaBaseRepositoryImpl<ICustomer> 
         take: limit,
         where: filter,
         orderBy: { name: "asc" },
+        include: {
+          software: true,
+          loggedBy: true,
+        },
       }),
       this.delegate.count({ where: filter }),
     ]);
+
+    console.log(items);
 
     return {
       data: items.map(this.mapper.toEntity),
@@ -110,12 +103,20 @@ export class CustomerRepositoryImpl extends PrismaBaseRepositoryImpl<ICustomer> 
   }
 
   async getById(id: string): Promise<ICustomer> {
-    const customer = await this.delegate.findUnique({ where: { id } });
+    const customer = await this.delegate.findUnique({
+      where: { id },
+      include: {
+        software: true,
+        loggedBy: true,
+      },
+    });
     if (!customer) throw new BadRequestError("Customer not found");
     return this.mapper.toEntity(customer);
   }
 
   async create(data: Partial<ICustomer>): Promise<ICustomer> {
+    const customerCode = generateModelCode("CU");
+    data.customerCode = customerCode;
     const dto = this.mapper.toDtoCreation(data);
     const created = await this.delegate.create({ data: dto });
     return this.mapper.toEntity(created);

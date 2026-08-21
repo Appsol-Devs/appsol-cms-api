@@ -5,6 +5,7 @@ import {
   IReschedule,
   type IRescheduleRequestQuery,
 } from "../../../../entities/Reschedule.js";
+import { generateModelCode } from "../../../../utils/helpers.js";
 
 const RescheduleDelegate = prisma.reschedule;
 
@@ -100,6 +101,8 @@ export class RescheduleRepositoryImpl extends PrismaBaseRepositoryImpl<IReschedu
   }
 
   async create(data: Partial<IReschedule>) {
+    const rescheduleCode = generateModelCode("RS");
+    data.rescheduleCode = rescheduleCode;
     const created = await this.delegate.create({
       data: data as any,
       include: { customer: true, loggedBy: true },
