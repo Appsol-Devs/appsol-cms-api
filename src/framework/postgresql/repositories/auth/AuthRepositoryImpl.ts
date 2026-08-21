@@ -41,7 +41,6 @@ export class AuthRepositoryImpl implements IAuthRepository {
   }
 
   async findOtps(query: IUserOTP): Promise<IUserOTP[]> {
-    console.log("findOtps query:", query);
     const where: any = {};
     for (const key of Object.keys(query)) {
       const value = (query as any)[key];

@@ -18,3 +18,6 @@ export * from "./notification/NotificationRepositoryImpl.js";
 export * from "./reschedule/RescheduleRepositoryImpl.js";
 export * from "./store/StoreRepositoryImpl.js";
 export * from "./ticket/TicketRepositoryImpl.js";
+export * from "./lookups/index.js";
+export * from "./complaint_type/ComplaintTypeRepositoryImpl.js";
+export * from "./customer_complaints/CustomerComplaintRepositoryImpl.js";

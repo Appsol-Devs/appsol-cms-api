@@ -92,10 +92,22 @@ export class UserRepositoryImpl implements IUserRepository {
     };
   }
 
-  async findUserByEmail(email: string): Promise<IUser | null | undefined> {
+  async findUserByEmail(
+    email: string,
+    includePassword: boolean = false,
+  ): Promise<IUser | null | undefined> {
     const user = await UserDelegate.findUnique({
       where: { email },
-      include: { role: true, password: false },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        password: includePassword,
+        phone: true,
+        roleId: true,
+        role: true,
+      },
     });
     if (!user) return null;
     const UserMapper = createMapper<IUser, typeof user>({
@@ -104,10 +116,22 @@ export class UserRepositoryImpl implements IUserRepository {
     return UserMapper.toEntity(user) as IUser | null;
   }
 
-  async findUserById(id: string): Promise<IUser | null | undefined> {
+  async findUserById(
+    id: string,
+    includePassword: boolean = false,
+  ): Promise<IUser | null | undefined> {
     const user = await UserDelegate.findUnique({
       where: { id },
-      include: { role: true, password: false },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        password: includePassword,
+        phone: true,
+        roleId: true,
+        role: true,
+      },
     });
     if (!user) return null;
     const UserMapper = createMapper<IUser, typeof user>({
@@ -117,11 +141,21 @@ export class UserRepositoryImpl implements IUserRepository {
   }
 
   async updateUser(id: string, data: IUser): Promise<IUser> {
-    const { _id, ...rest } = data;
+    const { _id, role, ...rest } = data;
+
     const updatedUser = await UserDelegate.update({
       where: { id },
       data: { id: data._id, ...rest } as any,
-      include: { role: true, password: false },
+      // include: { role: true,},
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        roleId: true,
+        role: true,
+      },
     });
 
     if (!updatedUser) {

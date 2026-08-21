@@ -163,8 +163,9 @@ export class AuthInteractorImpl implements IAuthInteractor {
     if (!currentPassword || !newPassword) {
       throw new UnprocessableEntityError("All Fields are required");
     }
+    console.log("changePassword data:", data);
     //fetch user and compare current password
-    const user = await this.userRepository.findUserById(data.userId);
+    const user = await this.userRepository.findUserById(data.userId, true);
     if (!user) throw new NotFoundError("User not found");
     const isMatch = await this.authService.comparePassword(
       currentPassword,
@@ -196,7 +197,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
       throw new UnauthorizedError("Email and password are required");
     }
 
-    let user = await this.userRepository.findUserByEmail(email);
+    let user = await this.userRepository.findUserByEmail(email, true);
     if (!user) throw new BadRequestError("Sorry User not found");
     //compare password to hash
     const isMatch = await this.authService.comparePassword(

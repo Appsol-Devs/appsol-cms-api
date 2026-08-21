@@ -7,7 +7,7 @@ import type {
 } from "../../../entities/Dashboard.js";
 import type { IDashboardInteractor } from "./IDashboardInteractor.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
-import type { IDashboardRepo } from "../../../framework/index.js";
+import type { IDashboardRepo } from "../../../domain/repositories/index.js";
 
 @injectable()
 export class DashboardInteractorImpl implements IDashboardInteractor {

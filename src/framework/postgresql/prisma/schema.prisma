@@ -5,7 +5,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../generated/prisma" 
 }
 
 datasource db {
@@ -71,6 +71,9 @@ model Role {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   users       User[]
+ 
+ createdById         String?
+  
 }
 
 model UserOTP {
@@ -81,11 +84,17 @@ model UserOTP {
   expiresAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model Permission {
   id   String @id @default(uuid())
   name String @unique
+ createdById         String?
+  
 }
 
 model Software {
@@ -93,6 +102,7 @@ model Software {
   softwareCode  String   @unique
   name          String
   description   String?
+  colorCode     String?
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -105,6 +115,10 @@ model Software {
   customerOutreaches CustomerOutreach[] @relation("SoftwareCustomerOutreaches")
   subscriptionReminders SubscriptionReminder[]
   featureRequests FeatureRequest[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model SubscriptionType {
@@ -112,12 +126,17 @@ model SubscriptionType {
   subscriptionTypeCode String   @unique
   name                 String
   description          String?
+  colorCode            String?
   durationInMonths     Int
   isActive             Boolean  @default(true)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
   payments             Payment[]
   subscriptions        Subscription[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model LeadStatus {
@@ -125,9 +144,14 @@ model LeadStatus {
   leadStatusCode String @unique
   name           String
   description    String?
+  colorCode      String?
   isActive       Boolean @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model LeadNextStep {
@@ -135,10 +159,15 @@ model LeadNextStep {
   leadNextStepCode String @unique
   name             String
   description      String?
+  colorCode        String?
   isActive         Boolean @default(true)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   leads            Lead[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model ComplaintCategory {
@@ -146,10 +175,15 @@ model ComplaintCategory {
   complaintCategoryCode String @unique
   name                  String
   description           String?
+  colorCode             String?
   isActive              Boolean @default(true)
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   complaints            CustomerComplaint[]
+  isDeleted             Boolean @default(false)
+  deletedAt             DateTime?
+ createdById         String?
+  
 }
 
 model CallStatus {
@@ -163,19 +197,12 @@ model CallStatus {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   outreaches     CustomerOutreach[]
+  isDeleted      Boolean @default(false)
+  deletedAt      DateTime?
+ createdById         String?
+  
 }
 model OutreachType {
-  id               String @id @default(uuid())
-  outreachTypeCode String @unique
-  name             String
-  description      String?
-  isActive         Boolean @default(true)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  outreaches       CustomerOutreach[]
-}
-
-model ComplaintType {
   id               String @id @default(uuid())
   outreachTypeCode String @unique
   name             String
@@ -184,6 +211,26 @@ model ComplaintType {
   isActive         Boolean @default(true)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+  outreaches       CustomerOutreach[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model ComplaintType {
+  id               String @id @default(uuid())
+  complaintTypeCode String @unique
+  name             String
+  description      String?
+  colorCode        String?
+  isActive         Boolean @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+  
+ createdById         String?
   
 }
 
@@ -193,10 +240,15 @@ model SetupStatus {
   setupStatusCode String @unique
   name            String
   description     String?
+  colorCode       String?
   isActive        Boolean @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   customerSetups  CustomerSetup[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model Customer {
@@ -227,6 +279,10 @@ model Customer {
   stores         Store[]
   tickets        Ticket[]
   reschedules    Reschedule[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model Store {
@@ -240,6 +296,10 @@ model Store {
   status      String   @default("active")
   loggedById  String
   loggedBy    User     @relation(fields: [loggedById], references: [id])
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model Lead {
@@ -266,6 +326,10 @@ model Lead {
   location           String?
   notes              String?
   geolocation        Json?
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model Payment {
@@ -304,6 +368,10 @@ model Payment {
   reminders              SubscriptionReminder[]
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model Subscription {
@@ -333,6 +401,10 @@ model Subscription {
   reminders          SubscriptionReminder[]
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model CustomerSetup {
@@ -356,6 +428,10 @@ model CustomerSetup {
   loggedBy       User     @relation(fields: [loggedById], references: [id])
   status         String   @default("scheduled")
   priority       String   @default("low")
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model CustomerComplaint {
@@ -376,6 +452,10 @@ model CustomerComplaint {
   resolvedById        String?
   resolvedBy          User?             @relation("ComplaintResolvedBy", fields: [resolvedById], references: [id])
   tickets             Ticket[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model CustomerOutreach {
@@ -397,6 +477,10 @@ model CustomerOutreach {
   loggedById     String
   loggedBy       User         @relation(fields: [loggedById], references: [id])
   status         String       @default("pending")
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model FeatureRequest {
@@ -415,6 +499,10 @@ model FeatureRequest {
   loggedBy       User     @relation(fields: [loggedById], references: [id])
   status         String   @default("new")
   priority       String   @default("low")
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model Ticket {
@@ -436,6 +524,10 @@ model Ticket {
   closedAt           DateTime?
   rejectionReason    String?
   history            Json?
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model Notification {
@@ -452,6 +544,10 @@ model Notification {
   targetEntity     Json?
   loggedById       String?
   loggedBy         User?    @relation("UserLoggedNotifications", fields: [loggedById], references: [id])
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model SubscriptionReminder {
@@ -473,6 +569,10 @@ model SubscriptionReminder {
   isSent           Boolean  @default(false)
   reminderType     String   @default("30_days")
   sentVia          String   @default("email")
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model Visitor {
@@ -496,6 +596,10 @@ model Visitor {
   loggedBy       User    @relation(fields: [loggedById], references: [id])
   photoUrl       String?
   notes          String?
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 model Reschedule {
@@ -515,6 +619,10 @@ model Reschedule {
   loggedById     String
   loggedBy       User     @relation(fields: [loggedById], references: [id])
   status         String   @default("pending")
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
 }
 
 

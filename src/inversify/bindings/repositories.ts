@@ -23,38 +23,38 @@ import type {
   IVisitor,
 } from "../../entities/index.js";
 import type { ILead } from "../../entities/Lead.js";
-import {
-  type IBaseLookupRepository,
-  CallStatusRepositoryImpl,
-  ComplaintCategoryRepositoryImpl,
-  type IComplaintTypeRepository,
-  ComplaintTypeRepositoryImpl,
-  LeadNextStepRepositoryImpl,
-  LeadStatusRepositoryImpl,
-  SetupStatusRepositoryImpl,
-  SoftwareRepositoryImpl,
-  SubscriptionTypeRepositoryImpl,
-  LeadRepositoryImpl,
-  type IAuthRepository,
-  type IRoleRepository,
-  type IUserRepository,
-  type IPermissionRepository,
-  CustomerComplaintRepositoryImpl,
-  CustomerOutreachRepositoryImpl,
-  OutreachTypeRepositoryImpl,
-  RescheduleRepositoryImpl,
-  PaymentRepositoryImpl,
-  type IBaseRepository,
-  FeatureRequestRepositoryImpl,
-  SubscriptionReminderRepositoryImpl,
-  CustomerSetupRepositoryImpl,
-  NotificationRepositoryImpl,
-  VisitorRepositoryImpl,
-  TicketRepositoryImpl,
-  DashboardRepoImpl,
-  type IDashboardRepo,
-  StoreRepositoryImpl,
-} from "../../framework/mongodb/index.js";
+// import {
+//   type IBaseLookupRepository,
+//   CallStatusRepositoryImpl,
+//   ComplaintCategoryRepositoryImpl,
+//   type IComplaintTypeRepository,
+//   ComplaintTypeRepositoryImpl,
+//   LeadNextStepRepositoryImpl,
+//   LeadStatusRepositoryImpl,
+//   SetupStatusRepositoryImpl,
+//   SoftwareRepositoryImpl,
+//   SubscriptionTypeRepositoryImpl,
+//   LeadRepositoryImpl,
+//   type IAuthRepository,
+//   type IRoleRepository,
+//   type IUserRepository,
+//   type IPermissionRepository,
+//   CustomerComplaintRepositoryImpl,
+//   CustomerOutreachRepositoryImpl,
+//   OutreachTypeRepositoryImpl,
+//   RescheduleRepositoryImpl,
+//   PaymentRepositoryImpl,
+//   type IBaseRepository,
+//   FeatureRequestRepositoryImpl,
+//   SubscriptionReminderRepositoryImpl,
+//   CustomerSetupRepositoryImpl,
+//   NotificationRepositoryImpl,
+//   VisitorRepositoryImpl,
+//   TicketRepositoryImpl,
+//   DashboardRepoImpl,
+//   type IDashboardRepo,
+//   StoreRepositoryImpl,
+// } from "../../framework/postgresql/index.js";
 import { AuthRepositoryImpl as PostgresAuthRepositoryImpl } from "../../framework/postgresql/repositories/auth/AuthRepositoryImpl.js";
 import { PermissionRepositoryImpl as PostgresPermissionRepositoryImpl } from "../../framework/postgresql/repositories/permission/PermissionRepositoryImpl.js";
 import { RoleRepositoryImpl as PostgresRoleRepositoryImpl } from "../../framework/postgresql/repositories/role/RoleRepositoryImpl.js";
@@ -66,11 +66,43 @@ import { VisitorRepositoryImpl as PostgresVisitorRepositoryImpl } from "../../fr
 import { PaymentRepositoryImpl as PostgresPaymentRepositoryImpl } from "../../framework/postgresql/repositories/payment/PaymentRepositoryImpl.js";
 import { SubscriptionReminderRepositoryImpl as PostgresSubscriptionReminderRepositoryImpl } from "../../framework/postgresql/repositories/subscription_reminder/SubscriptionReminderRepositoryImpl.js";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
+import {
+  CustomerOutreachRepositoryImpl,
+  CustomerSetupRepositoryImpl,
+  DashboardRepositoryImpl,
+  FeatureRequestRepositoryImpl,
+  NotificationRepositoryImpl,
+  RescheduleRepositoryImpl,
+  StoreRepositoryImpl,
+  TicketRepositoryImpl,
+} from "../../framework/postgresql/index.js";
+import type {
+  IAuthRepository,
+  IBaseLookupRepository,
+  IBaseRepository,
+  IComplaintTypeRepository,
+  IDashboardRepo,
+  IPermissionRepository,
+  IRoleRepository,
+  IUserRepository,
+} from "../../domain/repositories/index.js";
+import {
+  OutreachTypeRepositoryImpl,
+  CustomerComplaintRepositoryImpl,
+  CallStatusRepositoryImpl,
+  ComplaintCategoryRepositoryImpl,
+  ComplaintTypeRepositoryImpl,
+  LeadNextStepRepositoryImpl,
+  LeadStatusRepositoryImpl,
+  SetupStatusRepositoryImpl,
+  SoftwareRepositoryImpl,
+  SubscriptionTypeRepositoryImpl,
+} from "../../framework/index.js";
 
 export const bindRepositories = (container: Container) => {
   container
     .bind<IDashboardRepo>(INTERFACE_TYPE.DashboardRepoImpl)
-    .to(DashboardRepoImpl);
+    .to(DashboardRepositoryImpl);
 
   container
     .bind<IBaseRepository<IStore>>(INTERFACE_TYPE.StoreRepositoryImpl)
