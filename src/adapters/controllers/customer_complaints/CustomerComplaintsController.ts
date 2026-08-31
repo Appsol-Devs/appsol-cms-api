@@ -74,8 +74,8 @@ export class CustomerComplaintController extends BaseController<ICustomerComplai
       const createdBy = req.user?._id;
       const response = await this.interactor.create({
         ...req.body,
-        createdBy,
-        loggedBy: createdBy,
+        createdById: createdBy,
+        loggedById: createdBy,
       });
 
       return res.status(HttpStatusCode.CREATED).json(response);

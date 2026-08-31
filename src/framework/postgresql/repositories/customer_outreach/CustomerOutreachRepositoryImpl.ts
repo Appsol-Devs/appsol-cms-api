@@ -6,42 +6,34 @@ import {
   type ICustomerOutreachRequestQuery,
 } from "../../../../entities/CustomerOutreach.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 
 const CustomerOutreachDelegate = prisma.customerOutreach;
 
 const customerOutreachMapper = {
   toEntity(record: any): ICustomerOutreach {
-    return new ICustomerOutreach(
-      record.id,
-      record.outreachCode,
-      record.customerId,
-      record.customer,
-      record.purpose,
-      record.notes,
-      record.callStatusId,
-      record.callStatus,
-      record.outreachTypeId,
-      record.outreachType,
-      record.isRoutineCall,
-      record.status,
-      record.loggedById,
-      record.resolvedById,
-      record.createdAt?.toISOString(),
-      record.updatedAt?.toISOString(),
-    );
+    const OutreachMapper = createMapper<ICustomerOutreach, typeof record>({
+      mapIdToLegacyId: true,
+    });
+    return OutreachMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<ICustomerOutreach>) {
     const dto: any = {
       outreachCode: payload.outreachCode,
-      customerId: payload.customerId,
+      // customerId: payload.customerId,
+      customer: { connect: { id: payload.customerId } },
       purpose: payload.purpose,
       notes: payload.notes,
-      callStatusId: payload.callStatusId,
-      outreachTypeId: payload.outreachTypeId,
+      //callStatusId: payload.callStatusId,
+      callStatus: { connect: { id: payload.callStatusId } },
+      // outreachTypeId: payload.outreachTypeId,
+      outreachType: { connect: { id: payload.outreachTypeId } },
       isRoutineCall: payload.isRoutineCall,
       status: payload.status,
-      loggedById: payload.loggedBy as string,
-      softwareId: (payload as any).softwareId,
+      // loggedById: payload.loggedBy as string,
+      loggedBy: { connect: { id: payload.loggedById } },
+      //softwareId: (payload as any).softwareId,
+      //software: { connect: { id: (payload as any).softwareId } },
     };
     return dto;
   },
@@ -122,20 +114,11 @@ export class CustomerOutreachRepositoryImpl extends PrismaBaseRepositoryImpl<ICu
   }
 
   // assign references for create/update
-  private assignReferences(data: Partial<ICustomerOutreach>) {
-    const dto: any = {};
-    if (data.customerId) dto.customerId = data.customerId;
-    if (data.callStatusId) dto.callStatusId = data.callStatusId;
-    if (data.outreachTypeId) dto.outreachTypeId = data.outreachTypeId;
-    if ((data as any).softwareId) dto.softwareId = (data as any).softwareId;
-    if (data.loggedBy) dto.loggedById = data.loggedBy as string;
-    return dto;
-  }
 
   async create(data: Partial<ICustomerOutreach>) {
     const outreachCode = generateModelCode("OUT");
     data.outreachCode = outreachCode;
-    const dto = { ...data, ...this.assignReferences(data) } as any;
+    const dto = { ...this.mapper.toDtoCreation(data) } as any;
     const created = await this.delegate.create({
       data: dto,
       include: {
@@ -149,7 +132,7 @@ export class CustomerOutreachRepositoryImpl extends PrismaBaseRepositoryImpl<ICu
   }
 
   async update(id: string, data: Partial<ICustomerOutreach>) {
-    const dto = { ...data, ...this.assignReferences(data) } as any;
+    const dto = { ...data } as any;
     const updated = await this.delegate.update({
       where: { id },
       data: dto,

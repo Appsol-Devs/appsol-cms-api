@@ -7,32 +7,16 @@ import {
 } from "../../../../entities/Ticket.js";
 import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 
 const TicketDelegate = prisma.ticket;
 
 const ticketMapper = {
   toEntity(record: any): ITicket {
-    return new ITicket(
-      record.id,
-      record.ticketCode,
-      record.title,
-      record.complaintId,
-      record.complaint,
-      record.assignedEngineerId,
-      record.customerId,
-      record.customer,
-      record.assignedEngineer,
-      record.requestedDate?.toISOString(),
-      record.notes,
-      record.rejectionReason,
-      record.priority,
-      record.status,
-      record.history,
-      record.loggedById,
-      record.closedAt?.toISOString(),
-      record.createdAt?.toISOString(),
-      record.updatedAt?.toISOString(),
-    );
+    const TicketMapper = createMapper<ITicket, typeof record>({
+      mapIdToLegacyId: true,
+    });
+    return TicketMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<ITicket>) {
     return payload as any;

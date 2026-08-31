@@ -12,6 +12,7 @@ import { injectable } from "inversify";
 export type Mapper<TDomain> = {
   toEntity: (record: any) => TDomain;
   toDtoCreation: (payload: Partial<TDomain>) => any;
+  toDtoUpdate?: (payload: Partial<TDomain>) => any;
 };
 
 @injectable()

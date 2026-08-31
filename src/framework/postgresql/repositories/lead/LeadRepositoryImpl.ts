@@ -3,41 +3,22 @@ import { prisma } from "../../utils/prisma.js";
 import { injectable } from "inversify";
 import type { ILead, ILeadRequestQuery } from "../../../../entities/Lead.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 
 const LeadDelegate = prisma.lead;
 
 const leadMapper = {
   toEntity(record: any): ILead {
-    return {
-      _id: record.id,
-      leadCode: record.leadCode,
-      name: record.name,
-      email: record.email,
-      phone: record.phone,
-      companyName: record.companyName,
-      leadSource: record.leadSource,
-      initialEnquiryDate:
-        record.initialEnquiryDate && new Date(record.initialEnquiryDate),
-      softwareId: record.softwareId,
-      software: record.software,
-      leadStatus: record.leadStatus,
-      loggedBy: record.loggedById,
-      createdAt: record.createdAt && new Date(record.createdAt),
-      updatedAt: record.updatedAt && new Date(record.updatedAt),
-      leadStageId: record.leadStageId,
-      priority: record.priority,
-      nextStepId: record.nextStepId,
-      nextStep: record.nextStep,
-      isConverted: record.isConverted,
-      location: record.location,
-      notes: record.notes,
-      geolocation: record.geolocation,
-    } as ILead;
+    const LeadMapper = createMapper<ILead, typeof record>({
+      mapIdToLegacyId: true,
+    });
+    return LeadMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<ILead>) {
     const dto: any = {
       name: payload.name,
       email: payload.email,
+      leadCode: payload.leadCode,
       phone: payload.phone,
       companyName: payload.companyName,
       leadSource: payload.leadSource,

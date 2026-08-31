@@ -58,6 +58,7 @@ model User {
   visitors            Visitor[]
   reschedules         Reschedule[]
   customers           Customer[]  @relation("CustomerLoggedBy")
+  assignedCustomerSetups CustomerSetup[] @relation("CustomerSetupAssignees")
 }
 
 model Role {
@@ -229,8 +230,8 @@ model ComplaintType {
   updatedAt        DateTime @updatedAt
   isDeleted        Boolean @default(false)
   deletedAt        DateTime?
-  
- createdById         String?
+  createdById         String?
+  customerComplaints   CustomerComplaint[]
   
 }
 
@@ -310,18 +311,18 @@ model Lead {
   phone              String
   companyName        String
   leadSource         String
-  initialEnquiryDate DateTime?
+  initialEnquiryDate String?
   softwareId         String
-  software           Software   @relation(fields: [softwareId], references: [id])
+  software           Software?   @relation(fields: [softwareId], references: [id])
   leadStatus         String
   loggedById         String
-  loggedBy           User       @relation("LeadLoggedBy", fields: [loggedById], references: [id])
+  loggedBy           User?       @relation("LeadLoggedBy", fields: [loggedById], references: [id])
   createdAt          DateTime?  @default(now())
   updatedAt          DateTime?  @updatedAt
   leadStageId        String?
   priority           String
   nextStepId         String
-  nextStep           LeadNextStep @relation(fields: [nextStepId], references: [id])
+  nextStep           LeadNextStep? @relation(fields: [nextStepId], references: [id])
   isConverted        Boolean    @default(false)
   location           String?
   notes              String?
@@ -364,6 +365,7 @@ model Payment {
 
   subscriptionId         String?
   subscription           Subscription?    @relation("SubscriptionPayments", fields: [subscriptionId], references: [id])
+  lastPaymentForSubscriptions Subscription[] @relation("SubscriptionLastPayment")
 
   reminders              SubscriptionReminder[]
   createdAt              DateTime @default(now())
@@ -390,6 +392,8 @@ model Subscription {
   nextBillingDate    DateTime
   amount             Float     @default(0.0)
   autoRenew          Boolean   @default(true)
+  lastPaymentId      String?
+  lastPayment        Payment? @relation("SubscriptionLastPayment", fields: [lastPaymentId], references: [id])
   payments           Payment[] @relation("SubscriptionPayments")
   cancelledAt        DateTime?
   cancelledById      String?
@@ -423,7 +427,7 @@ model CustomerSetup {
   actualCompletionDate DateTime?
   notes          String?
   description    String
-  assignedTo     Json?
+  assignedTo     User[]   @relation("CustomerSetupAssignees")
   loggedById     String
   loggedBy       User     @relation(fields: [loggedById], references: [id])
   status         String   @default("scheduled")
@@ -431,6 +435,8 @@ model CustomerSetup {
   isDeleted        Boolean @default(false)
   deletedAt        DateTime?
  createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   
 }
 
@@ -438,23 +444,27 @@ model CustomerComplaint {
   id                  String            @id @default(uuid())
   complaintCode       String            @unique
   customerId          String
-  customer            Customer          @relation(fields: [customerId], references: [id])
+  customer            Customer?          @relation(fields: [customerId], references: [id])
   complaintTypeId     String
+  complaintType       ComplaintType? @relation(fields: [complaintTypeId], references: [id])
+
   complaintCategoryId String
-  complaintCategory   ComplaintCategory @relation(fields: [complaintCategoryId], references: [id])
+  complaintCategory   ComplaintCategory? @relation(fields: [complaintCategoryId], references: [id])
   description         String
   relatedSoftwareId   String
-  relatedSoftware     Software          @relation(fields: [relatedSoftwareId], references: [id])
+  relatedSoftware     Software?          @relation(fields: [relatedSoftwareId], references: [id])
   status              String            @default("open")
   resolvedAt          DateTime?
   loggedById          String
-  loggedBy            User              @relation("ComplaintLoggedBy", fields: [loggedById], references: [id])
+  loggedBy            User?              @relation("ComplaintLoggedBy", fields: [loggedById], references: [id])
   resolvedById        String?
   resolvedBy          User?             @relation("ComplaintResolvedBy", fields: [resolvedById], references: [id])
   tickets             Ticket[]
   isDeleted        Boolean @default(false)
   deletedAt        DateTime?
  createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   
 }
 
@@ -462,24 +472,26 @@ model CustomerOutreach {
   id             String       @id @default(uuid())
   outreachCode   String       @unique
   customerId     String
-  customer       Customer     @relation(fields: [customerId], references: [id])
-  softwareId     String
-  software       Software     @relation("SoftwareCustomerOutreaches", fields: [softwareId], references: [id])
+  customer       Customer?          @relation(fields: [customerId], references: [id])
+  softwareId     String?
+  software       Software?     @relation("SoftwareCustomerOutreaches", fields: [softwareId], references: [id])
   purpose        String
   notes          String?
   callStatusId   String
-  callStatus     CallStatus   @relation(fields: [callStatusId], references: [id])
+  callStatus     CallStatus?   @relation(fields: [callStatusId], references: [id])
   outreachTypeId String
-  outreachType   OutreachType @relation(fields: [outreachTypeId], references: [id])
+  outreachType   OutreachType? @relation(fields: [outreachTypeId], references: [id])
   outreachTypeIdString String?
   callStatusIdString String?
   isRoutineCall  Boolean      @default(false)
   loggedById     String
-  loggedBy       User         @relation(fields: [loggedById], references: [id])
+  loggedBy       User?         @relation(fields: [loggedById], references: [id])
   status         String       @default("pending")
   isDeleted        Boolean @default(false)
   deletedAt        DateTime?
  createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   
 }
 
@@ -487,7 +499,7 @@ model FeatureRequest {
   id             String   @id @default(uuid())
   requestCode    String   @unique
   customerId     String
-  customer       Customer @relation(fields: [customerId], references: [id])
+  customer       Customer? @relation(fields: [customerId], references: [id])
   title          String
   softwareId     String
   software       Software @relation(fields: [softwareId], references: [id])
@@ -496,12 +508,14 @@ model FeatureRequest {
   description    String
   assignedTo     Json?
   loggedById     String
-  loggedBy       User     @relation(fields: [loggedById], references: [id])
+  loggedBy       User?     @relation(fields: [loggedById], references: [id])
   status         String   @default("new")
   priority       String   @default("low")
   isDeleted        Boolean @default(false)
   deletedAt        DateTime?
  createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   
 }
 
@@ -510,16 +524,20 @@ model Ticket {
   ticketCode         String   @unique
   title              String?
   complaintId        String
-  complaint          CustomerComplaint @relation(fields: [complaintId], references: [id])
+  complaint          CustomerComplaint? @relation(fields: [complaintId], references: [id])
+
   customerId         String?
   customer           Customer? @relation(fields: [customerId], references: [id])
+
   assignedEngineerId String?
-  assignedEngineer   User?     @relation("TicketAssignedEngineer", fields: [assignedEngineerId], references: [id])
+  assignedEngineer   User? @relation("TicketAssignedEngineer", fields: [assignedEngineerId], references: [id])
+
+
   requestedDate      DateTime
   notes              String?
   status             String   @default("open")
   loggedById         String
-  loggedBy           User     @relation("TicketLoggedBy", fields: [loggedById], references: [id])
+  loggedBy           User?     @relation("TicketLoggedBy", fields: [loggedById], references: [id])
   priority           String   @default("low")
   closedAt           DateTime?
   rejectionReason    String?
@@ -527,6 +545,8 @@ model Ticket {
   isDeleted        Boolean @default(false)
   deletedAt        DateTime?
  createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   
 }
 
@@ -536,7 +556,7 @@ model Notification {
   message          String
   targetEntityType String
   userId           String
-  user             User     @relation("UserNotifications", fields: [userId], references: [id])
+  user             User?     @relation("UserNotifications", fields: [userId], references: [id])
   link             String?
   isRead           Boolean  @default(false)
   readAt           DateTime?
@@ -547,6 +567,8 @@ model Notification {
   isDeleted        Boolean @default(false)
   deletedAt        DateTime?
  createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   
 }
 
@@ -554,7 +576,7 @@ model SubscriptionReminder {
   id               String   @id @default(uuid())
   reminderCode     String   @unique
   customerId       String
-  customer         Customer @relation(fields: [customerId], references: [id])
+  customer         Customer? @relation(fields: [customerId], references: [id])
   title            String
   message          String?
   softwareId       String
@@ -572,6 +594,8 @@ model SubscriptionReminder {
   isDeleted        Boolean @default(false)
   deletedAt        DateTime?
  createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   
 }
 
@@ -599,6 +623,8 @@ model Visitor {
   isDeleted        Boolean @default(false)
   deletedAt        DateTime?
  createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   
 }
 
@@ -622,6 +648,8 @@ model Reschedule {
   isDeleted        Boolean @default(false)
   deletedAt        DateTime?
  createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   
 }
 

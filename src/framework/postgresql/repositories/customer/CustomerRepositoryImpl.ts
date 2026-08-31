@@ -92,8 +92,6 @@ export class CustomerRepositoryImpl extends PrismaBaseRepositoryImpl<ICustomer> 
       this.delegate.count({ where: filter }),
     ]);
 
-    console.log(items);
-
     return {
       data: items.map(this.mapper.toEntity),
       totalPages: Math.ceil(total / limit),

@@ -70,8 +70,8 @@ export class CustomerOutreachController extends BaseController<ICustomerOutreach
       const createdBy = req.user?._id;
       const response = await this.interactor.create({
         ...req.body,
-        createdBy,
-        loggedBy: createdBy,
+        createdById: createdBy,
+        loggedById: createdBy,
       });
 
       return res.status(HttpStatusCode.CREATED).json(response);

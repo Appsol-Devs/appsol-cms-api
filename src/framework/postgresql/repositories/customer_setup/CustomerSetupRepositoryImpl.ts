@@ -6,42 +6,27 @@ import {
   type ICustomerSetupRequestQuery,
 } from "../../../../entities/CustomerSetup.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 
 const CustomerSetupDelegate = prisma.customerSetup;
 
 const customerSetupMapper = {
   toEntity(record: any): ICustomerSetup {
-    return new ICustomerSetup(
-      record.id,
-      record.setupCode,
-      record.title,
-      record.customerId,
-      record.customer,
-      record.softwareId,
-      record.software,
-      record.setupStatusId,
-      record.setupStatus,
-      record.scheduledStart?.toISOString(),
-      record.scheduledEnd?.toISOString(),
-      record.actualCompletionDate?.toISOString(),
-      record.notes,
-      record.description,
-      record.priority,
-      record.status,
-      record.loggedById,
-      record.assignedTo,
-      record.createdAt?.toISOString(),
-      record.updatedAt?.toISOString(),
-      record.addToCalendar,
-    );
+    const CustomerSetupMapper = createMapper<ICustomerSetup, typeof record>({
+      mapIdToLegacyId: true,
+    });
+    return CustomerSetupMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<ICustomerSetup>) {
     const dto: any = {
       setupCode: payload.setupCode,
       title: payload.title,
-      customerId: payload.customerId,
-      softwareId: payload.softwareId,
-      setupStatusId: payload.setupStatusId,
+      customer: { connect: { id: payload.customerId } },
+      //customerId: payload.customerId,
+      software: { connect: { id: payload.softwareId } },
+      // softwareId: payload.softwareId,
+      //setupStatusId: payload.setupStatusId,
+      setupStatus: { connect: { id: payload.setupStatusId } },
       scheduledStart: payload.scheduledStart,
       scheduledEnd: payload.scheduledEnd,
       actualCompletionDate: payload.actualCompletionDate,
@@ -49,10 +34,89 @@ const customerSetupMapper = {
       description: payload.description,
       priority: payload.priority,
       status: payload.status,
-      loggedById: payload.loggedBy as string,
+      loggedBy: { connect: { id: payload.loggedBy } },
+      //loggedById: payload.loggedBy as string,
       assignedTo: payload.assignedTo,
       addToCalendar: payload.addToCalendar,
     };
+    return dto;
+  },
+  toDtoUpdate(payload: Partial<ICustomerSetup>) {
+    const dto: any = {};
+
+    if (payload.setupCode !== undefined) {
+      dto.setupCode = payload.setupCode;
+    }
+
+    if (payload.title !== undefined) {
+      dto.title = payload.title;
+    }
+
+    if (payload.customerId !== undefined) {
+      dto.customer = {
+        connect: { id: payload.customerId },
+      };
+    }
+
+    if (payload.softwareId !== undefined) {
+      dto.software = {
+        connect: { id: payload.softwareId },
+      };
+    }
+
+    if (payload.setupStatusId !== undefined) {
+      dto.setupStatus = {
+        connect: { id: payload.setupStatusId },
+      };
+    }
+
+    if (payload.scheduledStart !== undefined) {
+      dto.scheduledStart = payload.scheduledStart;
+    }
+
+    if (payload.scheduledEnd !== undefined) {
+      dto.scheduledEnd = payload.scheduledEnd;
+    }
+
+    if (payload.actualCompletionDate !== undefined) {
+      dto.actualCompletionDate = payload.actualCompletionDate;
+    }
+
+    if (payload.notes !== undefined) {
+      dto.notes = payload.notes;
+    }
+
+    if (payload.description !== undefined) {
+      dto.description = payload.description;
+    }
+
+    if (payload.priority !== undefined) {
+      dto.priority = payload.priority;
+    }
+
+    if (payload.status !== undefined) {
+      dto.status = payload.status;
+    }
+
+    if (payload.loggedBy !== undefined) {
+      dto.loggedBy = {
+        connect: { id: payload.loggedBy },
+      };
+    }
+
+    // Replace the current assignees with the supplied list
+    if (payload.assignedTo !== undefined) {
+      dto.assignedTo = {
+        set: payload.assignedTo.map((userId) => ({
+          id: userId,
+        })),
+      };
+    }
+
+    if (payload.addToCalendar !== undefined) {
+      dto.addToCalendar = payload.addToCalendar;
+    }
+
     return dto;
   },
 };
@@ -98,7 +162,13 @@ export class CustomerSetupRepositoryImpl extends PrismaBaseRepositoryImpl<ICusto
         where,
         skip,
         take: limit,
-        include: { customer: true, loggedBy: true, software: true },
+        include: {
+          customer: true,
+          loggedBy: true,
+          software: true,
+          setupStatus: true,
+          assignedTo: true,
+        },
         orderBy: { createdAt: "desc" },
       }),
       this.delegate.count({ where }),
@@ -120,6 +190,7 @@ export class CustomerSetupRepositoryImpl extends PrismaBaseRepositoryImpl<ICusto
         loggedBy: true,
         software: true,
         setupStatus: true,
+        assignedTo: true,
       },
     });
     if (!record) throw new Error("Customer Setup not found");
@@ -130,23 +201,34 @@ export class CustomerSetupRepositoryImpl extends PrismaBaseRepositoryImpl<ICusto
     const setupCode = generateModelCode("SET");
     data.setupCode = setupCode;
     const dto = this.mapper.toDtoCreation(data);
+    const { assignedTo, ...rest } = dto;
     const created = await this.delegate.create({
-      data: dto,
+      data: {
+        ...rest,
+        ...(assignedTo !== undefined && {
+          assignedTo: {
+            connect: assignedTo.map((userId: string) => ({
+              id: userId,
+            })),
+          },
+        }),
+      },
+
       include: {
         customer: true,
         loggedBy: true,
         software: true,
         setupStatus: true,
+        assignedTo: true,
       },
     });
     return this.mapper.toEntity(created);
   }
 
   async update(id: string, data: Partial<ICustomerSetup>) {
-    const dto = data as any;
     const updated = await this.delegate.update({
       where: { id },
-      data: dto,
+      data: this.mapper.toDtoUpdate!(data),
       include: {
         customer: true,
         loggedBy: true,
