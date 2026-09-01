@@ -6,7 +6,7 @@ import type { IUser, RequestQuery } from "./User.js";
 
 export class IPayment {
   constructor(
-    public readonly _id?: string,
+    public readonly id?: string,
     public paymentCode?: string,
     public readonly customerId?: string,
     public customer?: ICustomer | string,

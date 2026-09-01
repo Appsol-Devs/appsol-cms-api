@@ -102,7 +102,7 @@ export class ReminderService implements IReminderService {
           // --- UPSERT: ensure one reminder document per subscription ---
           // Find existing reminder for this subscription (regardless of type)
           let reminder = await this.reminderRepository.findOne({
-            subscriptionId: subscription._id,
+            subscriptionId: subscription.id,
           });
 
           if (!reminder) {
@@ -114,7 +114,7 @@ export class ReminderService implements IReminderService {
                 daysUntilRenewal,
               ),
               customerId: subscription.customerId,
-              subscriptionId: subscription._id,
+              subscriptionId: subscription.id,
               softwareId: subscription.softwareId,
               dueDate: subscription.nextBillingDate?.toISOString(), // Set dueDate to next billing date for easier querying
               nextBillingDate: subscription.nextBillingDate, // <-- store for frontend filtering
@@ -191,7 +191,7 @@ export class ReminderService implements IReminderService {
 
           processedReminders.push({
             _id: reminder._id,
-            subscriptionId: subscription._id,
+            subscriptionId: subscription.id,
             customerId: subscription.customerId,
             reminderType: reminderType,
           });

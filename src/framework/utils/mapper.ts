@@ -1,3 +1,5 @@
+import { deprecate } from "node:util";
+
 export type Mapper<TDomain extends object, TModel extends object> = {
   toEntity: (model: TModel | null | undefined) => TDomain | null;
 
@@ -14,6 +16,7 @@ interface MapperOptions {
    *
    * Example:
    * id: "uuid" → _id: "uuid"
+  @deprecate("The `mapIdToLegacyId` option is deprecated and will be removed in future versions.")
    */
   mapIdToLegacyId?: boolean;
 }
@@ -21,7 +24,7 @@ interface MapperOptions {
 export const createMapper = <TDomain extends object, TModel extends object>(
   options: MapperOptions = {},
 ): Mapper<TDomain, TModel> => {
-  const { mapIdToLegacyId = false } = options;
+  // const { mapIdToLegacyId = false } = options;
 
   const toEntity = (model: TModel | null | undefined): TDomain | null => {
     if (model == null) {
@@ -33,10 +36,10 @@ export const createMapper = <TDomain extends object, TModel extends object>(
     Object.entries(model).forEach(([key, value]) => {
       // Backward compatibility:
       // PostgreSQL `id` → legacy MongoDB `_id`
-      if (mapIdToLegacyId && key === "id") {
-        entity["_id"] = nullToUndefined(value);
-        return;
-      }
+      // if (mapIdToLegacyId && key === "id") {
+      //   entity["_id"] = nullToUndefined(value);
+      //   return;
+      // }
 
       entity[key] = nullToUndefined(value);
     });

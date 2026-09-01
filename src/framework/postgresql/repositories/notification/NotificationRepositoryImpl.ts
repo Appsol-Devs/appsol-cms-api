@@ -6,27 +6,14 @@ import {
   type INotificationRequestQuery,
 } from "../../../../entities/Notification.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 
 const NotificationDelegate = prisma.notification;
 
 const notificationMapper = {
   toEntity(record: any): INotification {
-    return new INotification(
-      record.id,
-      record.notificationCode,
-      record.targetEntityId,
-      record.userId,
-      record.user,
-      record.targetEntity,
-      record.message,
-      record.link,
-      record.isRead,
-      record.targetEntityType,
-      record.loggedById,
-      record.readAt?.toISOString(),
-      record.createdAt?.toISOString(),
-      record.updatedAt?.toISOString(),
-    );
+    const NotificationMapper = createMapper<INotification, typeof record>({});
+    return NotificationMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<INotification>) {
     return payload as any;

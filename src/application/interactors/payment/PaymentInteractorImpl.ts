@@ -23,9 +23,12 @@ export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
   async update(id: string, data: IPayment): Promise<IPayment> {
     if (!data.status) throw new BadRequestError("Data is required");
     if (data.status === "approved") {
-      const payment = await super.update(id, data);
-      if (payment) {
-        await this.extendSubscription(payment);
+      const payment = await super.getById(id);
+      if (payment.status == "approved")
+        throw new BadRequestError("Payment already approved");
+      const approved = await super.update(id, data);
+      if (approved) {
+        await this.extendSubscription(approved);
       }
 
       return payment;
@@ -86,12 +89,12 @@ export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
           currentPeriodStart: newPeriodStart,
           currentPeriodEnd: newPeriodEnd,
           nextBillingDate: newNextBillingDate,
-          lastPaymentId: payment._id,
+          lastPaymentId: payment.id,
           lastPaymentDate: new Date(),
           status: "active",
         };
         subscription = await this.subscriptionRepository.update(
-          existingSubscription._id!,
+          existingSubscription.id!,
           data,
         );
       }

@@ -109,7 +109,7 @@ export class TicketInteractorImpl
   async sendMail(res: ITicket) {
     const complaint = res.complaint as ICustomerComplaint;
     const clientName =
-      typeof complaint.customer === "object" && complaint.customer !== null
+      typeof complaint?.customer === "object" && complaint.customer !== null
         ? `${complaint.customer.name} | ${complaint.customer.companyName}`
         : "Client";
     const mail = ticketAssignmentTemplate({

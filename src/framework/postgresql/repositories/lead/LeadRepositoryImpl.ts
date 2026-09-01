@@ -23,17 +23,121 @@ const leadMapper = {
       companyName: payload.companyName,
       leadSource: payload.leadSource,
       initialEnquiryDate: payload.initialEnquiryDate,
-      softwareId: payload.softwareId,
       leadStatus: payload.leadStatus,
-      loggedById: payload.loggedBy as string,
-      leadStageId: payload.leadStageId,
       priority: payload.priority,
-      nextStepId: payload.nextStepId,
       isConverted: payload.isConverted,
       location: payload.location,
       notes: payload.notes,
       geolocation: payload.geolocation,
     };
+
+    if (payload.softwareId !== undefined) {
+      dto.software = {
+        connect: { id: payload.softwareId },
+      };
+    }
+
+    if (payload.leadStageId !== undefined) {
+      dto.leadStage = {
+        connect: { id: payload.leadStageId },
+      };
+    }
+
+    if (payload.nextStepId !== undefined) {
+      dto.nextStep = {
+        connect: { id: payload.nextStepId },
+      };
+    }
+
+    if (payload.loggedById !== undefined) {
+      dto.loggedBy = {
+        connect: { id: payload.loggedById },
+      };
+    }
+
+    return dto;
+  },
+
+  toDtoUpdate(payload: Partial<ILead>) {
+    const dto: any = {};
+
+    if (payload.name !== undefined) {
+      dto.name = payload.name;
+    }
+
+    if (payload.email !== undefined) {
+      dto.email = payload.email;
+    }
+
+    if (payload.leadCode !== undefined) {
+      dto.leadCode = payload.leadCode;
+    }
+
+    if (payload.phone !== undefined) {
+      dto.phone = payload.phone;
+    }
+
+    if (payload.companyName !== undefined) {
+      dto.companyName = payload.companyName;
+    }
+
+    if (payload.leadSource !== undefined) {
+      dto.leadSource = payload.leadSource;
+    }
+
+    if (payload.initialEnquiryDate !== undefined) {
+      dto.initialEnquiryDate = payload.initialEnquiryDate;
+    }
+
+    if (payload.leadStatus !== undefined) {
+      dto.leadStatus = payload.leadStatus;
+    }
+
+    if (payload.priority !== undefined) {
+      dto.priority = payload.priority;
+    }
+
+    if (payload.isConverted !== undefined) {
+      dto.isConverted = payload.isConverted;
+    }
+
+    if (payload.location !== undefined) {
+      dto.location = payload.location;
+    }
+
+    if (payload.notes !== undefined) {
+      dto.notes = payload.notes;
+    }
+
+    if (payload.geolocation !== undefined) {
+      dto.geolocation = payload.geolocation;
+    }
+
+    // Relations
+    if (payload.softwareId !== undefined) {
+      dto.software = {
+        connect: { id: payload.softwareId },
+      };
+    }
+
+    if (payload.leadStageId !== undefined) {
+      dto.leadStage = {
+        connect: { id: payload.leadStageId },
+      };
+    }
+
+    if (payload.nextStepId !== undefined) {
+      dto.nextStep = {
+        connect: { id: payload.nextStepId },
+      };
+    }
+
+    if (payload.loggedBy !== undefined) {
+      dto.loggedBy = {
+        connect: { id: payload.loggedBy },
+      };
+    }
+
     return dto;
   },
 };
@@ -83,7 +187,12 @@ export class LeadRepositoryImpl extends PrismaBaseRepositoryImpl<ILead> {
         where,
         skip,
         take: limit,
-        include: { nextStep: true, loggedBy: true, software: true },
+        include: {
+          nextStep: true,
+          loggedBy: true,
+          software: true,
+          // leadStatus: true,
+        },
         orderBy: { createdAt: "desc" },
       }),
       this.delegate.count({ where }),
@@ -95,5 +204,19 @@ export class LeadRepositoryImpl extends PrismaBaseRepositoryImpl<ILead> {
       totalCount: total,
       pageCount: pageIndex,
     };
+  }
+
+  async getById(id: string): Promise<ILead | null | undefined> {
+    const record = await this.delegate.findUnique({
+      where: { id },
+      include: {
+        nextStep: true,
+        loggedBy: true,
+        software: true,
+        // leadStatus: true,
+      },
+    });
+    if (!record) throw new Error("Customer Setup not found");
+    return this.mapper.toEntity(record);
   }
 }

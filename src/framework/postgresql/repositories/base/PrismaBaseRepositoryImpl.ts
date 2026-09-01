@@ -25,21 +25,35 @@ export abstract class PrismaBaseRepositoryImpl<
   ) {}
 
   async getAll(query: RequestQuery): Promise<PaginatedResponse<TDomain>> {
-    const limit = query.pageSize ?? 10;
-    const pageIndex = query.pageIndex ?? 1;
-    const skip = (pageIndex - 1) * limit;
+    const rawPageSize = query.pageSize;
+    const rawPageIndex = query.pageIndex;
 
-    const items = await this.delegate.findMany({ skip, take: limit });
-    const total = await this.delegate.count();
+    const pageSize = rawPageSize ? Number(rawPageSize) : undefined;
+
+    const pageIndex = rawPageIndex ? Number(rawPageIndex) : 1;
+
+    const hasPagination =
+      pageSize !== undefined && Number.isFinite(pageSize) && pageSize > 0;
+
+    const pagination = hasPagination
+      ? {
+          skip: (pageIndex - 1) * pageSize,
+          take: pageSize,
+        }
+      : {};
+
+    const [items, total] = await Promise.all([
+      this.delegate.findMany(pagination),
+      this.delegate.count(),
+    ]);
 
     return {
       data: items.map(this.mapper.toEntity),
-      totalPages: Math.ceil(total / limit),
+      totalPages: hasPagination ? Math.ceil(total / pageSize) : 1,
       totalCount: total,
       pageCount: pageIndex,
     };
   }
-
   async getById(id: string): Promise<TDomain | null | undefined> {
     const record = await this.delegate.findUnique({ where: { id } });
     if (!record) throw new NotFoundError("Item not found");

@@ -59,6 +59,7 @@ model User {
   reschedules         Reschedule[]
   customers           Customer[]  @relation("CustomerLoggedBy")
   assignedCustomerSetups CustomerSetup[] @relation("CustomerSetupAssignees")
+   assignedFeatureRequests FeatureRequest[] @relation("FeatureRequestAssignees")
 }
 
 model Role {
@@ -319,7 +320,6 @@ model Lead {
   loggedBy           User?       @relation("LeadLoggedBy", fields: [loggedById], references: [id])
   createdAt          DateTime?  @default(now())
   updatedAt          DateTime?  @updatedAt
-  leadStageId        String?
   priority           String
   nextStepId         String
   nextStep           LeadNextStep? @relation(fields: [nextStepId], references: [id])
@@ -506,7 +506,7 @@ model FeatureRequest {
   notes          String?
   requestedDate  DateTime
   description    String
-  assignedTo     Json?
+  assignedTo     User[]   @relation("FeatureRequestAssignees")
   loggedById     String
   loggedBy       User?     @relation(fields: [loggedById], references: [id])
   status         String   @default("new")
@@ -650,7 +650,6 @@ model Reschedule {
  createdById         String?
  createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
-  
 }
 
 

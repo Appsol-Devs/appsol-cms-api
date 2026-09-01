@@ -18,6 +18,7 @@ export class ILead {
     public software?: ISoftware | string,
     public readonly leadStatus?: `${LeadStatus}`,
     public readonly loggedBy?: IUser | string,
+    public readonly loggedById?: string,
     public readonly createdAt?: string,
     public readonly updatedAt?: string,
     public readonly leadStage?: ILeadStatus | string,

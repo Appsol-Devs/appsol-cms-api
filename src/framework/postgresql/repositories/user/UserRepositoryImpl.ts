@@ -10,6 +10,58 @@ import type { IUserRepository } from "../../../../domain/repositories/user/IUser
 
 const UserDelegate = prisma.user;
 
+const userMapper = {
+  toEntity(record: any): IUser {
+    const UserMapper = createMapper<IUser, typeof record>({
+      mapIdToLegacyId: true,
+    });
+    return UserMapper.toEntity(record)!;
+  },
+  toDtoCreation(payload: Partial<IUser>) {
+    const dto: any = {
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      email: payload.email,
+      password: payload.password,
+      phone: payload.phone,
+      ...(payload.roleId !== undefined && {
+        role: { connect: { id: payload.roleId } },
+      }),
+      status: payload.status,
+      isVerified: payload.isVerified,
+    };
+    return dto;
+  },
+  toDtoUpdate(payload: Partial<IUser>) {
+    const dto: any = {};
+    if (payload.firstName !== undefined) {
+      dto.firstName = payload.firstName;
+    }
+    if (payload.lastName !== undefined) {
+      dto.lastName = payload.lastName;
+    }
+    if (payload.email !== undefined) {
+      dto.email = payload.email;
+    }
+    if (payload.password !== undefined) {
+      dto.password = payload.password;
+    }
+    if (payload.phone !== undefined) {
+      dto.phone = payload.phone;
+    }
+    if (payload.roleId !== undefined) {
+      dto.role = { set: { id: payload.roleId } };
+    }
+    if (payload.status !== undefined) {
+      dto.status = payload.status;
+    }
+    if (payload.isVerified !== undefined) {
+      dto.isVerified = payload.isVerified;
+    }
+    return dto;
+  },
+};
+
 @injectable()
 export class UserRepositoryImpl implements IUserRepository {
   async deleteUser(id: string): Promise<IUser> {
@@ -31,7 +83,8 @@ export class UserRepositoryImpl implements IUserRepository {
 
   async addUser(data: IUser): Promise<IUser> {
     if (!data) throw new UnprocessableEntityError("User data is required");
-    const created = await UserDelegate.create({ data: data as any });
+    const dto = userMapper.toDtoCreation(data as Partial<IUser>);
+    const created = await UserDelegate.create({ data: dto });
     if (!created)
       throw new UnprocessableEntityError("User could not be created");
     const UserMapper = createMapper<IUser, typeof created>({
@@ -147,12 +200,11 @@ export class UserRepositoryImpl implements IUserRepository {
   }
 
   async updateUser(id: string, data: IUser): Promise<IUser> {
-    const { _id, role, ...rest } = data;
-
+    if (!id) throw new UnprocessableEntityError("User id is required");
+    const dto = userMapper.toDtoUpdate(data as Partial<IUser>);
     const updatedUser = await UserDelegate.update({
       where: { id },
-      data: { id: data._id, ...rest } as any,
-      // include: { role: true,},
+      data: dto,
       select: {
         id: true,
         firstName: true,

@@ -8,6 +8,7 @@ import {
 import { NotFoundError } from "../../../../error_handler/NotFoundError.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
 import { createMapper } from "../../../utils/mapper.js";
+import { includes } from "zod";
 
 const TicketDelegate = prisma.ticket;
 
@@ -19,7 +20,150 @@ const ticketMapper = {
     return TicketMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<ITicket>) {
-    return payload as any;
+    const dto: any = {
+      ticketCode: payload.ticketCode,
+      title: payload.title,
+      requestedDate: payload.requestedDate,
+      notes: payload.notes,
+      rejectionReason: payload.rejectionReason,
+      priority: payload.priority,
+      status: payload.status,
+      history: payload.history,
+      closedAt: payload.closedAt,
+    };
+
+    if (payload.complaintId !== undefined) {
+      dto.complaint = {
+        connect: {
+          id: payload.complaintId,
+        },
+      };
+    }
+
+    if (payload.customerId !== undefined) {
+      dto.customer = {
+        connect: {
+          id: payload.customerId,
+        },
+      };
+    }
+
+    if (payload.assignedEngineerId !== undefined) {
+      dto.assignedEngineer = {
+        connect: {
+          id: payload.assignedEngineerId,
+        },
+      };
+    }
+
+    if (payload.loggedBy !== undefined) {
+      const loggedById =
+        typeof payload.loggedBy === "string"
+          ? payload.loggedBy
+          : payload.loggedBy._id;
+
+      if (loggedById) {
+        dto.loggedBy = {
+          connect: {
+            id: loggedById,
+          },
+        };
+      }
+    }
+
+    return dto;
+  },
+
+  toDtoUpdate(payload: Partial<ITicket>) {
+    const dto: any = {};
+
+    if (payload.ticketCode !== undefined) {
+      dto.ticketCode = payload.ticketCode;
+    }
+
+    if (payload.title !== undefined) {
+      dto.title = payload.title;
+    }
+
+    if (payload.requestedDate !== undefined) {
+      dto.requestedDate = payload.requestedDate;
+    }
+
+    if (payload.notes !== undefined) {
+      dto.notes = payload.notes;
+    }
+
+    if (payload.rejectionReason !== undefined) {
+      dto.rejectionReason = payload.rejectionReason;
+    }
+
+    if (payload.priority !== undefined) {
+      dto.priority = payload.priority;
+    }
+
+    if (payload.status !== undefined) {
+      dto.status = payload.status;
+    }
+
+    if (payload.history !== undefined) {
+      dto.history = payload.history;
+    }
+
+    if (payload.closedAt !== undefined) {
+      dto.closedAt = payload.closedAt;
+    }
+
+    // Relations
+
+    if (payload.complaintId !== undefined) {
+      dto.complaint =
+        payload.complaintId === null
+          ? { disconnect: true }
+          : {
+              connect: {
+                id: payload.complaintId,
+              },
+            };
+    }
+
+    if (payload.customerId !== undefined) {
+      dto.customer =
+        payload.customerId === null
+          ? { disconnect: true }
+          : {
+              connect: {
+                id: payload.customerId,
+              },
+            };
+    }
+
+    if (payload.assignedEngineerId !== undefined) {
+      dto.assignedEngineer =
+        payload.assignedEngineerId === null
+          ? { disconnect: true }
+          : {
+              connect: {
+                id: payload.assignedEngineerId,
+              },
+            };
+    }
+
+    if (payload.loggedBy !== undefined) {
+      const loggedById =
+        typeof payload.loggedBy === "string"
+          ? payload.loggedBy
+          : payload.loggedBy._id;
+
+      if (loggedById) {
+        dto.loggedBy = {
+          connect: {
+            id: loggedById,
+          },
+        };
+      }
+    }
+
+    return dto;
   },
 };
 
@@ -33,7 +177,15 @@ export class TicketRepositoryImpl extends PrismaBaseRepositoryImpl<ITicket> {
     const ticketCode = generateModelCode("TKT");
     data.ticketCode = ticketCode;
     const dto = this.mapper.toDtoCreation(data);
-    const created = await this.delegate.create({ data: dto });
+    const created = await this.delegate.create({
+      data: dto,
+      include: {
+        customer: true,
+        complaint: true,
+        loggedBy: true,
+        assignedEngineer: true,
+      },
+    });
     return this.mapper.toEntity(created);
   }
 
@@ -56,8 +208,19 @@ export class TicketRepositoryImpl extends PrismaBaseRepositoryImpl<ITicket> {
       where: { id },
       include: {
         assignedEngineer: true,
-        complaint: { include: { customer: true } },
-        loggedBy: true,
+        complaint: {
+          select: {
+            id: true,
+            customer: true,
+          },
+        },
+        loggedBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
       },
     });
     if (!updated) throw new NotFoundError("Ticket not found");
@@ -93,9 +256,40 @@ export class TicketRepositoryImpl extends PrismaBaseRepositoryImpl<ITicket> {
         skip,
         take: limit,
         include: {
-          assignedEngineer: true,
+          assignedEngineer: {
+            select: {
+              firstName: true,
+              lastName: true,
+              id: true,
+              imageUrl: true,
+              email: true,
+              role: {
+                select: {
+                  id: true,
+                  name: true,
+                  description: true,
+                },
+              },
+            },
+          },
+          customer: true,
           complaint: { include: { customer: true } },
-          loggedBy: true,
+          loggedBy: {
+            select: {
+              firstName: true,
+              lastName: true,
+              id: true,
+              imageUrl: true,
+              email: true,
+              role: {
+                select: {
+                  id: true,
+                  name: true,
+                  description: true,
+                },
+              },
+            },
+          },
         },
         orderBy: { createdAt: "desc" },
       }),
@@ -114,9 +308,40 @@ export class TicketRepositoryImpl extends PrismaBaseRepositoryImpl<ITicket> {
     const record = await this.delegate.findUnique({
       where: { id },
       include: {
-        assignedEngineer: true,
+        assignedEngineer: {
+          select: {
+            firstName: true,
+            lastName: true,
+            id: true,
+            imageUrl: true,
+            email: true,
+            role: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+              },
+            },
+          },
+        },
+        customer: true,
         complaint: { include: { customer: true } },
-        loggedBy: true,
+        loggedBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            id: true,
+            imageUrl: true,
+            email: true,
+            role: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+              },
+            },
+          },
+        },
       },
     });
     if (!record) throw new NotFoundError("Ticket not found");
@@ -127,9 +352,40 @@ export class TicketRepositoryImpl extends PrismaBaseRepositoryImpl<ITicket> {
     const record = await this.delegate.findFirst({
       where: filter as any,
       include: {
-        assignedEngineer: true,
+        assignedEngineer: {
+          select: {
+            firstName: true,
+            lastName: true,
+            id: true,
+            imageUrl: true,
+            email: true,
+            role: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+              },
+            },
+          },
+        },
+        customer: true,
         complaint: { include: { customer: true } },
-        loggedBy: true,
+        loggedBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            id: true,
+            imageUrl: true,
+            email: true,
+            role: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+              },
+            },
+          },
+        },
       },
     });
     if (!record) return null;

@@ -6,32 +6,14 @@ import type {
   IPaymentRequestQuery,
 } from "../../../../entities/Payment.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 
 const PaymentDelegate = prisma.payment;
 
 const paymentMapper = {
   toEntity(record: any): IPayment {
-    return {
-      _id: record.id,
-      paymentCode: record.paymentCode,
-      customerId: record.customerId,
-      customer: record.customer,
-      softwareId: record.softwareId,
-      software: record.software,
-      approvalNotes: record.approvalNotes,
-      amount: record.amount,
-      totalDue: record.totalDue,
-      subscriptionTypeId: record.subscriptionTypeId,
-      subscriptionType: record.subscriptionType,
-      notes: record.notes,
-      paymentDate: record.paymentDate && new Date(record.paymentDate),
-      renewalDate: record.renewalDate && new Date(record.renewalDate),
-      loggedBy: record.loggedById,
-      approvedOrRejectedBy: record.approvedOrRejectedById,
-      status: record.status,
-      paymentReference: record.paymentReference,
-      subscriptionId: record.subscriptionId,
-    } as IPayment;
+    const PaymentMapper = createMapper<IPayment, typeof record>({});
+    return PaymentMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<IPayment>) {
     return {
@@ -127,5 +109,64 @@ export class PaymentRepositoryImpl extends PrismaBaseRepositoryImpl<IPayment> {
       pageCount: pageIndex,
       totalSum: totals?._sum?.amount ?? 0,
     };
+  }
+
+  async getById(id: string): Promise<IPayment | null | undefined> {
+    const record = await this.delegate.findUnique({
+      where: { id },
+      include: {
+        customer: true,
+        loggedBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        approvedOrRejectedBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        software: true,
+        subscriptionType: true,
+      },
+    });
+    return record ? this.mapper.toEntity(record) : null;
+  }
+
+  async update(
+    id: string,
+    data: Partial<IPayment>,
+  ): Promise<IPayment | null | undefined> {
+    const dto = this.mapper.toDtoCreation(data);
+    const updated = await this.delegate.update({
+      where: { id },
+      data: dto,
+      include: {
+        customer: true,
+        loggedBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        approvedOrRejectedBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        software: true,
+        subscriptionType: true,
+      },
+    });
+
+    if (!updated) throw new Error("Payment not found");
+    return this.mapper.toEntity(updated);
   }
 }

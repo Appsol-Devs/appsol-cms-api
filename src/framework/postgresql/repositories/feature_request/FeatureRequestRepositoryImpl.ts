@@ -6,29 +6,14 @@ import {
   type IFeatureRequestRequestQuery,
 } from "../../../../entities/FeatureRequest.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 
 const FeatureRequestDelegate = prisma.featureRequest;
 
 const featureRequestMapper = {
   toEntity(record: any): IFeatureRequest {
-    return new IFeatureRequest(
-      record.id,
-      record.requestCode,
-      record.title,
-      record.customerId,
-      record.customer,
-      record.softwareId,
-      record.software,
-      record.requestedDate?.toISOString(),
-      record.notes,
-      record.description,
-      record.priority,
-      record.status,
-      record.loggedById,
-      record.assignedTo,
-      record.createdAt?.toISOString(),
-      record.updatedAt?.toISOString(),
-    );
+    const Mapper = createMapper<IFeatureRequest, typeof record>();
+    return Mapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<IFeatureRequest>) {
     const dto: any = {
@@ -42,8 +27,38 @@ const featureRequestMapper = {
       priority: payload.priority,
       status: payload.status,
       loggedById: payload.loggedBy as string,
-      assignedTo: payload.assignedTo,
+      ...(payload.assignedTo !== undefined && {
+        assignedTo: {
+          connect: (payload.assignedTo as string[]).map((userId: string) => ({
+            id: userId,
+          })),
+        },
+      }),
     };
+    return dto;
+  },
+  toDtoUpdate(payload: Partial<IFeatureRequest>) {
+    const dto: any = {
+      requestCode: payload.requestCode,
+      title: payload.title,
+      customerId: payload.customerId,
+      softwareId: payload.softwareId,
+      requestedDate: payload.requestedDate,
+      notes: payload.notes,
+      description: payload.description,
+      priority: payload.priority,
+      status: payload.status,
+      loggedById: payload.loggedBy as string,
+
+      ...(payload.assignedTo !== undefined && {
+        assignedTo: {
+          set: (payload.assignedTo as string[]).map((userId: string) => ({
+            id: userId,
+          })),
+        },
+      }),
+    };
+
     return dto;
   },
 };
@@ -88,7 +103,12 @@ export class FeatureRequestRepositoryImpl extends PrismaBaseRepositoryImpl<IFeat
         where,
         skip,
         take: limit,
-        include: { customer: true, loggedBy: true, software: true },
+        include: {
+          customer: true,
+          loggedBy: true,
+          software: true,
+          assignedTo: true,
+        },
         orderBy: { createdAt: "desc" },
       }),
       this.delegate.count({ where }),
@@ -105,7 +125,15 @@ export class FeatureRequestRepositoryImpl extends PrismaBaseRepositoryImpl<IFeat
   async getById(id: string) {
     const record = await this.delegate.findUnique({
       where: { id },
-      include: { customer: true, loggedBy: true, software: true },
+      include: {
+        customer: true,
+        loggedBy: true,
+        software: true,
+        assignedTo: true,
+        // assignedTo: {
+        //   select: { firstName: true, lastName: true, email: true },
+        // },
+      },
     });
     if (!record) throw new Error("Feature Request not found");
     return this.mapper.toEntity(record);
@@ -123,7 +151,7 @@ export class FeatureRequestRepositoryImpl extends PrismaBaseRepositoryImpl<IFeat
   }
 
   async update(id: string, data: Partial<IFeatureRequest>) {
-    const dto = data as any;
+    const dto = this.mapper.toDtoUpdate!(data);
     const updated = await this.delegate.update({
       where: { id },
       data: dto,

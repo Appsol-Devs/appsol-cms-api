@@ -6,34 +6,151 @@ import {
   type IRescheduleRequestQuery,
 } from "../../../../entities/Reschedule.js";
 import { generateModelCode } from "../../../../utils/helpers.js";
+import { createMapper } from "../../../utils/mapper.js";
 
 const RescheduleDelegate = prisma.reschedule;
 
 const rescheduleMapper = {
   toEntity(record: any): IReschedule {
-    return new IReschedule(
-      record.id,
-      record.rescheduleCode,
-      record.colorCode,
-      record.reason,
-      record.title,
-      record.targetEntityId,
-      record.targetEntity,
-      record.customer,
-      record.customerId,
-      record.originalDateTime?.toISOString(),
-      record.newDateTime?.toISOString(),
-      record.from?.toISOString(),
-      record.to?.toISOString(),
-      record.targetEntityType,
-      record.status,
-      record.loggedById,
-      record.createdAt?.toISOString(),
-      record.updatedAt?.toISOString(),
-    );
+    const RescheduleMapper = createMapper<IReschedule, typeof record>({
+      mapIdToLegacyId: true,
+    });
+    return RescheduleMapper.toEntity(record)!;
   },
   toDtoCreation(payload: Partial<IReschedule>) {
-    return payload as any;
+    const dto: any = {
+      rescheduleCode: payload.rescheduleCode,
+      colorCode: payload.colorCode,
+      reason: payload.reason,
+      title: payload.title,
+
+      originalDateTime: payload.originalDateTime
+        ? new Date(payload.originalDateTime)
+        : undefined,
+
+      newDateTime: payload.newDateTime
+        ? new Date(payload.newDateTime)
+        : undefined,
+
+      from: payload.from,
+      to: payload.to,
+      status: payload.status,
+      targetEntityType: payload.targetEntityType,
+    };
+
+    if (payload.customerId) {
+      dto.customer = {
+        connect: { id: payload.customerId },
+      };
+    }
+
+    if (payload.loggedBy) {
+      const loggedById =
+        typeof payload.loggedBy === "string"
+          ? payload.loggedBy
+          : payload.loggedBy._id;
+
+      if (loggedById) {
+        dto.loggedBy = {
+          connect: { id: loggedById },
+        };
+      }
+    }
+
+    const targetEntityId =
+      payload.targetEntityId ??
+      (typeof payload.targetEntity === "string"
+        ? payload.targetEntity
+        : payload.targetEntity?._id);
+
+    // if (targetEntityId) {
+    //   switch (payload.targetEntityType) {
+    //     case "CustomerOutreach":
+    //       dto.customerOutreach = {
+    //         connect: { id: targetEntityId },
+    //       };
+    //       break;
+
+    //     case "CustomerComplaint":
+    //       dto.customerComplaint = {
+    //         connect: { id: targetEntityId },
+    //       };
+    //       break;
+    //   }
+    // }
+
+    return dto;
+  },
+
+  toDtoUpdate(payload: Partial<IReschedule>) {
+    const dto: any = {
+      rescheduleCode: payload.rescheduleCode,
+      colorCode: payload.colorCode,
+      reason: payload.reason,
+      title: payload.title,
+
+      originalDateTime: payload.originalDateTime
+        ? new Date(payload.originalDateTime)
+        : undefined,
+
+      newDateTime: payload.newDateTime
+        ? new Date(payload.newDateTime)
+        : undefined,
+
+      from: payload.from,
+      to: payload.to,
+      status: payload.status,
+      targetEntityType: payload.targetEntityType,
+    };
+
+    if (payload.customerId !== undefined) {
+      dto.customer = payload.customerId
+        ? {
+            connect: { id: payload.customerId },
+          }
+        : {
+            disconnect: true,
+          };
+    }
+
+    if (payload.loggedBy !== undefined) {
+      const loggedById =
+        typeof payload.loggedBy === "string"
+          ? payload.loggedBy
+          : payload.loggedBy?._id;
+
+      dto.loggedBy = loggedById
+        ? {
+            connect: { id: loggedById },
+          }
+        : {
+            disconnect: true,
+          };
+    }
+
+    const targetEntityId =
+      payload.targetEntityId ??
+      (typeof payload.targetEntity === "string"
+        ? payload.targetEntity
+        : payload.targetEntity?._id);
+
+    // if (targetEntityId && payload.targetEntityType) {
+    //   switch (payload.targetEntityType) {
+    //     case "CustomerOutreach":
+    //       dto.customerOutreach = {
+    //         connect: { id: targetEntityId },
+    //       };
+    //       break;
+
+    //     case "CustomerComplaint":
+    //       dto.customerComplaint = {
+    //         connect: { id: targetEntityId },
+    //       };
+    //       break;
+    //   }
+    // }
+
+    return dto;
   },
 };
 
@@ -77,7 +194,17 @@ export class RescheduleRepositoryImpl extends PrismaBaseRepositoryImpl<IReschedu
         where,
         skip,
         take: limit,
-        include: { customer: true, loggedBy: true },
+        include: {
+          customer: true,
+          loggedBy: {
+            select: {
+              firstName: true,
+              lastName: true,
+              email: true,
+              role: { select: { name: true, description: true, id: true } },
+            },
+          },
+        },
         orderBy: { createdAt: "desc" },
       }),
       this.delegate.count({ where }),
@@ -94,7 +221,17 @@ export class RescheduleRepositoryImpl extends PrismaBaseRepositoryImpl<IReschedu
   async getById(id: string) {
     const record = await this.delegate.findUnique({
       where: { id },
-      include: { customer: true, loggedBy: true },
+      include: {
+        customer: true,
+        loggedBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            role: { select: { name: true, description: true, id: true } },
+          },
+        },
+      },
     });
     if (!record) throw new Error("Schedule not found");
     return this.mapper.toEntity(record);
@@ -103,18 +240,40 @@ export class RescheduleRepositoryImpl extends PrismaBaseRepositoryImpl<IReschedu
   async create(data: Partial<IReschedule>) {
     const rescheduleCode = generateModelCode("RS");
     data.rescheduleCode = rescheduleCode;
+    const dto = this.mapper.toDtoCreation(data);
     const created = await this.delegate.create({
-      data: data as any,
-      include: { customer: true, loggedBy: true },
+      data: dto,
+      include: {
+        customer: true,
+        loggedBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            role: { select: { name: true, description: true, id: true } },
+          },
+        },
+      },
     });
     return this.mapper.toEntity(created);
   }
 
   async update(id: string, data: Partial<IReschedule>) {
+    const dto = this.mapper.toDtoUpdate!(data);
     const updated = await this.delegate.update({
       where: { id },
-      data: data as any,
-      include: { customer: true, loggedBy: true },
+      data: dto,
+      include: {
+        customer: true,
+        loggedBy: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            role: { select: { name: true, description: true, id: true } },
+          },
+        },
+      },
     });
     return this.mapper.toEntity(updated);
   }
