@@ -78,7 +78,7 @@ export abstract class BaseController<TDomain> {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
 
-      const createdBy = (req as any).user?._id;
+      const createdBy = (req as any).user?.id;
       const response = await this.interactor.create({
         ...req.body,
         createdBy,

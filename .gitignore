@@ -137,3 +137,33 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# PostgreSQL / Prisma local environment
+src/framework/postgresql/.env
+
+
+# Temporary files
+*.tmp
+*.temp
+
+# Prisma generated client
+src/framework/postgresql/generated/
+
+# Prisma local/cache files
+src/framework/postgresql/.prisma/
+
+# Coverage
+coverage/
+
+# Runtime files
+*.pid
+*.seed
+*.pid.lock
+
+# Prisma generated output
+src/framework/postgresql/generated/
+
+# Local AI/agent tooling
+src/framework/postgresql/.agents/
+src/framework/postgresql/.claude/
+src/framework/postgresql/.windsurf/

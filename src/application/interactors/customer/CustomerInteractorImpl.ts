@@ -2,7 +2,7 @@ import { inject } from "inversify";
 import type { ICustomer } from "../../../entities/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseInteractorImpl } from "../base/BaseInteractorImpl.js";
-import type { CustomerRepositoryImpl } from "../../../framework/mongodb/repositories/customer/CustomerRepositoryImpl.js";
+import type { CustomerRepositoryImpl } from "../../../framework/postgresql/repositories/customer/CustomerRepositoryImpl.js";
 import type { CloudinaryImpl } from "../../../framework/services/index.js";
 import { UnprocessableEntityError } from "../../../error_handler/UnprocessableEntityError.js";
 
@@ -11,7 +11,7 @@ export class CustomerInteractorImpl extends BaseInteractorImpl<ICustomer> {
     @inject(INTERFACE_TYPE.CustomerRepositoryImpl)
     customerRepositoryImpl: CustomerRepositoryImpl,
     @inject(INTERFACE_TYPE.StorageBucketImpl)
-    private storageBucketImpl: CloudinaryImpl
+    private storageBucketImpl: CloudinaryImpl,
   ) {
     super(customerRepositoryImpl);
     this.storageBucketImpl = storageBucketImpl;

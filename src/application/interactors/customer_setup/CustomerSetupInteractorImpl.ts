@@ -2,17 +2,16 @@ import { inject } from "inversify";
 import type { ICustomerSetup, IReschedule } from "../../../entities/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseInteractorImpl } from "../base/BaseInteractorImpl.js";
-import type { CustomerSetupRepositoryImpl } from "../../../framework/mongodb/repositories/customer_setup/CustomerSetupRepoImpl.js";
-import type { IBaseRepository } from "../../../framework/index.js";
+import type { IBaseRepository } from "../../../domain/repositories/base/IBaseRepository.js";
 
 export class CustomerSetupInteractorImpl extends BaseInteractorImpl<ICustomerSetup> {
   constructor(
     @inject(INTERFACE_TYPE.CustomerSetupRepositoryImpl)
-    customerSetupRepositoryImpl: CustomerSetupRepositoryImpl,
+    customerSetupRepository: IBaseRepository<ICustomerSetup>,
     @inject(INTERFACE_TYPE.RescheduleRepositoryImpl)
     private rescheduleRepository: IBaseRepository<IReschedule>,
   ) {
-    super(customerSetupRepositoryImpl);
+    super(customerSetupRepository as any);
     this.rescheduleRepository = rescheduleRepository;
   }
 

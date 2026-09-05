@@ -7,8 +7,8 @@ import type { ISubscriptionType } from "./lookups/SubscriptionType.js";
 
 export class ISubscription {
   constructor(
-    public readonly _id?: string,
-    public readonly subscriptionCode?: string,
+    public readonly id?: string,
+    public subscriptionCode?: string,
     public readonly customerId?: string,
     public customer?: ICustomer | string,
     public readonly softwareId?: string,

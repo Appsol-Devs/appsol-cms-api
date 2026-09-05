@@ -6,29 +6,29 @@ import type {
 } from "../../../entities/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseInteractorImpl } from "../base/BaseInteractorImpl.js";
-import type {
-  IBaseRepository,
-  PaymentRepositoryImpl,
-} from "../../../framework/mongodb/repositories/index.js";
+import type { IBaseRepository } from "../../../domain/repositories/base/IBaseRepository.js";
 import { BadRequestError } from "../../../error_handler/BadRequestError.js";
 
 export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
   constructor(
     @inject(INTERFACE_TYPE.PaymentRepositoryImpl)
-    paymentRepositoryImpl: PaymentRepositoryImpl,
+    paymentRepository: IBaseRepository<IPayment>,
     @inject(INTERFACE_TYPE.SubscriptionRepositoryImpl)
     private subscriptionRepository: IBaseRepository<ISubscription>,
   ) {
-    super(paymentRepositoryImpl);
+    super(paymentRepository as any);
     this.subscriptionRepository = subscriptionRepository;
   }
 
   async update(id: string, data: IPayment): Promise<IPayment> {
     if (!data.status) throw new BadRequestError("Data is required");
     if (data.status === "approved") {
-      const payment = await super.update(id, data);
-      if (payment) {
-        await this.extendSubscription(payment);
+      const payment = await super.getById(id);
+      if (payment.status == "approved")
+        throw new BadRequestError("Payment already approved");
+      const approved = await super.update(id, data);
+      if (approved) {
+        await this.extendSubscription(approved);
       }
 
       return payment;
@@ -89,12 +89,12 @@ export class PaymentInteractorImpl extends BaseInteractorImpl<IPayment> {
           currentPeriodStart: newPeriodStart,
           currentPeriodEnd: newPeriodEnd,
           nextBillingDate: newNextBillingDate,
-          lastPaymentId: payment._id,
+          lastPaymentId: payment.id,
           lastPaymentDate: new Date(),
           status: "active",
         };
         subscription = await this.subscriptionRepository.update(
-          existingSubscription._id!,
+          existingSubscription.id!,
           data,
         );
       }

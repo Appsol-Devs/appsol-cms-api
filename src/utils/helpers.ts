@@ -6,3 +6,8 @@ export function initStatusMap<T extends readonly string[]>(
     number
   >;
 }
+
+export const generateModelCode = (prefix: string): string => {
+  const uid = crypto.randomUUID().replace(/-/g, "").slice(0, 5).toUpperCase();
+  return `${prefix}-${uid}`;
+};

@@ -59,7 +59,7 @@ export class UserController {
   ): TGenericPromise {
     try {
       //TODO add validation
-      const createdBy = req.user?._id;
+      const createdBy = req.user?.id;
       const response = await this.userInteractor.addUser({
         ...req.body,
         createdBy,

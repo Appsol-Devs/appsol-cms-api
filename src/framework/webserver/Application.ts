@@ -2,7 +2,7 @@ import { injectable, inject, Container } from "inversify";
 import { INTERFACE_TYPE } from "../../utils/constants/bindings.js";
 import type { IExpressApp } from "./app.js";
 import type { IServer } from "./server.js";
-import type { IDatabaseConnection } from "../mongodb/connection.js";
+import type { IDatabaseConnection } from "../postgresql/connection.js";
 import type { ILogger } from "../logging/ILogger.js";
 
 export interface IApplication {
@@ -28,7 +28,7 @@ export class Application implements IApplication {
       this.logger.info("Express app configured");
 
       // Connect to database
-      await this.database.connectToMongo();
+      await this.database.connectToPostgres();
 
       // Start server
       this.server.startServer();

@@ -1,12 +1,12 @@
 import { inject } from "inversify";
-import type { ICustomer, ILead } from "../../../entities/index.js";
+import type {
+  ICustomer,
+  ILead,
+  ISubscription,
+} from "../../../entities/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseInteractorImpl } from "../base/BaseInteractorImpl.js";
-import type { LeadRepositoryImpl } from "../../../framework/mongodb/repositories/lead/index.js";
-import type {
-  CustomerRepositoryImpl,
-  SubscriptionRepositoryImpl,
-} from "../../../framework/mongodb/index.js";
+import type { IBaseRepository } from "../../../domain/repositories/base/IBaseRepository.js";
 import type { ILeadInteractor } from "./ILeadInteractor.js";
 
 export class LeadInteractorImpl
@@ -15,13 +15,13 @@ export class LeadInteractorImpl
 {
   constructor(
     @inject(INTERFACE_TYPE.LeadRepositoryImpl)
-    leadRepositoryImpl: LeadRepositoryImpl,
+    leadRepository: IBaseRepository<ILead>,
     @inject(INTERFACE_TYPE.CustomerRepositoryImpl)
-    readonly customerRepository: CustomerRepositoryImpl,
+    readonly customerRepository: IBaseRepository<ICustomer>,
     @inject(INTERFACE_TYPE.SubscriptionRepositoryImpl)
-    readonly subscriptionRepository: SubscriptionRepositoryImpl,
+    readonly subscriptionRepository: IBaseRepository<ISubscription>,
   ) {
-    super(leadRepositoryImpl);
+    super(leadRepository as any);
     this.customerRepository = customerRepository;
     this.subscriptionRepository = subscriptionRepository;
   }

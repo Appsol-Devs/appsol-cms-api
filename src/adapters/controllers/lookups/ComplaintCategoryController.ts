@@ -8,7 +8,7 @@ import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 export class ComplaintCategoryController extends BaseLookupController<IComplaintCategory> {
   constructor(
     @inject(INTERFACE_TYPE.ComplaintCategoryInteractorImpl)
-    complaintCategoryInteractor: ComplaintCategoryInteractorImpl
+    complaintCategoryInteractor: ComplaintCategoryInteractorImpl,
   ) {
     super(complaintCategoryInteractor);
   }

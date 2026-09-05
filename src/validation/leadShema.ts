@@ -18,9 +18,9 @@ export const leadQuerySchema = baseQuerySchema.extend({
     "new",
   ]),
   priority: z.enum(["low", "medium", "high"]),
-  leadStage: z.string().optional(),
-  nextStep: z.string().optional(),
-  loggedBy: z.string().optional(),
+  leadStageId: z.string().optional(),
+  nextStepId: z.string().optional(),
+  loggedById: z.string().optional(),
   geolocation: z
     .object({
       address: z.string().optional(),

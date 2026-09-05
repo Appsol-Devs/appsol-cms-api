@@ -77,10 +77,10 @@ export abstract class BaseLookupController<TDomain> {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
 
-      const createdBy = (req as any).user?._id;
+      const createdById = (req as any).user?._id;
       const response = await this.lookupInteractor.create({
         ...req.body,
-        createdBy,
+        createdById,
       });
 
       return res.status(HttpStatusCode.CREATED).json(response);

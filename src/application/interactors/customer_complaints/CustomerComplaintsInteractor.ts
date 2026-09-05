@@ -6,30 +6,31 @@ import type {
 } from "../../../entities/index.js";
 import { INTERFACE_TYPE } from "../../../utils/constants/bindings.js";
 import { BaseInteractorImpl } from "../base/BaseInteractorImpl.js";
-import type { CustomerComplaintRepositoryImpl } from "../../../framework/mongodb/repositories/customer_complaints/index.js";
+import type { IBaseRepository } from "../../../domain/repositories/base/IBaseRepository.js";
 import type { INotificationService } from "../../../framework/services/index.js";
 
 export class CustomerComplaintInteractorImpl extends BaseInteractorImpl<ICustomerComplaint> {
   constructor(
     @inject(INTERFACE_TYPE.CustomerComplaintRepositoryImpl)
-    customerComplaintRepositoryImpl: CustomerComplaintRepositoryImpl,
+    customerComplaintRepository: IBaseRepository<ICustomerComplaint>,
     @inject(INTERFACE_TYPE.NotificationService)
     private notificationService: INotificationService,
   ) {
-    super(customerComplaintRepositoryImpl);
+    super(customerComplaintRepository as any);
     this.notificationService = notificationService;
   }
 
   async create(data: ICustomerComplaint): Promise<ICustomerComplaint> {
     const res = await super.create(data);
     if (res) {
+      console.log(res);
       await this.notificationService.create({
-        userId: (res.loggedBy as IUser)._id,
+        userId: (res.loggedBy as IUser).id || (res.loggedBy as IUser).id,
         message: `A new complaint has been logged (${
-          (res.complaintType as IComplaintType).name || res._id
+          (res.complaintType as IComplaintType).name || res.id
         })`,
-        link: `/complaints/${res._id}`,
-        targetEntityId: res._id,
+        link: `/complaints/${res.id}`,
+        targetEntityId: res.id,
         targetEntityType: "CustomerComplaint",
       });
       return res;
@@ -49,12 +50,12 @@ export class CustomerComplaintInteractorImpl extends BaseInteractorImpl<ICustome
     if (!res) throw new Error("Error updating item");
 
     await this.notificationService.create({
-      userId: (res.loggedBy as IUser)._id,
+      userId: (res.loggedBy as IUser).id || (res.loggedBy as IUser).id,
       message: `Complaint ${res.complaintCode} has been updated (${
-        (res.complaintType as IComplaintType).name || res._id
+        (res.complaintType as IComplaintType).name || res.id
       })`,
-      link: `/complaints/${res._id}`,
-      targetEntityId: res._id,
+      link: `/complaints/${res.id}`,
+      targetEntityId: res.id,
       targetEntityType: "CustomerComplaint",
     });
     return res;

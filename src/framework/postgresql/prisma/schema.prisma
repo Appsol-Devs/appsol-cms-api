@@ -1,0 +1,655 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma" 
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model User {
+  id                  String      @id @default(uuid())
+  firstName           String?
+  lastName            String?
+  email               String      @unique
+  password            String?
+  phone               String?
+  imageUrl            String?
+  roleId              String?
+  role                Role?       @relation(fields: [roleId], references: [id])
+  isActive            Boolean     @default(true)
+  status              String      @default("active")
+  isVerified          Boolean     @default(false)
+  token               String?
+  deviceToken         String?
+  createdById         String?
+  createdBy           User?       @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdUsers        User[]      @relation("UserCreatedBy")
+  loginCount          Int         @default(0)
+  lastLogin           DateTime?
+  lastLoginLocation   Json?
+  loginLocations      Json?
+  isDeleted           Boolean     @default(false)
+  deletedAt           DateTime?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  otps                UserOTP[]
+  subscriptions       Subscription[] @relation("SubscriptionLoggedBy")
+  cancelledSubscriptions Subscription[] @relation("SubscriptionCancelledBy")
+  paymentsApproved    Payment[]   @relation("PaymentApprovedBy")
+  paymentsLogged      Payment[]   @relation("PaymentLoggedBy")
+  customerSetups      CustomerSetup[]
+  customerComplaints  CustomerComplaint[] @relation("ComplaintLoggedBy")
+  resolvedCustomerComplaints CustomerComplaint[] @relation("ComplaintResolvedBy")
+  customerOutreaches CustomerOutreach[]
+  featureRequests     FeatureRequest[]
+  leads               Lead[]      @relation("LeadLoggedBy")
+  ticketsAssigned     Ticket[]    @relation("TicketAssignedEngineer")
+  ticketsLogged       Ticket[]    @relation("TicketLoggedBy")
+  notifications       Notification[] @relation("UserNotifications")
+  loggedNotifications Notification[] @relation("UserLoggedNotifications")
+  stores              Store[]
+  visitors            Visitor[]
+  reschedules         Reschedule[]
+  customers           Customer[]  @relation("CustomerLoggedBy")
+  assignedCustomerSetups CustomerSetup[] @relation("CustomerSetupAssignees")
+   assignedFeatureRequests FeatureRequest[] @relation("FeatureRequestAssignees")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  companyId   String?
+  permissions String[] @default([])
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  users       User[]
+ 
+ createdById         String?
+  
+}
+
+model UserOTP {
+  id        String   @id @default(uuid())
+  otp       Int
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model Permission {
+  id   String @id @default(uuid())
+  name String @unique
+ createdById         String?
+  
+}
+
+model Software {
+  id            String   @id @default(uuid())
+  softwareCode  String   @unique
+  name          String
+  description   String?
+  colorCode     String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  customers     Customer[]
+  leads         Lead[]
+  payments      Payment[]
+  subscriptions Subscription[]
+  customerSetups CustomerSetup[]
+  customerComplaints CustomerComplaint[]
+  customerOutreaches CustomerOutreach[] @relation("SoftwareCustomerOutreaches")
+  subscriptionReminders SubscriptionReminder[]
+  featureRequests FeatureRequest[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model SubscriptionType {
+  id                   String   @id @default(uuid())
+  subscriptionTypeCode String   @unique
+  name                 String
+  description          String?
+  colorCode            String?
+  durationInMonths     Int
+  isActive             Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  payments             Payment[]
+  subscriptions        Subscription[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model LeadStatus {
+  id             String @id @default(uuid())
+  leadStatusCode String @unique
+  name           String
+  description    String?
+  colorCode      String?
+  isActive       Boolean @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model LeadNextStep {
+  id               String @id @default(uuid())
+  leadNextStepCode String @unique
+  name             String
+  description      String?
+  colorCode        String?
+  isActive         Boolean @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  leads            Lead[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model ComplaintCategory {
+  id                    String @id @default(uuid())
+  complaintCategoryCode String @unique
+  name                  String
+  description           String?
+  colorCode             String?
+  isActive              Boolean @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  complaints            CustomerComplaint[]
+  isDeleted             Boolean @default(false)
+  deletedAt             DateTime?
+ createdById         String?
+  
+}
+
+model CallStatus {
+  id             String @id @default(uuid())
+  callStatusCode String @unique
+  name           String
+  description    String?
+  colorCode      String?
+  isFinalStatus  Boolean @default(false)
+  isActive       Boolean @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  outreaches     CustomerOutreach[]
+  isDeleted      Boolean @default(false)
+  deletedAt      DateTime?
+ createdById         String?
+  
+}
+model OutreachType {
+  id               String @id @default(uuid())
+  outreachTypeCode String @unique
+  name             String
+  description      String?
+  colorCode        String?
+  isActive         Boolean @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  outreaches       CustomerOutreach[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model ComplaintType {
+  id               String @id @default(uuid())
+  complaintTypeCode String @unique
+  name             String
+  description      String?
+  colorCode        String?
+  isActive         Boolean @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+  createdById         String?
+  customerComplaints   CustomerComplaint[]
+  
+}
+
+
+model SetupStatus {
+  id              String @id @default(uuid())
+  setupStatusCode String @unique
+  name            String
+  description     String?
+  colorCode       String?
+  isActive        Boolean @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  customerSetups  CustomerSetup[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model Customer {
+  id             String   @id @default(uuid())
+  customerCode   String   @unique
+  name           String
+  email          String   @unique
+  phone          String
+  companyName    String
+  dateConverted  String?
+  status         String   @default("active")
+  loggedById     String
+  loggedBy       User     @relation("CustomerLoggedBy", fields: [loggedById], references: [id])
+  softwareId     String
+  software       Software @relation(fields: [softwareId], references: [id])
+  leadId         String?
+  location       String?
+  notes          String?
+  geolocation    Json?
+  image          String?
+  subscriptions  Subscription[]
+  payments        Payment[] @relation("CustomerPayments")
+  complaints     CustomerComplaint[]
+  outreaches     CustomerOutreach[]
+  setups         CustomerSetup[]
+  reminders      SubscriptionReminder[]
+  featureRequests FeatureRequest[]
+  stores         Store[]
+  tickets        Ticket[]
+  reschedules    Reschedule[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model Store {
+  id          String   @id @default(uuid())
+  storeCode   String   @unique
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  name        String
+  location    String
+  notes       String?
+  status      String   @default("active")
+  loggedById  String
+  loggedBy    User     @relation(fields: [loggedById], references: [id])
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model Lead {
+  id                 String     @id @default(uuid())
+  leadCode           String     @unique
+  name               String
+  email              String
+  phone              String
+  companyName        String
+  leadSource         String
+  initialEnquiryDate String?
+  softwareId         String
+  software           Software?   @relation(fields: [softwareId], references: [id])
+  leadStatus         String
+  loggedById         String
+  loggedBy           User?       @relation("LeadLoggedBy", fields: [loggedById], references: [id])
+  createdAt          DateTime?  @default(now())
+  updatedAt          DateTime?  @updatedAt
+  priority           String
+  nextStepId         String
+  nextStep           LeadNextStep? @relation(fields: [nextStepId], references: [id])
+  isConverted        Boolean    @default(false)
+  location           String?
+  notes              String?
+  geolocation        Json?
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model Payment {
+  id                     String           @id @default(uuid())
+  paymentCode            String           @unique
+
+  customerId             String
+  customer               Customer         @relation("CustomerPayments", fields: [customerId], references: [id])
+
+  softwareId             String
+  software               Software         @relation(fields: [softwareId], references: [id])
+
+  approvalNotes          String?
+  amount                 Float
+  totalDue               Float?
+
+  subscriptionTypeId     String
+  subscriptionType       SubscriptionType @relation(fields: [subscriptionTypeId], references: [id])
+
+  notes                  String?
+  paymentDate            DateTime
+  renewalDate            DateTime
+
+  loggedById             String?
+  loggedBy               User?            @relation("PaymentLoggedBy", fields: [loggedById], references: [id])
+
+  approvedOrRejectedById String?
+  approvedOrRejectedBy   User?            @relation("PaymentApprovedBy", fields: [approvedOrRejectedById], references: [id])
+
+  status                 String           @default("pending")
+  paymentReference       String?
+
+  subscriptionId         String?
+  subscription           Subscription?    @relation("SubscriptionPayments", fields: [subscriptionId], references: [id])
+  lastPaymentForSubscriptions Subscription[] @relation("SubscriptionLastPayment")
+
+  reminders              SubscriptionReminder[]
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model Subscription {
+  id                 String    @id @default(uuid())
+  subscriptionCode   String    @unique
+  customerId         String
+  customer           Customer  @relation(fields: [customerId], references: [id])
+  softwareId         String
+  software           Software  @relation(fields: [softwareId], references: [id])
+  subscriptionTypeId String?
+  subscriptionType   SubscriptionType? @relation(fields: [subscriptionTypeId], references: [id])
+  status             String    @default("pending")
+  startDate          DateTime
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  nextBillingDate    DateTime
+  amount             Float     @default(0.0)
+  autoRenew          Boolean   @default(true)
+  lastPaymentId      String?
+  lastPayment        Payment? @relation("SubscriptionLastPayment", fields: [lastPaymentId], references: [id])
+  payments           Payment[] @relation("SubscriptionPayments")
+  cancelledAt        DateTime?
+  cancelledById      String?
+  cancelledBy        User?     @relation("SubscriptionCancelledBy", fields: [cancelledById], references: [id])
+  cancellationReason String?
+  notes              String?
+  loggedById         String
+  loggedBy           User      @relation("SubscriptionLoggedBy", fields: [loggedById], references: [id])
+  reminders          SubscriptionReminder[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+  
+}
+
+model CustomerSetup {
+  id             String   @id @default(uuid())
+  setupCode      String   @unique
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+  title          String
+  softwareId     String
+  software       Software @relation(fields: [softwareId], references: [id])
+  setupStatusId  String
+  setupStatus    SetupStatus @relation(fields: [setupStatusId], references: [id])
+  addToCalendar  Boolean  @default(false)
+  scheduledStart DateTime
+  scheduledEnd   DateTime
+  actualCompletionDate DateTime?
+  notes          String?
+  description    String
+  assignedTo     User[]   @relation("CustomerSetupAssignees")
+  loggedById     String
+  loggedBy       User     @relation(fields: [loggedById], references: [id])
+  status         String   @default("scheduled")
+  priority       String   @default("low")
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+}
+
+model CustomerComplaint {
+  id                  String            @id @default(uuid())
+  complaintCode       String            @unique
+  customerId          String
+  customer            Customer?          @relation(fields: [customerId], references: [id])
+  complaintTypeId     String
+  complaintType       ComplaintType? @relation(fields: [complaintTypeId], references: [id])
+
+  complaintCategoryId String
+  complaintCategory   ComplaintCategory? @relation(fields: [complaintCategoryId], references: [id])
+  description         String
+  relatedSoftwareId   String
+  relatedSoftware     Software?          @relation(fields: [relatedSoftwareId], references: [id])
+  status              String            @default("open")
+  resolvedAt          DateTime?
+  loggedById          String
+  loggedBy            User?              @relation("ComplaintLoggedBy", fields: [loggedById], references: [id])
+  resolvedById        String?
+  resolvedBy          User?             @relation("ComplaintResolvedBy", fields: [resolvedById], references: [id])
+  tickets             Ticket[]
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+}
+
+model CustomerOutreach {
+  id             String       @id @default(uuid())
+  outreachCode   String       @unique
+  customerId     String
+  customer       Customer?          @relation(fields: [customerId], references: [id])
+  softwareId     String?
+  software       Software?     @relation("SoftwareCustomerOutreaches", fields: [softwareId], references: [id])
+  purpose        String
+  notes          String?
+  callStatusId   String
+  callStatus     CallStatus?   @relation(fields: [callStatusId], references: [id])
+  outreachTypeId String
+  outreachType   OutreachType? @relation(fields: [outreachTypeId], references: [id])
+  outreachTypeIdString String?
+  callStatusIdString String?
+  isRoutineCall  Boolean      @default(false)
+  loggedById     String
+  loggedBy       User?         @relation(fields: [loggedById], references: [id])
+  status         String       @default("pending")
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+}
+
+model FeatureRequest {
+  id             String   @id @default(uuid())
+  requestCode    String   @unique
+  customerId     String
+  customer       Customer? @relation(fields: [customerId], references: [id])
+  title          String
+  softwareId     String
+  software       Software @relation(fields: [softwareId], references: [id])
+  notes          String?
+  requestedDate  DateTime
+  description    String
+  assignedTo     User[]   @relation("FeatureRequestAssignees")
+  loggedById     String
+  loggedBy       User?     @relation(fields: [loggedById], references: [id])
+  status         String   @default("new")
+  priority       String   @default("low")
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+}
+
+model Ticket {
+  id                 String   @id @default(uuid())
+  ticketCode         String   @unique
+  title              String?
+  complaintId        String
+  complaint          CustomerComplaint? @relation(fields: [complaintId], references: [id])
+
+  customerId         String?
+  customer           Customer? @relation(fields: [customerId], references: [id])
+
+  assignedEngineerId String?
+  assignedEngineer   User? @relation("TicketAssignedEngineer", fields: [assignedEngineerId], references: [id])
+
+
+  requestedDate      DateTime
+  notes              String?
+  status             String   @default("open")
+  loggedById         String
+  loggedBy           User?     @relation("TicketLoggedBy", fields: [loggedById], references: [id])
+  priority           String   @default("low")
+  closedAt           DateTime?
+  rejectionReason    String?
+  history            Json?
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+}
+
+model Notification {
+  id               String   @id @default(uuid())
+  notificationCode String   @unique
+  message          String
+  targetEntityType String
+  userId           String
+  user             User?     @relation("UserNotifications", fields: [userId], references: [id])
+  link             String?
+  isRead           Boolean  @default(false)
+  readAt           DateTime?
+  targetEntityId   String
+  targetEntity     Json?
+  loggedById       String?
+  loggedBy         User?    @relation("UserLoggedNotifications", fields: [loggedById], references: [id])
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+}
+
+model SubscriptionReminder {
+  id               String   @id @default(uuid())
+  reminderCode     String   @unique
+  customerId       String
+  customer         Customer? @relation(fields: [customerId], references: [id])
+  title            String
+  message          String?
+  softwareId       String
+  software         Software @relation(fields: [softwareId], references: [id])
+  paymentId        String?
+  payment          Payment? @relation(fields: [paymentId], references: [id])
+  subscriptionId   String?
+  subscription     Subscription? @relation(fields: [subscriptionId], references: [id])
+  dueDate          DateTime
+  nextBillingDate  DateTime?
+  lastNotifiedType String?
+  isSent           Boolean  @default(false)
+  reminderType     String   @default("30_days")
+  sentVia          String   @default("email")
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+}
+
+model Visitor {
+  id             String   @id @default(uuid())
+  visitorCode    String   @unique
+  fullName       String
+  email          String?
+  phone          String
+  company        String?
+  idType         String?
+  idNumber       String?
+  visitingWhom   String?
+  purpose        String
+  checkInTime    DateTime?
+  checkOutTime   DateTime?
+  passNumber     String?
+  itemsCarriedIn String?
+  itemsCarriedOut String?
+  status         String  @default("checked_in")
+  loggedById     String
+  loggedBy       User    @relation(fields: [loggedById], references: [id])
+  photoUrl       String?
+  notes          String?
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+}
+
+model Reschedule {
+  id             String   @id @default(uuid())
+  rescheduleCode String   @unique
+  customerId     String?
+  customer       Customer? @relation(fields: [customerId], references: [id])
+  reason         String
+  title          String?
+  colorCode      String?
+  targetEntityType String
+  targetEntityId String?
+  originalDateTime DateTime
+  newDateTime    DateTime
+  from           DateTime
+  to             DateTime
+  loggedById     String
+  loggedBy       User     @relation(fields: [loggedById], references: [id])
+  status         String   @default("pending")
+  isDeleted        Boolean @default(false)
+  deletedAt        DateTime?
+ createdById         String?
+ createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+

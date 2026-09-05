@@ -95,11 +95,8 @@ export class CustomerRepositoryImpl extends BaseRepoistoryImpl<ICustomer> {
   // ✅ Override create
   async create(data: Partial<ICustomer>): Promise<ICustomer> {
     try {
-      const dataWithReferences = this.assignReferences(data);
-
       const created = await this.model.create({
         ...data,
-        ...dataWithReferences,
       });
       const populated = await created.populate([
         { path: "software", select: "name description colorCode" },
@@ -115,13 +112,8 @@ export class CustomerRepositoryImpl extends BaseRepoistoryImpl<ICustomer> {
   // ✅ Override update
   async update(id: string, data: Partial<ICustomer>): Promise<ICustomer> {
     try {
-      const dataWithReferences = this.assignReferences(data);
       const updated = await this.model
-        .findByIdAndUpdate(
-          id,
-          { ...data, ...dataWithReferences },
-          { new: true },
-        )
+        .findByIdAndUpdate(id, { ...data }, { new: true })
         .populate("loggedBy", "firstName lastName email")
         .populate("software", "name description colorCode");
       if (!updated) throw new BadRequestError("Customer not found");
@@ -129,12 +121,5 @@ export class CustomerRepositoryImpl extends BaseRepoistoryImpl<ICustomer> {
     } catch (error) {
       throw error;
     }
-  }
-
-  private assignReferences(data: Partial<ICustomer>): ICustomer {
-    const refs: Partial<ICustomer> = {};
-    if (data.softwareId) refs.software = data.softwareId;
-
-    return refs;
   }
 }

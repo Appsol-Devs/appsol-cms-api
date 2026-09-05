@@ -11,16 +11,29 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.8.1",
     "@types/nodemailer": "^7.0.2",
+    "@types/pg": "^8.21.0",
+    "prisma": "^7.9.1",
     "rimraf": "^6.0.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
+  "prisma": {
+    "schema": "src/framework/postgresql/prisma/schema.prisma"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "rimraf dist && tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "prisma:generate": "prisma generate --schema src/framework/postgresql/prisma/schema.prisma --config src/framework/postgresql/prisma.config.ts",
+    "prisma:migrate:dev": "prisma migrate dev --name init --schema src/framework/postgresql/prisma/schema.prisma --config src/framework/postgresql/prisma.config.ts",
+    "prisma:migrate:deploy": "prisma migrate deploy --schema src/framework/postgresql/prisma/schema.prisma --config src/framework/postgresql/prisma.config.ts",
+    "prisma:validate": "prisma validate --schema src/framework/postgresql/prisma/schema.prisma --config src/framework/postgresql/prisma.config.ts",
+    "prisma:studio": "prisma studio --url=\"postgresql://postgres:postgres@localhost:5432/appsol_cms?schema=public\"",
+    "prisma:format": "prisma format --schema src/framework/postgresql/prisma/schema.prisma --config src/framework/postgresql/prisma.config.ts"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client": "^7.9.1",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
@@ -31,7 +44,7 @@
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.2",
     "express": "^5.1.0",
     "http": "^0.0.1-security",
     "inversify": "^7.10.3",
@@ -39,6 +52,7 @@
     "mongoose": "^8.19.2",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.9",
+    "pg": "^8.23.0",
     "reflect-metadata": "^0.2.2",
     "resend": "^6.12.4",
     "rimraf": "^6.0.1",

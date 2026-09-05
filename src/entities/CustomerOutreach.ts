@@ -10,7 +10,7 @@ import type { IUser, RequestQuery } from "./User.js";
 export class ICustomerOutreach {
   constructor(
     public readonly _id?: string,
-    public readonly outreachCode?: string,
+    public outreachCode?: string,
     public readonly customerId?: string,
     public customer?: ICustomer | string,
     public readonly purpose?: string,
@@ -21,10 +21,14 @@ export class ICustomerOutreach {
     public outreachType?: IOutreachType | string,
     public readonly isRoutineCall?: boolean,
     public readonly status?: ICustomerOutreachStatus,
+    public readonly createdById?: string,
+    public createdBy?: IUser | string,
+    public readonly resolvedById?: string,
     public readonly loggedBy?: IUser | string,
+    public readonly loggedById?: string,
     public readonly resolvedBy?: IUser | string,
     public readonly createdAt?: string,
-    public readonly updatedAt?: string
+    public readonly updatedAt?: string,
   ) {}
 }
 

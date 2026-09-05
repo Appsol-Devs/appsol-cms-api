@@ -23,7 +23,7 @@ import type {
   IAuthRepository,
   IRoleRepository,
   IUserRepository,
-} from "../../../framework/mongodb/index.js";
+} from "../../../domain/repositories/index.js";
 import type {
   IAuthService,
   IMailer,
@@ -70,7 +70,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
       message: "OTP Verification email sent",
       data: {
         email: user.email,
-        userId: user._id,
+        userId: user.id,
       },
     };
     return response;
@@ -99,7 +99,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
           throw new BadRequestError("Invalid or Wrong OTP ");
         } else {
           await this.userRepository.updateUser(userId, {
-            _id: userId,
+            id: userId,
             isVerified: true,
           });
           await this.repository.deleteOtp(userOtpRecords[0]._id!);
@@ -116,7 +116,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
           };
 
           const updatedUser = await this.userRepository.updateUser(
-            user._id!,
+            user.id!,
             userData,
           );
 
@@ -153,7 +153,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
       message: "OTP Verification email sent",
       data: {
         email: user.email,
-        userId: user._id,
+        userId: user.id,
       },
     };
     return response;
@@ -163,8 +163,9 @@ export class AuthInteractorImpl implements IAuthInteractor {
     if (!currentPassword || !newPassword) {
       throw new UnprocessableEntityError("All Fields are required");
     }
+    console.log("changePassword data:", data);
     //fetch user and compare current password
-    const user = await this.userRepository.findUserById(data.userId);
+    const user = await this.userRepository.findUserById(data.userId, true);
     if (!user) throw new NotFoundError("User not found");
     const isMatch = await this.authService.comparePassword(
       currentPassword,
@@ -179,7 +180,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
       password: hashedPassword,
     };
     const updatedUser = await this.userRepository.updateUser(
-      user._id!,
+      user.id!,
       userData,
     );
     if (!updatedUser) throw new Error("Error while updating user");
@@ -196,7 +197,8 @@ export class AuthInteractorImpl implements IAuthInteractor {
       throw new UnauthorizedError("Email and password are required");
     }
 
-    let user = await this.userRepository.findUserByEmail(email);
+    let user = await this.userRepository.findUserByEmail(email, true);
+
     if (!user) throw new BadRequestError("Sorry User not found");
     //compare password to hash
     const isMatch = await this.authService.comparePassword(
@@ -217,15 +219,19 @@ export class AuthInteractorImpl implements IAuthInteractor {
       ...user,
     };
     const userRole: IRole = {
-      _id: (user.role as IRole)._id,
+      id: (user.role as IRole).id,
       name: (user.role as IRole).name,
       permissions: (user.role as IRole).permissions,
     };
     const { password: pass, role, imageUrl, ...rest } = userObj;
+    console.log(rest);
     const token = await this.authService.generateToken({
       ...rest,
       role: userRole,
     });
+
+    const reverseToken = await this.authService.verifyToken<IUser>(token);
+    console.log(reverseToken);
 
     // update login count and last login
     const loginCount: number =
@@ -242,16 +248,16 @@ export class AuthInteractorImpl implements IAuthInteractor {
       const loginLocations = user.loginLocations || [];
       loginLocations.push(modifiedLocation);
 
-      user = await this.userRepository.updateUser(user._id!, {
-        _id: user._id,
+      user = await this.userRepository.updateUser(user.id!, {
+        id: user.id,
         loginCount,
         lastLogin,
         loginLocations,
       });
     }
 
-    user = await this.userRepository.updateUser(user._id!, {
-      _id: user._id,
+    user = await this.userRepository.updateUser(user.id!, {
+      id: user.id,
       deviceToken: deviceToken,
       loginCount,
       lastLogin,
@@ -270,7 +276,6 @@ export class AuthInteractorImpl implements IAuthInteractor {
 
   async verifyOTP(userId: string, otp: string): Promise<UserOTPResponse> {
     const userOtpRecords = await this.repository.findOtps({ user: userId });
-
     if (userOtpRecords.length === 0) {
       throw new Error(
         "Account record does not exist or has already been verified. Please sign up or login",
@@ -293,7 +298,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
           throw new BadRequestError("Invalid OTP");
         } else {
           await this.userRepository.updateUser(userId, {
-            _id: userId,
+            id: userId,
             isVerified: true,
           });
           await this.repository.deleteOtp(userOtpRecords[0]._id!);
@@ -338,14 +343,14 @@ export class AuthInteractorImpl implements IAuthInteractor {
     const userData: IUser = {
       ...data,
       password: hashedPassword,
-      role: adminRole._id,
+      roleId: adminRole.id,
     };
     const result = await this.repository.registerUser(userData);
 
     if (!result) throw new BadRequestError("Error while adding user");
 
-    const { email, _id } = result;
-    if (!email || !_id) throw new Error("Invalid user data");
+    const { email, id } = result;
+    if (!email || !id) throw new Error("Invalid user data");
 
     await this.sendEmailOTP(
       userData.email!,
@@ -358,7 +363,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
       message: "OTP Verification email sent",
       data: {
         email,
-        userId: _id,
+        userId: id,
       },
     };
     return response;
@@ -382,7 +387,7 @@ export class AuthInteractorImpl implements IAuthInteractor {
       // save otp in database or any other storage for verification purpose
       const userOTP = await this.repository.addUserOTP({
         otp,
-        user: user._id!,
+        user: user.id!,
         expiresAt: new Date(Date.now() + 60 * 60 * 1000),
       });
 

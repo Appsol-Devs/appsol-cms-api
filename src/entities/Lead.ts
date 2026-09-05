@@ -10,6 +10,7 @@ export class ILead {
     public readonly name?: string,
     public readonly email?: string,
     public readonly phone?: string,
+    public leadCode?: string,
     public readonly companyName?: string,
     public readonly leadSource?: string,
     public readonly initialEnquiryDate?: string,
@@ -17,11 +18,14 @@ export class ILead {
     public software?: ISoftware | string,
     public readonly leadStatus?: `${LeadStatus}`,
     public readonly loggedBy?: IUser | string,
+    public readonly loggedById?: string,
     public readonly createdAt?: string,
     public readonly updatedAt?: string,
     public readonly leadStage?: ILeadStatus | string,
     public readonly priority?: LeadPriority,
     public readonly nextStep?: ILeadNextStep | string,
+    public readonly nextStepId?: string,
+    public readonly leadStageId?: string,
     public readonly location?: string,
     public readonly notes?: string,
     public readonly geolocation?: IGeolocation,
@@ -43,6 +47,7 @@ export interface ILeadRequestQuery extends RequestQuery {
   nextStep?: string | undefined;
   location?: string | undefined;
   loggedBy?: string | undefined;
+  softwareId?: string | undefined;
   name?: string | undefined;
   email?: string | undefined;
 }

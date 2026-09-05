@@ -79,11 +79,12 @@ export class LeadsController {
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
-      const createdBy = req.user?._id;
+      const createdBy = req.user?.id;
+      console.log(req.body);
       const response = await this.interactor.create({
         ...req.body,
-        createdBy,
-        loggedBy: createdBy,
+        createdById: createdBy,
+        loggedById: createdBy,
       });
 
       return res.status(HttpStatusCode.CREATED).json(response);

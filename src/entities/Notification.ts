@@ -9,7 +9,7 @@ import type { IUser, RequestQuery } from "./User.js";
 export class INotification {
   constructor(
     public readonly _id?: string,
-    public readonly notificationCode?: string,
+    public notificationCode?: string,
     public readonly targetEntityId?: string,
     public readonly userId?: string,
     public user?: IUser | string,

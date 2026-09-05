@@ -81,7 +81,7 @@ export class TicketInteractorImpl
   async create(data: ITicket): Promise<ITicket> {
     if (!data) throw new UnprocessableEntityError("Data is required");
     const ticket = await this.repository.findOne({
-      complaint: data.complaintId,
+      complaintId: data.complaintId,
     });
     if (ticket)
       throw new BadRequestError("Ticket already exists for complaint");
@@ -109,7 +109,7 @@ export class TicketInteractorImpl
   async sendMail(res: ITicket) {
     const complaint = res.complaint as ICustomerComplaint;
     const clientName =
-      typeof complaint.customer === "object" && complaint.customer !== null
+      typeof complaint?.customer === "object" && complaint.customer !== null
         ? `${complaint.customer.name} | ${complaint.customer.companyName}`
         : "Client";
     const mail = ticketAssignmentTemplate({

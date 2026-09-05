@@ -35,7 +35,7 @@ export class AuthServiceImpl implements IAuthService {
   async generateToken(user: IUser): Promise<string> {
     // Strip out heavy or sensitive fields before signing
     const cleanPayload = {
-      _id: user._id,
+      id: user.id,
       email: user.email,
       role: user.role, // Keep this since your middleware checks req.user.role
     };

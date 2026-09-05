@@ -32,7 +32,7 @@ const formatter = winston.format.combine(
     return `${timestamp} [${level}]: ${message} ${
       Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ""
     }`;
-  })
+  }),
 );
 
 dotenv.config();
@@ -42,10 +42,10 @@ export class LoggerImpl implements ILogger {
   private logger: winston.Logger;
 
   constructor() {
-    // const _prodTransport = new winston.transports.File({
-    //   filename: "logs/error.log",
-    //   level: "error",
-    // });
+    const prodTransport = new winston.transports.File({
+      filename: "logs/error.log",
+      level: "error",
+    });
     const transport = new winston.transports.Console({
       format: formatter,
     });
@@ -53,7 +53,7 @@ export class LoggerImpl implements ILogger {
       level: process.env["NODE_ENV"] === "development" ? "trace" : "error",
       levels: customLevels.levels,
       transports: [
-        process.env["NODE_ENV"] === "development" ? transport : transport, //for serveless function - vercel
+        process.env["NODE_ENV"] === "development" ? transport : prodTransport,
       ],
     });
     winston.addColors(customLevels.colors);

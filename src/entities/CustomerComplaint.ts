@@ -8,7 +8,8 @@ import type { IUser, RequestQuery } from "./User.js";
 export class ICustomerComplaint {
   constructor(
     public readonly _id?: string,
-    public readonly complaintCode?: string,
+    public readonly id?: string,
+    public complaintCode?: string,
     public readonly customerId?: string,
     public customer?: ICustomer | string,
     public readonly complaintTypeId?: string,
