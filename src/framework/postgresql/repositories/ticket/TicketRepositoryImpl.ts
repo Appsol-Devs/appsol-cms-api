@@ -60,7 +60,7 @@ const ticketMapper = {
       const loggedById =
         typeof payload.loggedBy === "string"
           ? payload.loggedBy
-          : payload.loggedBy._id;
+          : payload.loggedBy.id;
 
       if (loggedById) {
         dto.loggedBy = {
@@ -152,7 +152,7 @@ const ticketMapper = {
       const loggedById =
         typeof payload.loggedBy === "string"
           ? payload.loggedBy
-          : payload.loggedBy._id;
+          : payload.loggedBy.id;
 
       if (loggedById) {
         dto.loggedBy = {

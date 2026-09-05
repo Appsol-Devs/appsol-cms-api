@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Apply the isDeleted filter
@@ -128,7 +128,7 @@ export const UserMapper = {
       ...(query.isVerified !== undefined && { isVerified: query.isVerified }),
       ...(query.createdAt && { createdAt: query.createdAt }),
       ...(query.updatedAt && { updatedAt: query.updatedAt }),
-      ...(query._id && { _id: new mongoose.SchemaTypes.ObjectId(query._id) }),
+      ...(query.id && { _id: new mongoose.SchemaTypes.ObjectId(query.id) }),
       ...(query.deviceToken && { deviceToken: query.deviceToken }),
       ...(query.createdBy && {
         createdBy: new mongoose.SchemaTypes.ObjectId(query.createdBy),
@@ -159,7 +159,7 @@ export const UserMapper = {
       model.deviceToken,
       model.createdBy?.toString(), // Convert ObjectId to string
       model.loginCount, // Optional field
-      model.lastLogin // Optional field
+      model.lastLogin, // Optional field
     );
   },
 };

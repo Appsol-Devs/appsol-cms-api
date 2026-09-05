@@ -21,7 +21,7 @@ import type { CustomerSetupInteractorImpl } from "../../../application/interacto
 export class CustomerSetupController extends BaseController<ICustomerSetup> {
   constructor(
     @inject(INTERFACE_TYPE.CustomerSetupInteractorImpl)
-    interactor: CustomerSetupInteractorImpl
+    interactor: CustomerSetupInteractorImpl,
   ) {
     super(interactor);
   }
@@ -29,7 +29,7 @@ export class CustomerSetupController extends BaseController<ICustomerSetup> {
   async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       const query: ICustomerSetupRequestQuery = {
@@ -74,11 +74,11 @@ export class CustomerSetupController extends BaseController<ICustomerSetup> {
   async create(
     req: IControllerUserRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
-      const createdBy = req.user?._id;
+      const createdBy = req.user?.id;
       const response = await this.interactor.create({
         ...req.body,
         createdBy,

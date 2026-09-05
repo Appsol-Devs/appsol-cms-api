@@ -67,7 +67,7 @@ export class CustomerOutreachController extends BaseController<ICustomerOutreach
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
-      const createdBy = req.user?._id;
+      const createdBy = req.user?.id;
       const response = await this.interactor.create({
         ...req.body,
         createdById: createdBy,

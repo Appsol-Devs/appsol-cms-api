@@ -81,7 +81,7 @@ export class SubscriptionController extends BaseController<ISubscription> {
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
-      const createdBy = req.user?._id;
+      const createdBy = req.user?.id;
       const response = await this.interactor.create({
         ...req.body,
         createdBy,

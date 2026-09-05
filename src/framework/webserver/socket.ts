@@ -27,7 +27,7 @@ export function initSocket(
               payload.token,
             );
 
-            if (!user || !user._id) {
+            if (!user || !user.id) {
               logger.error("Invalid token for socket authentication");
               socket.emit("authenticated", {
                 ok: false,
@@ -35,8 +35,8 @@ export function initSocket(
               });
               return socket.disconnect();
             }
-            const userId = user._id;
-            console.log(`User ${userId} authenticated for socket ${socket.id}`);
+            const userId = user.id;
+            logger.info(`User ${userId} authenticated for socket ${socket.id}`);
             if (userId) {
               const roomName = `user:${userId}`;
               // Check if socket is already in the room

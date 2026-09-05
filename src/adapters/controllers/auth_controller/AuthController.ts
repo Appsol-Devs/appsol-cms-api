@@ -65,7 +65,7 @@ export class AuthController {
   ): Promise<Response<any, Record<string, any>> | undefined> {
     try {
       //TODO add validation
-      req.body.userId = req.user?._id;
+      req.body.userId = req.user?.id;
       const response = await this.interactor.changePassword(req.body);
       if (response) {
         return res.status(HttpStatusCode.NO_CONTENT).send();

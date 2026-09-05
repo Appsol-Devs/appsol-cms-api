@@ -25,12 +25,12 @@ export class CustomerComplaintInteractorImpl extends BaseInteractorImpl<ICustome
     if (res) {
       console.log(res);
       await this.notificationService.create({
-        userId: (res.loggedBy as IUser)._id || (res.loggedBy as IUser).id,
+        userId: (res.loggedBy as IUser).id || (res.loggedBy as IUser).id,
         message: `A new complaint has been logged (${
-          (res.complaintType as IComplaintType).name || res._id
+          (res.complaintType as IComplaintType).name || res.id
         })`,
-        link: `/complaints/${res._id}`,
-        targetEntityId: res._id,
+        link: `/complaints/${res.id}`,
+        targetEntityId: res.id,
         targetEntityType: "CustomerComplaint",
       });
       return res;
@@ -50,12 +50,12 @@ export class CustomerComplaintInteractorImpl extends BaseInteractorImpl<ICustome
     if (!res) throw new Error("Error updating item");
 
     await this.notificationService.create({
-      userId: (res.loggedBy as IUser)._id || (res.loggedBy as IUser).id,
+      userId: (res.loggedBy as IUser).id || (res.loggedBy as IUser).id,
       message: `Complaint ${res.complaintCode} has been updated (${
-        (res.complaintType as IComplaintType).name || res._id
+        (res.complaintType as IComplaintType).name || res.id
       })`,
-      link: `/complaints/${res._id}`,
-      targetEntityId: res._id,
+      link: `/complaints/${res.id}`,
+      targetEntityId: res.id,
       targetEntityType: "CustomerComplaint",
     });
     return res;

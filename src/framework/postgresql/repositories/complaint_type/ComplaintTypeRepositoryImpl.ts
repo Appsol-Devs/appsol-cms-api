@@ -134,7 +134,7 @@ export class ComplaintTypeRepositoryImpl implements IComplaintTypeRepository {
       throw new NotFoundError("Complaint Type not found");
     }
 
-    const { _id, ...rest } = data;
+    const { id: _id, ...rest } = data;
 
     const updated = await ComplaintTypeDelegate.update({
       where: { id },

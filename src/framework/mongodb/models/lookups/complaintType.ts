@@ -23,7 +23,7 @@ withBaseSchema(compliantTypeSchema, {
 
 export const ComplaintTypeModel = mongoose.model<ComplaintTypeDocument>(
   "ComplaintType",
-  compliantTypeSchema
+  compliantTypeSchema,
 );
 
 export const ComplaintTypeModelMapper = {
@@ -34,7 +34,7 @@ export const ComplaintTypeModelMapper = {
     isActive: payload.isActive,
   }),
   toEntity: (doc: any): IComplaintType => ({
-    _id: doc._id.toString(),
+    id: doc._id.toString(),
     complaintTypeCode: doc.complaintTypeCode,
     name: doc.name,
     description: doc.description,

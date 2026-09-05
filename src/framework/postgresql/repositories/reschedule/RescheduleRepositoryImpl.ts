@@ -48,7 +48,7 @@ const rescheduleMapper = {
       const loggedById =
         typeof payload.loggedBy === "string"
           ? payload.loggedBy
-          : payload.loggedBy._id;
+          : payload.loggedBy.id;
 
       if (loggedById) {
         dto.loggedBy = {
@@ -117,7 +117,7 @@ const rescheduleMapper = {
       const loggedById =
         typeof payload.loggedBy === "string"
           ? payload.loggedBy
-          : payload.loggedBy?._id;
+          : payload.loggedBy?.id;
 
       dto.loggedBy = loggedById
         ? {

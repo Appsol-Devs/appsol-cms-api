@@ -3,7 +3,6 @@ import type { IGeolocation } from "./Lead.js";
 export class IUser {
   constructor(
     public readonly id?: string,
-    public readonly _id?: string,
     public readonly firstName?: string | null,
     public readonly lastName?: string | null,
     public readonly email?: string | null,

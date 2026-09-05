@@ -44,7 +44,7 @@ export class PaymentController extends BaseController<IPayment> {
       const data: Partial<IPayment> = {
         status: paymentStatus,
         approvalNotes: req.body.approvalNotes,
-        approvedOrRejectedBy: req.user?._id,
+        approvedOrRejectedBy: req.user?.id,
       };
 
       const response = await this.interactor.update(paymentId as string, data);
@@ -112,7 +112,7 @@ export class PaymentController extends BaseController<IPayment> {
   ): TGenericPromise {
     try {
       if (!req.body) throw new BadRequestError("Request body is required");
-      const createdBy = req.user?._id;
+      const createdBy = req.user?.id;
 
       const response = await this.interactor.create({
         ...req.body,
