@@ -19,7 +19,6 @@ jobs:
       # Test against multiple Node.js versions for compatibility.
       matrix:
         node-version: [22.x, 24.x]
-        
 
     steps:
       - name: Checkout Repository
@@ -41,7 +40,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Generate Prisma Client
-        run: yarn prisma generate
+        run: yarn prisma:generate
 
       - name: Compile TypeScript Application
         # Runs 'yarn build' (which executes 'rimraf dist && tsc') to compile
