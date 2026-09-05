@@ -40,6 +40,9 @@ jobs:
         # This step installs all dependencies, including TypeScript (tsc) and rimraf.
         run: yarn install --frozen-lockfile
 
+      - name: Generate Prisma Client
+        run: yarn prisma generate
+
       - name: Compile TypeScript Application
         # Runs 'yarn build' (which executes 'rimraf dist && tsc') to compile
         # the source code (src/) into JavaScript artifacts (dist/).
